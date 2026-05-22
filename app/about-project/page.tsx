@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
@@ -28,52 +28,52 @@ export default function AboutProjectPage() {
   const sections = [
     {
       icon: AlertTriangle,
-      title: language === 'ar' ? 'Ø§Ù„Ù…Ø´ÙƒÙ„Ø©' : 'ProblÃ¨me',
+      title: language === 'ar' ? 'المشكلة' : 'Problème',
       text: language === 'ar'
-        ? 'ÙŠØ¹Ø§Ù†ÙŠ Ø§Ù„Ø·Ù„Ø¨Ø© Ù…Ù† ØªØ£Ø®Ø± Ø§Ù„Ù†Ù‚Ù„ØŒ ØºÙŠØ§Ø¨ Ø§Ù„Ø­Ø¬Ø² Ø§Ù„Ù…Ø³Ø¨Ù‚ØŒ Ù†Ù‚Øµ Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§ØªØŒ Ø§Ù„Ø§Ø²Ø¯Ø­Ø§Ù…ØŒ ÙˆØ¹Ø¯Ù… ÙˆØ¶ÙˆØ­ Ù…ÙˆØ§Ø¹ÙŠØ¯ Ø§Ù„Ø±Ø­Ù„Ø§Øª.'
-        : 'Les Ã©tudiants subissent retards, absence de rÃ©servation, manque dâ€™information, surcharge et horaires peu visibles.',
+        ? 'يعاني الطلبة من تأخر النقل، غياب الحجز المسبق، نقص المعلومات، الازدحام، وعدم وضوح مواعيد الرحلات.'
+        : 'Les étudiants subissent retards, absence de réservation, manque d’information, surcharge et horaires peu visibles.',
       tone: 'from-red-500 to-orange-500',
     },
     {
       icon: CheckCircle2,
-      title: language === 'ar' ? 'Ø§Ù„Ø­Ù„' : 'Solution',
+      title: language === 'ar' ? 'الحل' : 'Solution',
       text: language === 'ar'
-        ? 'UNIMOVE-DZ ØªÙ‚Ø¯Ù… Ù…Ù†ØµØ© Ø±Ù‚Ù…ÙŠØ© Ù„Ù„Ø­Ø¬Ø²ØŒ QRØŒ ØªØªØ¨Ø¹ GPSØŒ Ø¥Ø´Ø¹Ø§Ø±Ø§ØªØŒ Ø§Ø´ØªØ±Ø§ÙƒØ§ØªØŒ ÙˆØ¯ÙØ¹ Ù…Ø±Ù† Ø¯Ø§Ø®Ù„ ØªØ¬Ø±Ø¨Ø© Ù…ÙˆØ­Ø¯Ø©.'
-        : 'UNIMOVE-DZ propose une plateforme digitale pour rÃ©servation, QR, GPS, notifications, abonnements et paiement flexible.',
+        ? 'د بحيري عبد القادر'
+        : 'UNIMOVE-DZ propose une plateforme digitale pour réservation, QR, GPS, notifications, abonnements et paiement flexible.',
       tone: 'from-emerald-500 to-teal-500',
     },
     {
       icon: ShieldCheck,
-      title: language === 'ar' ? 'Ø§Ù„Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©',
+      title: language === 'ar' ? 'الأمان' : 'Sécurité',
       text: language === 'ar'
-        ? 'Ø¨Ø·Ø§Ù‚Ø§Øª Ø±Ù‚Ù…ÙŠØ©ØŒ ØªØªØ¨Ø¹ Ø§Ù„Ø±Ø­Ù„Ø§ØªØŒ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª ÙˆØ§Ø¶Ø­Ø©ØŒ ÙˆØ³Ø§Ø¦Ù‚ÙˆÙ† Ù…Ù†Ø¸Ù…ÙˆÙ† ÙŠØ±ÙØ¹ÙˆÙ† Ø§Ù„Ø«Ù‚Ø© ÙˆØ§Ù„Ø£Ù…Ø§Ù† Ø¯Ø§Ø®Ù„ Ø§Ù„Ù†Ù‚Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠ.'
-        : 'Cartes digitales, suivi des trajets, informations claires et chauffeurs organisÃ©s renforcent la confiance et la sÃ©curitÃ©.',
+        ? 'د بحيري عبد القادر'
+        : 'Cartes digitales, suivi des trajets, informations claires et chauffeurs organisés renforcent la confiance et la sécurité.',
       tone: 'from-blue-500 to-cyan-500',
     },
     {
       icon: Building2,
-      title: language === 'ar' ? 'Ø§Ù„ØªÙ†Ø¸ÙŠÙ…' : 'Organisation',
+      title: language === 'ar' ? 'التنظيم' : 'Organisation',
       text: language === 'ar'
-        ? 'ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ù†Ù‚Ù„ Ù…Ù† Ø®Ø¯Ù…Ø© ØªÙ‚Ù„ÙŠØ¯ÙŠØ© Ø¥Ù„Ù‰ Ù†Ø¸Ø§Ù… Ù‚Ø§Ø¨Ù„ Ù„Ù„Ù‚ÙŠØ§Ø³ ÙˆØ§Ù„ØªØ­Ø³ÙŠÙ† Ø¹Ø¨Ø± Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ÙˆÙ…Ø¤Ø´Ø±Ø§Øª Ø§Ù„Ø£Ø¯Ø§Ø¡.'
-        : 'Transformer le transport traditionnel en systÃ¨me mesurable et optimisable via la donnÃ©e et les indicateurs.',
+        ? 'تحويل النقل من خدمة تقليدية إلى نظام قابل للقياس والتحسين عبر البيانات ومؤشرات الأداء.'
+        : 'Transformer le transport traditionnel en système mesurable et optimisable via la donnée et les indicateurs.',
       tone: 'from-purple-500 to-indigo-500',
     },
   ];
 
   const stats = [
-    { icon: Users, value: '10K+', label: language === 'ar' ? 'Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³ØªÙ‡Ø¯Ù' : 'Utilisateurs ciblÃ©s' },
-    { icon: Clock, value: '35%', label: language === 'ar' ? 'ØªÙ‚Ù„ÙŠÙ„ Ø§Ù„ØªØ£Ø®ÙŠØ±' : 'RÃ©duction retards' },
-    { icon: BarChart3, value: '9', label: language === 'ar' ? 'Ù…Ø­Ø§ÙˆØ± Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ø£Ø¹Ù…Ø§Ù„' : 'Blocs business model' },
-    { icon: Rocket, value: '5', label: language === 'ar' ? 'Ù…Ø±Ø§Ø­Ù„ Ù†Ù…Ùˆ' : 'Phases croissance' },
+    { icon: Users, value: '10K+', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés' },
+    { icon: Clock, value: '35%', label: language === 'ar' ? 'تقليل التأخير' : 'Réduction retards' },
+    { icon: BarChart3, value: '9', label: language === 'ar' ? 'محاور نموذج الأعمال' : 'Blocs business model' },
+    { icon: Rocket, value: '5', label: language === 'ar' ? 'مراحل نمو' : 'Phases croissance' },
   ];
 
   const innovation = [
-    { icon: MapPinned, title: language === 'ar' ? 'ØªØªØ¨Ø¹ Ù…Ø¨Ø§Ø´Ø± Ù„Ù„Ø±Ø­Ù„Ø§Øª' : 'Suivi trajets en direct' },
-    { icon: Wifi, title: language === 'ar' ? 'Wi-Fi Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ø±ÙƒØ¨Ø§Øª' : 'Wi-Fi embarquÃ©' },
-    { icon: LockKeyhole, title: language === 'ar' ? 'Ø¨Ø·Ø§Ù‚Ø© QR Ø¢Ù…Ù†Ø©' : 'Carte QR sÃ©curisÃ©e' },
-    { icon: Database, title: language === 'ar' ? 'ØªØ­Ù„ÙŠÙ„Ø§Øª ØªØ´ØºÙŠÙ„ÙŠØ©' : 'Analytique opÃ©rationnelle' },
-    { icon: Target, title: language === 'ar' ? 'ØªØ³Ø¹ÙŠØ± Ù‚Ø§Ø¨Ù„ Ù„Ù„ØªÙˆØ³Ø¹' : 'Tarification scalable' },
-    { icon: GraduationCap, title: language === 'ar' ? 'Ù…ØµÙ…Ù… Ù„Ù„Ø¬Ø§Ù…Ø¹Ø©' : 'ConÃ§u pour lâ€™universitÃ©' },
+    { icon: MapPinned, title: language === 'ar' ? 'تتبع مباشر للرحلات' : 'Suivi trajets en direct' },
+    { icon: Wifi, title: language === 'ar' ? 'Wi-Fi داخل المركبات' : 'Wi-Fi embarqué' },
+    { icon: LockKeyhole, title: language === 'ar' ? 'بطاقة QR آمنة' : 'Carte QR sécurisée' },
+    { icon: Database, title: language === 'ar' ? 'تحليلات تشغيلية' : 'Analytique opérationnelle' },
+    { icon: Target, title: language === 'ar' ? 'تسعير قابل للتوسع' : 'Tarification scalable' },
+    { icon: GraduationCap, title: language === 'ar' ? 'مصمم للجامعة' : 'Conçu pour l’université' },
   ];
 
   return (
@@ -84,15 +84,15 @@ export default function AboutProjectPage() {
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/70 px-4 py-2 text-sm font-black text-emerald-700 shadow-lg backdrop-blur-xl">
               <Sparkles className="h-4 w-4" />
-              {language === 'ar' ? 'Ø¹Ù† Ø§Ù„Ù…Ø´Ø±ÙˆØ¹' : 'Ã€ propos du projet'}
+              {language === 'ar' ? 'عن المشروع' : 'À propos du projet'}
             </div>
             <h1 className="mx-auto max-w-5xl text-5xl font-black tracking-tight text-slate-950 md:text-7xl">
-              {language === 'ar' ? 'UNIMOVE-DZ Ù…Ø´Ø±ÙˆØ¹ Ø¬Ø§Ù…Ø¹ÙŠ Ø¨Ù…Ù†Ø·Ù‚ Ø´Ø±ÙƒØ© Ù†Ø§Ø´Ø¦Ø©.' : 'UNIMOVE-DZ, un projet universitaire pensÃ© comme une startup.'}
+              {language === 'ar' ? 'UNIMOVE-DZ مشروع جامعي بمنطق شركة ناشئة.' : 'UNIMOVE-DZ, un projet universitaire pensé comme une startup.'}
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 md:text-2xl">
               {language === 'ar'
-                ? 'Ù…Ù†ØµØ© Ø°ÙƒÙŠØ© Ù„ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù†Ù‚Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠ Ø¹Ø¨Ø± Ø§Ù„ØªÙƒÙ†ÙˆÙ„ÙˆØ¬ÙŠØ§ØŒ Ø§Ù„ØªÙ†Ø¸ÙŠÙ…ØŒ Ø§Ù„Ø£Ù…Ø§Ù†ØŒ ÙˆÙ†Ù…ÙˆØ°Ø¬ Ø§Ù‚ØªØµØ§Ø¯ÙŠ ÙˆØ§Ø¶Ø­.'
-                : 'Une plateforme intelligente pour amÃ©liorer le transport universitaire grÃ¢ce Ã  la technologie, lâ€™organisation, la sÃ©curitÃ© et un modÃ¨le Ã©conomique clair.'}
+                ? 'منصة ذكية لتحسين النقل الجامعي عبر التكنولوجيا، التنظيم، الأمان، ونموذج اقتصادي واضح.'
+                : 'Une plateforme intelligente pour améliorer le transport universitaire grâce à la technologie, l’organisation, la sécurité et un modèle économique clair.'}
             </p>
           </motion.div>
         </div>
@@ -119,13 +119,10 @@ export default function AboutProjectPage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <Lightbulb className="mb-5 h-10 w-10 text-emerald-300" />
-              <h2 className="text-4xl font-black md:text-5xl">
-                {language === 'ar' ? 'Ø§Ù„Ø§Ø¨ØªÙƒØ§Ø± ÙÙŠ Ø®Ø¯Ù…Ø© Ø§Ù„Ù†Ù‚Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠ' : 'Lâ€™innovation au service de la mobilitÃ© universitaire'}
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-slate-300">
+              <h2 className="text-4xl font-black md:text-5xl"د بحيري عبد القادر"mt-5 text-lg leading-8 text-slate-300">
                 {language === 'ar'
-                  ? 'ÙŠØ¬Ù…Ø¹ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø¨ÙŠÙ† ØªØ¬Ø±Ø¨Ø© Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ø³ÙŠØ·Ø© ÙˆÙ†Ø¸Ø§Ù… ØªØ´ØºÙŠÙ„ Ù‚Ø§Ø¨Ù„ Ù„Ù„Ù‚ÙŠØ§Ø³ØŒ Ù…Ø§ ÙŠØ¬Ø¹Ù„Ù‡ Ù‚Ø§Ø¨Ù„Ø§Ù‹ Ù„Ù„ØªØ·Ø¨ÙŠÙ‚ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹Ø© ÙˆØ§Ù„ØªÙˆØ³Ø¹ Ø¥Ù„Ù‰ Ù…Ø¤Ø³Ø³Ø§Øª Ø£Ø®Ø±Ù‰.'
-                  : 'Le projet combine une expÃ©rience utilisateur simple et un systÃ¨me dâ€™exploitation mesurable, applicable Ã  lâ€™universitÃ© et extensible Ã  dâ€™autres institutions.'}
+                  ? 'يجمع المشروع بين تجربة مستخدم بسيطة ونظام تشغيل قابل للقياس، ما يجعله قابلاً للتطبيق داخل الجامعة والتوسع إلى مؤسسات أخرى.'
+                  : 'Le projet combine une expérience utilisateur simple et un système d’exploitation mesurable, applicable à l’université et extensible à d’autres institutions.'}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -159,22 +156,22 @@ export default function AboutProjectPage() {
           <div className="grid gap-8 md:grid-cols-2">
             <div>
               <h2 className="text-3xl font-black md:text-4xl">
-                {language === 'ar' ? 'Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø© Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠØ©' : 'Informations acadÃ©miques'}
+                {language === 'ar' ? 'المعلومة الأكاديمية' : 'Informations académiques'}
               </h2>
               <div className="mt-6 space-y-3 text-lg font-semibold text-emerald-50">
-                <p>{language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©: Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…' : 'Ã‰tudiante : Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…'}</p>
-                <p>{language === 'ar' ? 'Ù…Ø§Ø³ØªØ± 2 Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù… - 2025/2026' : 'Master 2 Droit GÃ©nÃ©ral - 2025/2026'}</p>
-                <p>{language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³' : 'UniversitÃ© Djilali LiabÃ¨s Sidi Bel AbbÃ¨s'}</p>
+                <p>{language === 'ar' ? 'الطالبة: مراح ابتسام' : 'Étudiante : مراح ابتسام'}</p>
+                <p>{language === 'ar' ? 'ماستر 2 قانون عام - 2025/2026' : 'Master 2 Droit Général - 2025/2026'}</p>
+                <p>{language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djilali Liabès Sidi Bel Abbès'}</p>
                 <p>{language === 'ar' ? 'الإشراف: د:رمدوم نورة' : 'Supervision : DR RAMDOUM NORA'}</p>
               </div>
             </div>
             <div>
               <h2 className="text-3xl font-black md:text-4xl">
-                {language === 'ar' ? 'Ø§Ù„ØªØ·ÙˆÙŠØ±' : 'DÃ©veloppement'}
+                {language === 'ar' ? 'التطوير' : 'Développement'}
               </h2>
               <div className="mt-6 space-y-3 text-lg font-semibold text-emerald-50">
                 <p>DR BEHIRI ABDELKADER</p>
-                <p className="text-2xl font-black">Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±</p>
+                <p className="text-2xl font-black">د بحيري عبد القادر</p>
               </div>
             </div>
           </div>

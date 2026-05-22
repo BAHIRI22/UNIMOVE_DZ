@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
@@ -13,7 +13,7 @@ export default function CreditsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {language === 'ar' ? 'Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯Ø§Øª' : 'CrÃ©dits'}
+            {language === 'ar' ? 'الاعتمادات' : 'Crédits'}
           </h1>
           <p className="text-gray-600">
             UNIMOVE-DZ
@@ -29,7 +29,7 @@ export default function CreditsPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900">UNIMOVE-DZ</h2>
               <p className="text-lg text-primary font-medium">
-                {language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø© Ø£Ù‚Ø±Ø¨ØŒ Ø£Ø³Ù‡Ù„ØŒ Ùˆ Ø£Ø£Ù…Ù†' : 'L\'universitÃ© plus proche, plus facile et plus sÃ»re'}
+                {language === 'ar' ? 'الجامعة أقرب، أسهل، و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
               </p>
             </div>
           </div>
@@ -43,10 +43,10 @@ export default function CreditsPage() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©' : 'Ã‰tudiante'}
+                {language === 'ar' ? 'الطالبة' : 'Étudiante'}
               </h3>
               <p className="text-2xl font-bold text-primary">
-                {language === 'ar' ? 'Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…' : 'Merah Ibtissam'}
+                {language === 'ar' ? 'مراح ابتسام' : 'Merah Ibtissam'}
               </p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function CreditsPage() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
+                {language === 'ar' ? 'الإشراف' : 'Supervision'}
               </h3>
               <p className="text-2xl font-bold text-primary">
                 {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}
@@ -77,10 +77,10 @@ export default function CreditsPage() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'ar' ? 'Ø§Ù„Ø¥Ù†Ø¬Ø§Ø² ÙˆØ§Ù„ØªØ·ÙˆÙŠØ±' : 'RÃ©alisation et DÃ©veloppement'}
+                {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
               </h3>
               <p className="text-2xl font-bold text-emerald-700">
-                DR: BEHIRI ABDELKADER / Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±
+                DR: BEHIRI ABDELKADER / د بحيري عبد القادر
               </p>
             </div>
           </div>
@@ -95,10 +95,10 @@ export default function CreditsPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  {language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø©' : 'AnnÃ©e'}
+                  {language === 'ar' ? 'السنة' : 'Année'}
                 </p>
                 <p className="font-bold text-gray-900">
-                  {language === 'ar' ? 'Ø«Ø§Ù†ÙŠØ© Ù…Ø§Ø³ØªØ±' : '2Ã¨me Master'}
+                  {language === 'ar' ? 'ثانية ماستر' : '2ème Master'}
                 </p>
               </div>
             </div>
@@ -108,10 +108,10 @@ export default function CreditsPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  {language === 'ar' ? 'Ø§Ù„ØªØ®ØµØµ' : 'SpÃ©cialisation'}
+                  {language === 'ar' ? 'التخصص' : 'Spécialisation'}
                 </p>
                 <p className="font-bold text-gray-900">
-                  {language === 'ar' ? 'Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù…' : 'Droit GÃ©nÃ©ral'}
+                  {language === 'ar' ? 'قانون عام' : 'Droit Général'}
                 </p>
               </div>
             </div>
@@ -121,10 +121,10 @@ export default function CreditsPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  {language === 'ar' ? 'Ø§Ù„ÙƒÙ„ÙŠØ©' : 'FacultÃ©'}
+                  {language === 'ar' ? 'الكلية' : 'Faculté'}
                 </p>
                 <p className="font-bold text-gray-900">
-                  {language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}
+                  {language === 'ar' ? 'كلية الحقوق والعلوم السياسية' : 'Faculté de Droit et Sciences Politiques'}
                 </p>
               </div>
             </div>
@@ -134,10 +134,10 @@ export default function CreditsPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  {language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©' : 'UniversitÃ©'}
+                  {language === 'ar' ? 'الجامعة' : 'Université'}
                 </p>
                 <p className="font-bold text-gray-900">
-                  {language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³ 19 Ù…Ø§Ø±Ø³ 1962' : 'UniversitÃ© Djillali Liabes de Sidi Bel AbbÃ¨s 19 Mars 1962'}
+                  {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس 19 مارس 1962' : 'Université Djillali Liabes de Sidi Bel Abbès 19 Mars 1962'}
                 </p>
               </div>
             </div>
@@ -147,7 +147,7 @@ export default function CreditsPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  {language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©' : 'AnnÃ©e Universitaire'}
+                  {language === 'ar' ? 'السنة الجامعية' : 'Année Universitaire'}
                 </p>
                 <p className="font-bold text-gray-900">
                   2025/2026
@@ -162,18 +162,18 @@ export default function CreditsPage() {
           <div className="flex items-center justify-center gap-2 text-gray-600">
             <Heart className="w-5 h-5 text-red-500" />
             <p className="text-sm">
-              {language === 'ar' ? 'ØµÙ†Ø¹ Ø¨ÙƒÙ„ Ø­Ø¨' : 'Fait avec amour'}
+              {language === 'ar' ? 'صنع بكل حب' : 'Fait avec amour'}
             </p>
           </div>
           <div className="flex gap-4 justify-center mt-4">
             <Link href="/privacy" className="text-sm text-primary hover:underline">
-              {language === 'ar' ? 'Ø³ÙŠØ§Ø³Ø© Ø§Ù„Ø®ØµÙˆØµÙŠØ©' : 'Politique de confidentialitÃ©'}
+              {language === 'ar' ? 'سياسة الخصوصية' : 'Politique de confidentialité'}
             </Link>
             <Link href="/terms" className="text-sm text-primary hover:underline">
-              {language === 'ar' ? 'Ø§Ù„Ø´Ø±ÙˆØ· ÙˆØ§Ù„Ø£Ø­ÙƒØ§Ù…' : 'Conditions d\'utilisation'}
+              {language === 'ar' ? 'الشروط والأحكام' : 'Conditions d\'utilisation'}
             </Link>
             <Link href="/help" className="text-sm text-primary hover:underline">
-              {language === 'ar' ? 'Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯Ø©' : 'Aide'}
+              {language === 'ar' ? 'المساعدة' : 'Aide'}
             </Link>
           </div>
         </Card>

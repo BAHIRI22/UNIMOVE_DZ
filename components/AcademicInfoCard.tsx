@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
@@ -14,7 +14,7 @@ export function AcademicInfoCard() {
           <GraduationCap className="w-6 h-6 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900">
-          {language === 'ar' ? 'Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠØ©' : 'Informations AcadÃ©miques'}
+          {language === 'ar' ? 'المعلومات الأكاديمية' : 'Informations Académiques'}
         </h2>
       </div>
 
@@ -26,10 +26,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©' : 'Ã‰tudiante'}
+              {language === 'ar' ? 'الطالبة' : 'Étudiante'}
             </div>
             <div className="text-lg font-semibold text-primary">
-              {language === 'ar' ? 'Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…' : 'Merah Ibtissam'}
+              {language === 'ar' ? 'مراح ابتسام' : 'Merah Ibtissam'}
             </div>
           </div>
         </div>
@@ -41,10 +41,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø©' : 'AnnÃ©e'}
+              {language === 'ar' ? 'السنة' : 'Année'}
             </div>
             <div className="text-gray-700">
-              {language === 'ar' ? 'Ø«Ø§Ù†ÙŠØ© Ù…Ø§Ø³ØªØ±' : '2Ã¨me Master'}
+              {language === 'ar' ? 'ثانية ماستر' : '2ème Master'}
             </div>
           </div>
         </div>
@@ -56,10 +56,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„ØªØ®ØµØµ' : 'SpÃ©cialisation'}
+              {language === 'ar' ? 'التخصص' : 'Spécialisation'}
             </div>
             <div className="text-gray-700">
-              {language === 'ar' ? 'Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù…' : 'Droit GÃ©nÃ©ral'}
+              {language === 'ar' ? 'قانون عام' : 'Droit Général'}
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©' : 'AnnÃ©e Universitaire'}
+              {language === 'ar' ? 'السنة الجامعية' : 'Année Universitaire'}
             </div>
             <div className="text-gray-700">
               2025/2026
@@ -86,10 +86,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„ÙƒÙ„ÙŠØ©' : 'FacultÃ©'}
+              {language === 'ar' ? 'الكلية' : 'Faculté'}
             </div>
             <div className="text-gray-700">
-              {language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}
+              {language === 'ar' ? 'كلية الحقوق والعلوم السياسية' : 'Faculté de Droit et Sciences Politiques'}
             </div>
           </div>
         </div>
@@ -101,10 +101,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©' : 'UniversitÃ©'}
+              {language === 'ar' ? 'الجامعة' : 'Université'}
             </div>
             <div className="text-gray-700">
-              {language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³ 19 Ù…Ø§Ø±Ø³ 1962' : 'UniversitÃ© Djillali Liabes de Sidi Bel AbbÃ¨s 19 Mars 1962'}
+              {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس 19 مارس 1962' : 'Université Djillali Liabes de Sidi Bel Abbès 19 Mars 1962'}
             </div>
           </div>
         </div>
@@ -116,7 +116,7 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
+              {language === 'ar' ? 'الإشراف' : 'Supervision'}
             </div>
             <div className="text-gray-700">
               {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}
@@ -131,10 +131,10 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'Ø§Ù„Ø¥Ù†Ø¬Ø§Ø² ÙˆØ§Ù„ØªØ·ÙˆÙŠØ±' : 'RÃ©alisation et DÃ©veloppement'}
+              {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
             </div>
             <div className="text-gray-700">
-              DR: BEHIRI ABDELKADER / Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±
+              DR: BEHIRI ABDELKADER / د بحيري عبد القادر
             </div>
           </div>
         </div>

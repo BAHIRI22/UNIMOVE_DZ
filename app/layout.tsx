@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Poppins, Geist, Geist_Mono } from 'next/font/google'
+import { Cairo, Inter, Poppins, Geist, Geist_Mono } from 'next/font/google'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
@@ -28,6 +28,12 @@ const geist = Geist({
 const geistMono = Geist_Mono({ 
   subsets: ["latin"],
   variable: '--font-geist-mono',
+  display: 'swap',
+});
+
+const cairo = Cairo({
+  subsets: ['arabic', 'latin'],
+  variable: '--font-cairo',
   display: 'swap',
 });
 
@@ -69,8 +75,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ar" suppressHydrationWarning>
-      <body className={`${inter.className} ${poppins.className} ${geist.className} antialiased relative`}>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <body className={`${cairo.className} ${inter.className} ${poppins.className} ${geist.className} antialiased relative`}>
         <LanguageProvider>
           <AuthProvider>
             {/* Background image */}

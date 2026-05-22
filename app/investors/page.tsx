@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
@@ -38,41 +38,41 @@ export default function InvestorsPage() {
   const { language } = useLanguage();
 
   const startupKpis = [
-    { icon: Users, value: '+10K', label: language === 'ar' ? 'Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø³ØªÙ‡Ø¯Ù' : 'Utilisateurs ciblÃ©s', trend: '+45%' },
-    { icon: DollarSign, value: '12.5M DA', label: language === 'ar' ? 'Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø³Ù†ÙˆÙŠØ© Ù…Ù‚Ø¯Ø±Ø©' : 'Revenus annuels estimÃ©s', trend: '+32%' },
-    { icon: Car, value: '+120', label: language === 'ar' ? 'Ø±Ø­Ù„Ø© ÙŠÙˆÙ…ÙŠØ© Ù…Ø­ØªÙ…Ù„Ø©' : 'Trajets quotidiens potentiels', trend: '+38%' },
-    { icon: Trophy, value: '7', label: language === 'ar' ? 'Ù…ØµØ§Ø¯Ø± Ø¯Ø®Ù„' : 'Sources revenus', trend: '+20%' },
+    { icon: Users, value: '+10K', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés', trend: '+45%' },
+    { icon: DollarSign, value: '12.5M DA', label: language === 'ar' ? 'إيرادات سنوية مقدرة' : 'Revenus annuels estimés', trend: '+32%' },
+    { icon: Car, value: '+120', label: language === 'ar' ? 'رحلة يومية محتملة' : 'Trajets quotidiens potentiels', trend: '+38%' },
+    { icon: Trophy, value: '7', label: language === 'ar' ? 'مصادر دخل' : 'Sources revenus', trend: '+20%' },
   ];
 
   const marketProblems = [
-    { icon: CalendarClock, stat: '40%', title: language === 'ar' ? 'ØªØ£Ø®Ø± Ù…ØªÙƒØ±Ø±' : 'Retards frÃ©quents', text: language === 'ar' ? 'Ø§Ù„Ø·Ù„Ø¨Ø© ÙŠÙÙ‚Ø¯ÙˆÙ† ÙˆÙ‚ØªØ§Ù‹ ÙŠÙˆÙ…ÙŠØ§Ù‹ Ø¨Ø³Ø¨Ø¨ Ø§Ù„Ù†Ù‚Ù„ ØºÙŠØ± Ø§Ù„Ù…Ù†Ø¸Ù….' : 'Les Ã©tudiants perdent du temps chaque jour Ã  cause dâ€™un transport peu organisÃ©.' },
-    { icon: Flame, stat: '65%', title: language === 'ar' ? 'ØªÙˆØªØ± ÙÙŠ Ø§Ù„ØªÙ†Ù‚Ù„' : 'Stress mobilitÃ©', text: language === 'ar' ? 'ØºÙŠØ§Ø¨ Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø© ÙˆØ§Ù„Ø­Ø¬Ø² ÙŠØ®Ù„Ù‚ Ø¶ØºØ·Ø§Ù‹ ÙŠÙˆÙ…ÙŠØ§Ù‹.' : 'Lâ€™absence dâ€™information et de rÃ©servation crÃ©e une pression quotidienne.' },
-    { icon: Network, stat: '0', title: language === 'ar' ? 'Ø­Ù„ Ø±Ù‚Ù…ÙŠ Ù…ÙˆØ­Ø¯' : 'Solution digitale unifiÃ©e', text: language === 'ar' ? 'Ø§Ù„Ø³ÙˆÙ‚ ÙŠØ­ØªØ§Ø¬ Ù…Ù†ØµØ© ÙˆØ§Ø­Ø¯Ø© ØªØ±Ø¨Ø· Ø§Ù„Ø­Ø¬Ø² ÙˆØ§Ù„ØªØªØ¨Ø¹ ÙˆØ§Ù„Ø¯ÙØ¹.' : 'Le marchÃ© a besoin dâ€™une plateforme unique reliant rÃ©servation, suivi et paiement.' },
+    { icon: CalendarClock, stat: '40%', title: language === 'ar' ? 'تأخر متكرر' : 'Retards fréquents', text: language === 'ar' ? 'د بحيري عبد القادر' : 'Les étudiants perdent du temps chaque jour à cause d’un transport peu organisé.' },
+    { icon: Flame, stat: '65%', title: language === 'ar' ? 'توتر في التنقل' : 'Stress mobilité', text: language === 'ar' ? 'غياب المعلومة والحجز يخلق ضغطاً يومياً.' : 'L’absence d’information et de réservation crée une pression quotidienne.' },
+    { icon: Network, stat: '0', title: language === 'ar' ? 'حل رقمي موحد' : 'Solution digitale unifiée', text: language === 'ar' ? 'د بحيري عبد القادر' : 'Le marché a besoin d’une plateforme unique reliant réservation, suivi et paiement.' },
   ];
 
   const solutionFeatures = [
-    { icon: Smartphone, title: language === 'ar' ? 'Ø­Ø¬Ø² Ø°ÙƒÙŠ' : 'RÃ©servation intelligente' },
-    { icon: MapPin, title: language === 'ar' ? 'ØªØªØ¨Ø¹ GPS' : 'GPS tracking' },
-    { icon: QrCode, title: language === 'ar' ? 'Ø¨Ø·Ø§Ù‚Ø© QR' : 'QR Card' },
+    { icon: Smartphone, title: language === 'ar' ? 'حجز ذكي' : 'Réservation intelligente' },
+    { icon: MapPin, title: language === 'ar' ? 'تتبع GPS' : 'GPS tracking' },
+    { icon: QrCode, title: language === 'ar' ? 'بطاقة QR' : 'QR Card' },
     { icon: Wifi, title: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi' },
-    { icon: CreditCard, title: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible' },
-    { icon: Zap, title: language === 'ar' ? 'Ø¥Ø´Ø¹Ø§Ø±Ø§Øª ÙÙˆØ±ÙŠØ©' : 'Notifications instantanÃ©es' },
+    { icon: CreditCard, title: language === 'ar' ? 'دفع مرن' : 'Paiement flexible' },
+    { icon: Zap, title: language === 'ar' ? 'إشعارات فورية' : 'Notifications instantanées' },
   ];
 
   const segments = [
-    { icon: Users, name: language === 'ar' ? 'Ø§Ù„Ø·Ù„Ø¨Ø©' : 'Ã‰tudiants', size: '85%', potential: language === 'ar' ? 'Ø·Ù„Ø¨ ÙŠÙˆÙ…ÙŠ Ø¹Ø§Ù„Ù' : 'Demande quotidienne Ã©levÃ©e' },
-    { icon: GraduationCap, name: language === 'ar' ? 'Ø§Ù„Ø£Ø³Ø§ØªØ°Ø©' : 'Enseignants', size: '7%', potential: language === 'ar' ? 'Ø§Ø´ØªØ±Ø§ÙƒØ§Øª Ù…Ù…ÙŠØ²Ø©' : 'Abonnements premium' },
-    { icon: Building2, name: language === 'ar' ? 'Ø§Ù„Ø¥Ø¯Ø§Ø±ÙŠÙˆÙ†' : 'Administratifs', size: '5%', potential: language === 'ar' ? 'Ø§Ø³ØªÙ‚Ø±Ø§Ø± Ø´Ù‡Ø±ÙŠ' : 'StabilitÃ© mensuelle' },
-    { icon: Trophy, name: language === 'ar' ? 'Ø§Ù„Ø£Ù†Ø¯ÙŠØ© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©' : 'Clubs universitaires', size: '3%', potential: language === 'ar' ? 'Ø£Ø­Ø¯Ø§Ø« ÙˆØ±Ø­Ù„Ø§Øª' : 'Ã‰vÃ©nements et voyages' },
+    { icon: Users, name: language === 'ar' ? 'الطلبة' : 'Étudiants', size: '85%', potential: language === 'ar' ? 'طلب يومي عالٍ' : 'Demande quotidienne élevée' },
+    { icon: GraduationCap, name: language === 'ar' ? 'الأساتذة' : 'Enseignants', size: '7%', potential: language === 'ar' ? 'اشتراكات مميزة' : 'Abonnements premium' },
+    { icon: Building2, name: language === 'ar' ? 'الإداريون' : 'Administratifs', size: '5%', potential: language === 'ar' ? 'استقرار شهري' : 'Stabilité mensuelle' },
+    { icon: Trophy, name: language === 'ar' ? 'الأندية الجامعية' : 'Clubs universitaires', size: '3%', potential: language === 'ar' ? 'أحداث ورحلات' : 'Événements et voyages' },
   ];
 
   const revenue = [
-    { label: language === 'ar' ? 'Ø§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª' : 'Abonnements', value: 45, amount: '5.62M DA' },
-    { label: language === 'ar' ? 'Ø§Ù„Ø±Ø­Ù„Ø§Øª Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø©' : 'Trajets directs', value: 30, amount: '3.75M DA' },
-    { label: language === 'ar' ? 'Ø§Ù„Ø¥Ø¹Ù„Ø§Ù†Ø§Øª' : 'PublicitÃ©', value: 5, amount: '625K DA' },
-    { label: language === 'ar' ? 'Ø´Ø±Ø§ÙƒØ§Øª Ø§Ù„Ø¬Ø§Ù…Ø¹Ø§Øª' : 'Partenariats universitÃ©s', value: 2, amount: '250K DA' },
-    { label: language === 'ar' ? 'Ø¹Ù…ÙˆÙ„Ø§Øª Ø§Ù„Ù…Ø³ØªØ«Ù…Ø±ÙŠÙ†' : 'Commissions investisseurs', value: 4, amount: '500K DA' },
-    { label: language === 'ar' ? 'Ø§Ù„Ù…Ø·Ø§Ø± ÙˆØ§Ù„Ø³ÙŠØ§Ø­Ø© ÙˆØ§Ù„Ø£Ø­Ø¯Ø§Ø«' : 'AÃ©roport, tourisme, Ã©vÃ©nements', value: 14, amount: '1.75M DA' },
+    { label: language === 'ar' ? 'الاشتراكات' : 'Abonnements', value: 45, amount: '5.62M DA' },
+    { label: language === 'ar' ? 'الرحلات المباشرة' : 'Trajets directs', value: 30, amount: '3.75M DA' },
+    { label: language === 'ar' ? 'الإعلانات' : 'Publicité', value: 5, amount: '625K DA' },
+    { label: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: 2, amount: '250K DA' },
+    { label: language === 'ar' ? 'عمولات المستثمرين' : 'Commissions investisseurs', value: 4, amount: '500K DA' },
+    { label: language === 'ar' ? 'المطار والسياحة والأحداث' : 'Aéroport, tourisme, événements', value: 14, amount: '1.75M DA' },
   ];
 
   const projections = [
@@ -84,24 +84,24 @@ export default function InvestorsPage() {
   ];
 
   const roadmap = [
-    { phase: '01', title: 'MVP', text: language === 'ar' ? 'Ù†Ø³Ø®Ø© Ø£ÙˆÙ„ÙŠØ© Ù„Ù„Ø­Ø¬Ø² ÙˆØ§Ù„Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ø±Ù‚Ù…ÙŠØ©.' : 'Version initiale rÃ©servation et carte digitale.' },
-    { phase: '02', title: language === 'ar' ? 'Ø¥Ø·Ù„Ø§Ù‚ Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©' : 'Lancement universitÃ©', text: language === 'ar' ? 'ØªØ´ØºÙŠÙ„ Ø¯Ø§Ø®Ù„ Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³.' : 'DÃ©ploiement Ã  lâ€™UniversitÃ© Djilali LiabÃ¨s.' },
-    { phase: '03', title: language === 'ar' ? 'ØªÙˆØ³Ø¹ Ø§Ù„ÙˆÙ„Ø§ÙŠØ©' : 'Expansion wilaya', text: language === 'ar' ? 'Ø±Ø¨Ø· Ù…Ø¤Ø³Ø³Ø§Øª ÙˆÙ…Ù†Ø§Ø·Ù‚ Ø¬Ø§Ù…Ø¹ÙŠØ© Ø¥Ø¶Ø§ÙÙŠØ©.' : 'Connexion de zones et institutions supplÃ©mentaires.' },
-    { phase: '04', title: language === 'ar' ? 'ØªÙˆØ³Ø¹ ÙˆØ·Ù†ÙŠ' : 'Expansion nationale', text: language === 'ar' ? 'Ù†Ù…ÙˆØ°Ø¬ Ù‚Ø§Ø¨Ù„ Ù„Ù„ØªÙƒØ±Ø§Ø± ÙÙŠ Ø¬Ø§Ù…Ø¹Ø§Øª Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±.' : 'ModÃ¨le rÃ©plicable dans les universitÃ©s algÃ©riennes.' },
-    { phase: '05', title: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ø£ØµÙ„ÙŠØ©' : 'Mobile app native', text: language === 'ar' ? 'Android/iOS Ø¨ØªØ¬Ø±Ø¨Ø© Ø£Ø³Ø±Ø¹ ÙˆØ£ÙƒØ«Ø± ØªÙƒØ§Ù…Ù„Ø§Ù‹.' : 'Android/iOS avec expÃ©rience plus rapide et intÃ©grÃ©e.' },
-    { phase: '06', title: language === 'ar' ? 'Ø°ÙƒØ§Ø¡ Ø§ØµØ·Ù†Ø§Ø¹ÙŠ' : 'AI optimization', text: language === 'ar' ? 'ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª ÙˆØ§Ù„ØªÙ†Ø¨Ø¤ Ø¨Ø§Ù„Ø·Ù„Ø¨.' : 'Optimisation des itinÃ©raires et prÃ©vision de demande.' },
-    { phase: '07', title: language === 'ar' ? 'Smart Campus' : 'Smart campus ecosystem', text: language === 'ar' ? 'Ù…Ù†Ø¸ÙˆÙ…Ø© ØªÙ†Ù‚Ù„ ÙˆØ®Ø¯Ù…Ø§Øª Ø¬Ø§Ù…Ø¹ÙŠØ© Ù…ØªÙƒØ§Ù…Ù„Ø©.' : 'Ã‰cosystÃ¨me mobilitÃ© et services campus intÃ©grÃ©s.' },
+    { phase: '01', title: 'MVP', text: language === 'ar' ? 'نسخة أولية للحجز والبطاقة الرقمية.' : 'Version initiale réservation et carte digitale.' },
+    { phase: '02', title: language === 'ar' ? 'إطلاق الجامعة' : 'Lancement université', text: language === 'ar' ? 'تشغيل داخل جامعة الجيلالي اليابس.' : 'Déploiement à l’Université Djilali Liabès.' },
+    { phase: '03', title: language === 'ar' ? 'توسع الولاية' : 'Expansion wilaya', text: language === 'ar' ? 'ربط مؤسسات ومناطق جامعية إضافية.' : 'Connexion de zones et institutions supplémentaires.' },
+    { phase: '04', title: language === 'ar' ? 'توسع وطني' : 'Expansion nationale', text: language === 'ar' ? 'نموذج قابل للتكرار في جامعات الجزائر.' : 'Modèle réplicable dans les universités algériennes.' },
+    { phase: '05', title: language === 'ar' ? 'تطبيقات أصلية' : 'Mobile app native', text: language === 'ar' ? 'Android/iOS بتجربة أسرع وأكثر تكاملاً.' : 'Android/iOS avec expérience plus rapide et intégrée.' },
+    { phase: '06', title: language === 'ar' ? 'ذكاء اصطناعي' : 'AI optimization', text: language === 'ar' ? 'تحسين المسارات والتنبؤ بالطلب.' : 'Optimisation des itinéraires et prévision de demande.' },
+    { phase: '07', title: language === 'ar' ? 'Smart Campus' : 'Smart campus ecosystem', text: language === 'ar' ? 'منظومة تنقل وخدمات جامعية متكاملة.' : 'Écosystème mobilité et services campus intégrés.' },
   ];
 
   const techStack = [
-    { icon: Code2, title: 'Next.js', text: language === 'ar' ? 'ÙˆØ§Ø¬Ù‡Ø© ÙˆÙŠØ¨ Ø­Ø¯ÙŠØ«Ø© ÙˆØ³Ø±ÙŠØ¹Ø©' : 'Interface web moderne et rapide' },
-    { icon: ShieldCheck, title: 'Firebase', text: language === 'ar' ? 'Ù…ØµØ§Ø¯Ù‚Ø© OTP ÙˆØ¨Ù†ÙŠØ© Ø¢Ù…Ù†Ø©' : 'Authentification OTP et backend sÃ©curisÃ©' },
-    { icon: Sparkles, title: 'TailwindCSS', text: language === 'ar' ? 'ØªØµÙ…ÙŠÙ… Ù…ØªØ¬Ø§ÙˆØ¨ ÙˆÙ…Ø±Ù†' : 'Design responsive et flexible' },
-    { icon: LineChart, title: 'Framer Motion', text: language === 'ar' ? 'Ø­Ø±ÙƒØ§Øª Ø³Ù„Ø³Ø© ÙˆØ¹ØµØ±ÙŠØ©' : 'Animations fluides et modernes' },
-    { icon: QrCode, title: 'QR System', text: language === 'ar' ? 'Ø¨Ø·Ø§Ù‚Ø§Øª Ø±Ù‚Ù…ÙŠØ© Ù„Ù„Ø­Ø¬Ø²' : 'Cartes digitales de rÃ©servation' },
-    { icon: MapPin, title: 'GPS Integration', text: language === 'ar' ? 'ØªØªØ¨Ø¹ Ø§Ù„Ø±Ø­Ù„Ø§Øª ÙˆØ§Ù„Ù…Ø³Ø§Ø±Ø§Øª' : 'Suivi trajets et itinÃ©raires' },
-    { icon: Cloud, title: 'Cloud Infrastructure', text: language === 'ar' ? 'Ù‚Ø§Ø¨Ù„ÙŠØ© ØªÙˆØ³Ø¹ Ø¹Ø§Ù„ÙŠØ©' : 'ScalabilitÃ© Ã©levÃ©e' },
-    { icon: Database, title: 'Analytics Layer', text: language === 'ar' ? 'Ù…Ø¤Ø´Ø±Ø§Øª ØªØ´ØºÙŠÙ„ÙŠØ© ÙˆÙ…Ø§Ù„ÙŠØ©' : 'Indicateurs opÃ©rationnels et financiers' },
+    { icon: Code2, title: 'Next.js', text: language === 'ar' ? 'واجهة ويب حديثة وسريعة' : 'Interface web moderne et rapide' },
+    { icon: ShieldCheck, title: 'Firebase', text: language === 'ar' ? 'مصادقة OTP وبنية آمنة' : 'Authentification OTP et backend sécurisé' },
+    { icon: Sparkles, title: 'TailwindCSS', text: language === 'ar' ? 'تصميم متجاوب ومرن' : 'Design responsive et flexible' },
+    { icon: LineChart, title: 'Framer Motion', text: language === 'ar' ? 'حركات سلسة وعصرية' : 'Animations fluides et modernes' },
+    { icon: QrCode, title: 'QR System', text: language === 'ar' ? 'بطاقات رقمية للحجز' : 'Cartes digitales de réservation' },
+    { icon: MapPin, title: 'GPS Integration', text: language === 'ar' ? 'تتبع الرحلات والمسارات' : 'Suivi trajets et itinéraires' },
+    { icon: Cloud, title: 'Cloud Infrastructure', text: language === 'ar' ? 'قابلية توسع عالية' : 'Scalabilité élevée' },
+    { icon: Database, title: 'Analytics Layer', text: language === 'ar' ? 'مؤشرات تشغيلية ومالية' : 'Indicateurs opérationnels et financiers' },
   ];
 
   const maxProjection = Math.max(...projections.map((item) => item.value));
@@ -118,17 +118,15 @@ export default function InvestorsPage() {
             </div>
             <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl">
               {language === 'ar'
-                ? 'UNIMOVE-DZ Ù…Ù†ØµØ© Ù†Ù‚Ù„ Ø¬Ø§Ù…Ø¹ÙŠ Ø°ÙƒÙŠØ© Ø¬Ø§Ù‡Ø²Ø© Ù„Ù„Ø¹Ø±Ø¶ Ø£Ù…Ø§Ù… Ø§Ù„Ø­Ø§Ø¶Ù†Ø§Øª ÙˆØ§Ù„Ù…Ø³ØªØ«Ù…Ø±ÙŠÙ†.'
-                : 'UNIMOVE-DZ, une plateforme de mobilitÃ© universitaire intelligente prÃªte pour incubateurs et investisseurs.'}
+                ? 'UNIMOVE-DZ منصة نقل جامعي ذكية جاهزة للعرض أمام الحاضنات والمستثمرين.'
+                : 'UNIMOVE-DZ, une plateforme de mobilité universitaire intelligente prête pour incubateurs et investisseurs.'}
             </h1>
             <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300 md:text-2xl">
               {language === 'ar'
-                ? 'Ù†Ù…ÙˆØ°Ø¬ SaaS Ø¬Ø§Ù…Ø¹ÙŠ ÙŠØ¬Ù…Ø¹ Ø§Ù„Ø­Ø¬Ø²ØŒ GPSØŒ QRØŒ Ø§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§ØªØŒ Ø§Ù„Ø¯ÙØ¹ØŒ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§ØªØŒ ÙˆØ§Ù„ØªÙˆØ³Ø¹ Ø§Ù„Ø§Ù‚ØªØµØ§Ø¯ÙŠ ÙÙŠ Ù…Ù†ØªØ¬ ÙˆØ§Ø­Ø¯ Ù‚Ø§Ø¨Ù„ Ù„Ù„Ø¹Ø±Ø¶ ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚.'
-                : 'Un modÃ¨le SaaS universitaire rÃ©unissant rÃ©servation, GPS, QR, abonnements, paiement, data et scalabilitÃ© Ã©conomique dans un produit dÃ©montrable.'}
+                ? 'نموذج SaaS جامعي يجمع الحجز، GPS، QR، الاشتراكات، الدفع، البيانات، والتوسع الاقتصادي في منتج واحد قابل للعرض والتطبيق.'
+                : 'Un modèle SaaS universitaire réunissant réservation, GPS, QR, abonnements, paiement, data et scalabilité économique dans un produit démontrable.'}
             </p>
-          </motion.div>
-
-          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {startupKpis.map((kpi, index) => (
               <motion.div key={kpi.label} initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + index * 0.08 }} whileHover={{ y: -6 }}>
                 <Card className="rounded-3xl border-white/10 bg-white/10 p-6 text-white shadow-2xl backdrop-blur-xl">
@@ -147,16 +145,17 @@ export default function InvestorsPage() {
               </motion.div>
             ))}
           </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-3xl">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'ProblÃ¨me marchÃ©' : 'ProblÃ¨me marchÃ©'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Problème marché' : 'Problème marché'}</h2>
           <p className="mt-4 text-lg leading-8 text-slate-300">
             {language === 'ar'
-              ? 'Ø§Ù„Ù†Ù‚Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠ ÙŠØ¹Ø§Ù†ÙŠ Ù…Ù† ØºÙŠØ§Ø¨ Ø§Ù„ØªÙ†Ø¸ÙŠÙ… Ø§Ù„Ø±Ù‚Ù…ÙŠØŒ ØªØ£Ø®Ø± Ø§Ù„Ø·Ù„Ø¨Ø©ØŒ Ø¶ØºØ· ÙŠÙˆÙ…ÙŠØŒ ÙˆØ¹Ø¯Ù… ÙˆØ¬ÙˆØ¯ Ù…Ù†ØµØ© Ù…ÙˆØ­Ø¯Ø© Ù„Ù„Ø­Ø¬Ø² ÙˆØ§Ù„ØªØªØ¨Ø¹.'
-              : 'Le transport universitaire souffre dâ€™un manque dâ€™organisation digitale, de retards Ã©tudiants, de stress quotidien et dâ€™absence de plateforme unifiÃ©e.'}
+              ? 'النقل الجامعي يعاني من غياب التنظيم الرقمي، تأخر الطلبة، ضغط يومي، وعدم وجود منصة موحدة للحجز والتتبع.'
+              : 'Le transport universitaire souffre d’un manque d’organisation digitale, de retards étudiants, de stress quotidien et d’absence de plateforme unifiée.'}
           </p>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
@@ -181,8 +180,8 @@ export default function InvestorsPage() {
               <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Solution UNIMOVE-DZ' : 'Solution UNIMOVE-DZ'}</h2>
               <p className="mt-5 text-lg font-semibold leading-8 text-slate-900/80">
                 {language === 'ar'
-                  ? 'Ø­Ù„ Ù…Ù†Ø¸Ù… ÙŠØ­ÙˆÙ„ Ø§Ù„Ù†Ù‚Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠ Ø¥Ù„Ù‰ Ø®Ø¯Ù…Ø© Ø°ÙƒÙŠØ© Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„Ù‚ÙŠØ§Ø³ØŒ Ø§Ù„Ø¯ÙØ¹ØŒ Ø§Ù„Ø­Ø¬Ø²ØŒ ÙˆØ§Ù„ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù…Ø³ØªÙ…Ø±.'
-                  : 'Une solution organisÃ©e qui transforme le transport universitaire en service intelligent, mesurable, payable, rÃ©servable et optimisable.'}
+                  ? 'حل منظم يحول النقل الجامعي إلى خدمة ذكية قابلة للقياس، الدفع، الحجز، والتحسين المستمر.'
+                  : 'Une solution organisée qui transforme le transport universitaire en service intelligent, mesurable, payable, réservable et optimisable.'}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -199,9 +198,9 @@ export default function InvestorsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'MarchÃ© cible' : 'MarchÃ© cible'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Marché cible' : 'Marché cible'}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
-            {language === 'ar' ? 'Ø´Ø±Ø§Ø¦Ø­ Ø§Ø³ØªØ®Ø¯Ø§Ù… ÙˆØ§Ø¶Ø­Ø© Ø¯Ø§Ø®Ù„ Ø§Ù„Ø¬Ø§Ù…Ø¹Ø© Ù…Ø¹ Ù‚Ø§Ø¨Ù„ÙŠØ© ØªÙˆØ³Ø¹ Ø¥Ù„Ù‰ Ø¹Ø¯Ø© Ø¬Ø§Ù…Ø¹Ø§Øª.' : 'Segments dâ€™usage clairs au sein de lâ€™universitÃ© avec potentiel multi-campus.'}
+            {language === 'ar' ? 'شرائح استخدام واضحة داخل الجامعة مع قابلية توسع إلى عدة جامعات.' : 'Segments d’usage clairs au sein de l’université avec potentiel multi-campus.'}
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -227,7 +226,7 @@ export default function InvestorsPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-black">{language === 'ar' ? 'Business opportunity' : 'Business opportunity'}</h2>
-                <p className="text-sm text-slate-300">{language === 'ar' ? 'Ù…ØµØ§Ø¯Ø± Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªÙˆØ³Ø¹' : 'Sources de revenus scalables'}</p>
+                <p className="text-sm text-slate-300">{language === 'ar' ? 'مصادر إيرادات قابلة للتوسع' : 'Sources de revenus scalables'}</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -252,7 +251,7 @@ export default function InvestorsPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-black">{language === 'ar' ? 'Projections revenus' : 'Projections revenus'}</h2>
-                <p className="text-sm text-slate-300">{language === 'ar' ? 'Croissance estimÃ©e sur 5 ans' : 'Croissance estimÃ©e sur 5 ans'}</p>
+                <p className="text-sm text-slate-300">{language === 'ar' ? 'Croissance estimée sur 5 ans' : 'Croissance estimée sur 5 ans'}</p>
               </div>
             </div>
             <div className="flex h-72 items-end gap-4">
@@ -274,7 +273,7 @@ export default function InvestorsPage() {
         <div className="mb-12 text-center">
           <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Roadmap startup' : 'Roadmap startup'}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
-            {language === 'ar' ? 'Ù…Ù† MVP Ø¥Ù„Ù‰ Ù…Ù†Ø¸ÙˆÙ…Ø© Smart Campus.' : 'Du MVP Ã  un Ã©cosystÃ¨me Smart Campus.'}
+            {language === 'ar' ? 'من MVP إلى منظومة Smart Campus.' : 'Du MVP à un écosystème Smart Campus.'}
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -295,7 +294,7 @@ export default function InvestorsPage() {
         <div className="mb-10 max-w-3xl">
           <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Technologies & architecture' : 'Technologies & architecture'}</h2>
           <p className="mt-4 text-lg leading-8 text-slate-300">
-            {language === 'ar' ? 'Stack moderne pour une plateforme SaaS dÃ©montrable et Ã©volutive.' : 'Stack moderne pour une plateforme SaaS dÃ©montrable et Ã©volutive.'}
+            {language === 'ar' ? 'Stack moderne pour une plateforme SaaS démontrable et évolutive.' : 'Stack moderne pour une plateforme SaaS démontrable et évolutive.'}
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -315,25 +314,25 @@ export default function InvestorsPage() {
         <Card className="rounded-3xl border-white/10 bg-gradient-to-br from-white to-emerald-50 p-8 text-slate-950 shadow-2xl md:p-12">
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
-              <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Ã‰quipe & crÃ©dibilitÃ© acadÃ©mique' : 'Ã‰quipe & crÃ©dibilitÃ© acadÃ©mique'}</h2>
+              <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Équipe & crédibilité académique' : 'Équipe & crédibilité académique'}</h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
-                {language === 'ar' ? 'Ù…Ø´Ø±ÙˆØ¹ Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠ Ù‚Ø§Ø¨Ù„ Ù„Ù„Ø¹Ø±Ø¶ ÙƒÙ…Ù†ØªØ¬ Startup.' : 'Un projet acadÃ©mique prÃ©sentable comme produit startup.'}
+                {language === 'ar' ? 'مشروع أكاديمي قابل للعرض كمنتج Startup.' : 'Un projet académique présentable comme produit startup.'}
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <Rocket className="mb-4 h-8 w-8 text-emerald-600" />
                 <h3 className="text-xl font-black">DR: BEHIRI ABDELKADER</h3>
-                <p className="mt-2 text-2xl font-black text-emerald-700">Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±</p>
+                <p className="mt-2 text-2xl font-black text-emerald-700">د بحيري عبد القادر</p>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <GraduationCap className="mb-4 h-8 w-8 text-emerald-600" />
-                <h3 className="text-xl font-black">{language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©: Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…' : 'Ã‰tudiante : Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…'}</h3>
+                <h3 className="text-xl font-black">{language === 'ar' ? 'الطالبة: مراح ابتسام' : 'Étudiante : مراح ابتسام'}</h3>
                 <div className="mt-3 space-y-2 text-sm font-bold text-slate-600">
-                  <p>{language === 'ar' ? 'Ù…Ø§Ø³ØªØ± 2 Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù…' : 'Master 2 Droit GÃ©nÃ©ral'}</p>
+                  <p>{language === 'ar' ? 'ماستر 2 قانون عام' : 'Master 2 Droit Général'}</p>
                   <p>2025/2026</p>
-                  <p>{language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}</p>
-                  <p>{language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³' : 'UniversitÃ© Djilali LiabÃ¨s'}</p>
+                  <p>{language === 'ar' ? 'كلية الحقوق والعلوم السياسية' : 'Faculté de Droit et Sciences Politiques'}</p>
+                  <p>{language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djilali Liabès'}</p>
                   <p>{language === 'ar' ? 'إشراف: د:رمدوم نورة' : 'Supervision : DR RAMDOUM NORA'}</p>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
@@ -28,96 +28,96 @@ export default function PricingPage() {
 
   const pricingPlans = [
     {
-      name: language === 'ar' ? 'ØªØ°ÙƒØ±Ø© Ø¨Ø³ÙŠØ·Ø©' : 'Ticket Simple',
+      name: language === 'ar' ? 'تذكرة بسيطة' : 'Ticket Simple',
       price: { min: 80, max: 150 },
-      period: language === 'ar' ? 'Ø±Ø­Ù„Ø© ÙˆØ§Ø­Ø¯Ø©' : 'Trajet unique',
+      period: language === 'ar' ? 'رحلة واحدة' : 'Trajet unique',
       popular: false,
       recommended: false,
       features: [
-        { icon: MapPin, name: language === 'ar' ? 'Ø±Ø­Ù„Ø© ÙˆØ§Ø­Ø¯Ø©' : 'Trajet unique', included: true },
+        { icon: MapPin, name: language === 'ar' ? 'رحلة واحدة' : 'Trajet unique', included: true },
         { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', included: true },
-        { icon: Shield, name: language === 'ar' ? 'Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©', included: true },
-        { icon: Clock, name: language === 'ar' ? 'Ø­Ø¬Ø² ÙÙˆØ±ÙŠ' : 'RÃ©servation instantanÃ©e', included: true },
-        { icon: Smartphone, name: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¨Ø§ÙŠÙ„' : 'Application mobile', included: true },
-        { icon: CreditCard, name: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible', included: true },
-        { icon: X, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯Ø©' : 'Trajets illimitÃ©s', included: false },
-        { icon: X, name: language === 'ar' ? 'Ø¯Ø¹Ù… VIP' : 'Support VIP', included: false },
+        { icon: Shield, name: language === 'ar' ? 'أمان' : 'Sécurité', included: true },
+        { icon: Clock, name: language === 'ar' ? 'حجز فوري' : 'Réservation instantanée', included: true },
+        { icon: Smartphone, name: language === 'ar' ? 'تطبيق موبايل' : 'Application mobile', included: true },
+        { icon: CreditCard, name: language === 'ar' ? 'دفع مرن' : 'Paiement flexible', included: true },
+        { icon: X, name: language === 'ar' ? 'رحلات غير محدودة' : 'Trajets illimités', included: false },
+        { icon: X, name: language === 'ar' ? 'دعم VIP' : 'Support VIP', included: false },
       ],
       color: 'from-slate-500 to-slate-600',
       borderColor: 'border-slate-300',
     },
     {
-      name: language === 'ar' ? 'Ø§Ø´ØªØ±Ø§Ùƒ ÙŠÙˆÙ…ÙŠ' : 'Abonnement Journalier',
+      name: language === 'ar' ? 'اشتراك يومي' : 'Abonnement Journalier',
       price: { min: 250, max: 250 },
-      period: language === 'ar' ? '24 Ø³Ø§Ø¹Ø©' : '24 heures',
+      period: language === 'ar' ? '24 ساعة' : '24 heures',
       popular: false,
       recommended: false,
       features: [
-        { icon: MapPin, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯Ø©' : 'Trajets illimitÃ©s', included: true },
+        { icon: MapPin, name: language === 'ar' ? 'رحلات غير محدودة' : 'Trajets illimités', included: true },
         { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', included: true },
-        { icon: Shield, name: language === 'ar' ? 'Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©', included: true },
-        { icon: Clock, name: language === 'ar' ? 'Ø­Ø¬Ø² ÙÙˆØ±ÙŠ' : 'RÃ©servation instantanÃ©e', included: true },
-        { icon: Smartphone, name: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¨Ø§ÙŠÙ„' : 'Application mobile', included: true },
-        { icon: CreditCard, name: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible', included: true },
-        { icon: X, name: language === 'ar' ? 'Ø¯Ø¹Ù… VIP' : 'Support VIP', included: false },
-        { icon: X, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages touristiques', included: false },
+        { icon: Shield, name: language === 'ar' ? 'أمان' : 'Sécurité', included: true },
+        { icon: Clock, name: language === 'ar' ? 'حجز فوري' : 'Réservation instantanée', included: true },
+        { icon: Smartphone, name: language === 'ar' ? 'تطبيق موبايل' : 'Application mobile', included: true },
+        { icon: CreditCard, name: language === 'ar' ? 'دفع مرن' : 'Paiement flexible', included: true },
+        { icon: X, name: language === 'ar' ? 'دعم VIP' : 'Support VIP', included: false },
+        { icon: X, name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', included: false },
       ],
       color: 'from-blue-500 to-blue-600',
       borderColor: 'border-blue-300',
     },
     {
-      name: language === 'ar' ? 'Ø§Ø´ØªØ±Ø§Ùƒ Ø£Ø³Ø¨ÙˆØ¹ÙŠ' : 'Abonnement Hebdomadaire',
+      name: language === 'ar' ? 'اشتراك أسبوعي' : 'Abonnement Hebdomadaire',
       price: { min: 1000, max: 1500 },
-      period: language === 'ar' ? '7 Ø£ÙŠØ§Ù…' : '7 jours',
+      period: language === 'ar' ? '7 أيام' : '7 jours',
       popular: true,
       recommended: false,
       features: [
-        { icon: MapPin, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯Ø©' : 'Trajets illimitÃ©s', included: true },
+        { icon: MapPin, name: language === 'ar' ? 'رحلات غير محدودة' : 'Trajets illimités', included: true },
         { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', included: true },
-        { icon: Shield, name: language === 'ar' ? 'Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©', included: true },
-        { icon: Clock, name: language === 'ar' ? 'Ø­Ø¬Ø² ÙÙˆØ±ÙŠ' : 'RÃ©servation instantanÃ©e', included: true },
-        { icon: Smartphone, name: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¨Ø§ÙŠÙ„' : 'Application mobile', included: true },
-        { icon: CreditCard, name: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible', included: true },
-        { icon: Star, name: language === 'ar' ? 'Ø¯Ø¹Ù… VIP' : 'Support VIP', included: true },
-        { icon: X, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages touristiques', included: false },
+        { icon: Shield, name: language === 'ar' ? 'أمان' : 'Sécurité', included: true },
+        { icon: Clock, name: language === 'ar' ? 'حجز فوري' : 'Réservation instantanée', included: true },
+        { icon: Smartphone, name: language === 'ar' ? 'تطبيق موبايل' : 'Application mobile', included: true },
+        { icon: CreditCard, name: language === 'ar' ? 'دفع مرن' : 'Paiement flexible', included: true },
+        { icon: Star, name: language === 'ar' ? 'دعم VIP' : 'Support VIP', included: true },
+        { icon: X, name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', included: false },
       ],
       color: 'from-emerald-500 to-emerald-600',
       borderColor: 'border-emerald-300',
     },
     {
-      name: language === 'ar' ? 'Ø§Ø´ØªØ±Ø§Ùƒ Ø´Ù‡Ø±ÙŠ Ø·Ø§Ù„Ø¨' : 'Abonnement Mensuel Ã‰tudiant',
+      name: language === 'ar' ? 'اشتراك شهري طالب' : 'Abonnement Mensuel Étudiant',
       price: { min: 3500, max: 5000 },
-      period: language === 'ar' ? '30 ÙŠÙˆÙ…' : '30 jours',
+      period: language === 'ar' ? '30 يوم' : '30 jours',
       popular: false,
       recommended: true,
       features: [
-        { icon: MapPin, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯Ø©' : 'Trajets illimitÃ©s', included: true },
+        { icon: MapPin, name: language === 'ar' ? 'رحلات غير محدودة' : 'Trajets illimités', included: true },
         { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', included: true },
-        { icon: Shield, name: language === 'ar' ? 'Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©', included: true },
-        { icon: Clock, name: language === 'ar' ? 'Ø­Ø¬Ø² ÙÙˆØ±ÙŠ' : 'RÃ©servation instantanÃ©e', included: true },
-        { icon: Smartphone, name: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¨Ø§ÙŠÙ„' : 'Application mobile', included: true },
-        { icon: CreditCard, name: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible', included: true },
-        { icon: Star, name: language === 'ar' ? 'Ø¯Ø¹Ù… VIP' : 'Support VIP', included: true },
-        { icon: Award, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages touristiques', included: true },
+        { icon: Shield, name: language === 'ar' ? 'أمان' : 'Sécurité', included: true },
+        { icon: Clock, name: language === 'ar' ? 'حجز فوري' : 'Réservation instantanée', included: true },
+        { icon: Smartphone, name: language === 'ar' ? 'تطبيق موبايل' : 'Application mobile', included: true },
+        { icon: CreditCard, name: language === 'ar' ? 'دفع مرن' : 'Paiement flexible', included: true },
+        { icon: Star, name: language === 'ar' ? 'دعم VIP' : 'Support VIP', included: true },
+        { icon: Award, name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', included: true },
       ],
       color: 'from-purple-500 to-purple-600',
       borderColor: 'border-purple-300',
     },
     {
-      name: language === 'ar' ? 'Ø£Ø³Ø§ØªØ°Ø© / Ø¥Ø¯Ø§Ø±ÙŠÙˆÙ†' : 'Enseignants / Administratifs',
+      name: language === 'ar' ? 'أساتذة / إداريون' : 'Enseignants / Administratifs',
       price: { min: 5000, max: 8000 },
-      period: language === 'ar' ? '30 ÙŠÙˆÙ…' : '30 jours',
+      period: language === 'ar' ? '30 يوم' : '30 jours',
       popular: false,
       recommended: false,
       features: [
-        { icon: MapPin, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª ØºÙŠØ± Ù…Ø­Ø¯ÙˆØ¯Ø©' : 'Trajets illimitÃ©s', included: true },
+        { icon: MapPin, name: language === 'ar' ? 'رحلات غير محدودة' : 'Trajets illimités', included: true },
         { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', included: true },
-        { icon: Shield, name: language === 'ar' ? 'Ø£Ù…Ø§Ù†' : 'SÃ©curitÃ©', included: true },
-        { icon: Clock, name: language === 'ar' ? 'Ø­Ø¬Ø² ÙÙˆØ±ÙŠ' : 'RÃ©servation instantanÃ©e', included: true },
-        { icon: Smartphone, name: language === 'ar' ? 'ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¨Ø§ÙŠÙ„' : 'Application mobile', included: true },
-        { icon: CreditCard, name: language === 'ar' ? 'Ø¯ÙØ¹ Ù…Ø±Ù†' : 'Paiement flexible', included: true },
-        { icon: Star, name: language === 'ar' ? 'Ø¯Ø¹Ù… VIP' : 'Support VIP', included: true },
-        { icon: Award, name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages touristiques', included: true },
+        { icon: Shield, name: language === 'ar' ? 'أمان' : 'Sécurité', included: true },
+        { icon: Clock, name: language === 'ar' ? 'حجز فوري' : 'Réservation instantanée', included: true },
+        { icon: Smartphone, name: language === 'ar' ? 'تطبيق موبايل' : 'Application mobile', included: true },
+        { icon: CreditCard, name: language === 'ar' ? 'دفع مرن' : 'Paiement flexible', included: true },
+        { icon: Star, name: language === 'ar' ? 'دعم VIP' : 'Support VIP', included: true },
+        { icon: Award, name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', included: true },
       ],
       color: 'from-orange-500 to-orange-600',
       borderColor: 'border-orange-300',
@@ -126,17 +126,17 @@ export default function PricingPage() {
 
   const additionalServices = [
     {
-      name: language === 'ar' ? 'Ù†Ù‚Ù„ Ø§Ù„Ù…Ø·Ø§Ø±' : 'Transport AÃ©roport',
+      name: language === 'ar' ? 'نقل المطار' : 'Transport Aéroport',
       price: { min: 800, max: 2500 },
       icon: Plane,
-      desc: language === 'ar' ? 'Ø®Ø¯Ù…Ø© VIP Ù…Ù† ÙˆØ¥Ù„Ù‰ Ø§Ù„Ù…Ø·Ø§Ø±' : 'Service VIP aller-retour aÃ©roport',
+      desc: language === 'ar' ? 'خدمة VIP من وإلى المطار' : 'Service VIP aller-retour aéroport',
       color: 'from-cyan-500 to-cyan-600',
     },
     {
-      name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages Touristiques',
+      name: language === 'ar' ? 'رحلات سياحية' : 'Voyages Touristiques',
       price: { min: 1500, max: 6000 },
       icon: MapPin,
-      desc: language === 'ar' ? 'Ø§Ø³ØªÙƒØ´Ø§Ù Ù…Ø¹Ø§Ù„Ù… Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±' : 'DÃ©couverte des sites touristiques',
+      desc: language === 'ar' ? 'استكشاف معالم الجزائر' : 'Découverte des sites touristiques',
       color: 'from-pink-500 to-pink-600',
     },
   ];
@@ -163,16 +163,16 @@ export default function PricingPage() {
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Sparkles className="w-5 h-5" />
               <span className="text-sm font-semibold">
-                {language === 'ar' ? 'Ø§Ù„ØªØ³Ø¹ÙŠØ±' : 'Tarification'}
+                {language === 'ar' ? 'التسعير' : 'Tarification'}
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-              {language === 'ar' ? 'Ø§Ø®ØªØ± Ø§Ù„Ø®Ø·Ø© Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø© Ù„Ùƒ' : 'Choisissez votre plan'}
+              {language === 'ar' ? 'اختر الخطة المناسبة لك' : 'Choisissez votre plan'}
             </h1>
             <p className="text-xl md:text-2xl font-medium text-emerald-100 max-w-3xl mx-auto">
               {language === 'ar' 
-                ? 'Ø£Ø³Ø¹Ø§Ø± ØªÙ†Ø§ÙØ³ÙŠØ© ØªÙ†Ø§Ø³Ø¨ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø·Ù„Ø§Ø¨ ÙˆØ§Ù„Ø£Ø³Ø§ØªØ°Ø©'
-                : 'Tarifs compÃ©titifs adaptÃ©s Ã  tous les Ã©tudiants et enseignants'}
+                ? 'أسعار تنافسية تناسب جميع الطلاب والأساتذة'
+                : 'Tarifs compétitifs adaptés à tous les étudiants et enseignants'}
             </p>
           </motion.div>
         </div>
@@ -193,7 +193,7 @@ export default function PricingPage() {
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                   <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                    {language === 'ar' ? 'Ø§Ù„Ø£ÙƒØ«Ø± Ø´Ø¹Ø¨ÙŠØ©' : 'Populaire'}
+                    {language === 'ar' ? 'الأكثر شعبية' : 'Populaire'}
                   </div>
                 </div>
               )}
@@ -201,7 +201,7 @@ export default function PricingPage() {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                   <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
                     <Crown className="w-4 h-4" />
-                    {language === 'ar' ? 'Ù…ÙˆØµÙ‰ Ø¨Ù‡' : 'RecommandÃ©'}
+                    {language === 'ar' ? 'موصى به' : 'Recommandé'}
                   </div>
                 </div>
               )}
@@ -253,7 +253,7 @@ export default function PricingPage() {
                 <Button
                   className={`w-full h-14 md:h-16 text-base md:text-lg font-bold bg-gradient-to-r ${plan.color} hover:opacity-90 text-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] rounded-2xl`}
                 >
-                  {language === 'ar' ? 'Ø§Ø´ØªØ±Ùƒ Ø§Ù„Ø¢Ù†' : 'S\'abonner maintenant'}
+                  {language === 'ar' ? 'اشترك الآن' : 'S\'abonner maintenant'}
                 </Button>
               </Card>
             </motion.div>
@@ -270,12 +270,12 @@ export default function PricingPage() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-            {language === 'ar' ? 'Ø®Ø¯Ù…Ø§Øª Ø¥Ø¶Ø§ÙÙŠØ©' : 'Services Additionnels'}
+            {language === 'ar' ? 'خدمات إضافية' : 'Services Additionnels'}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             {language === 'ar' 
-              ? 'Ø®Ø¯Ù…Ø§Øª Ø®Ø§ØµØ© Ù„ØªØ¬Ø±Ø¨Ø© ÙØ±ÙŠØ¯Ø©'
-              : 'Services spÃ©ciaux pour une expÃ©rience unique'}
+              ? 'خدمات خاصة لتجربة فريدة'
+              : 'Services spéciaux pour une expérience unique'}
           </p>
         </motion.div>
 
@@ -325,24 +325,24 @@ export default function PricingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-black mb-4 text-emerald-400">
-                {language === 'ar' ? 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠØ©' : 'Informations AcadÃ©miques du Projet'}
+                {language === 'ar' ? 'معلومات المشروع الأكاديمية' : 'Informations Académiques du Projet'}
               </h3>
               <div className="space-y-3 text-slate-300">
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©:' : 'Ã‰tudiante:'}</span> Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ù…Ø§Ø³ØªØ± 2:' : 'Master 2:'}</span> {language === 'ar' ? 'Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù…' : 'Droit GÃ©nÃ©ral'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©:' : 'AnnÃ©e Universitaire:'}</span> 2025/2026</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„ÙƒÙ„ÙŠØ©:' : 'FacultÃ©:'}</span> {language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©:' : 'UniversitÃ©:'}</span> {language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³' : 'UniversitÃ© Djilali LiabÃ¨s Sidi Bel AbbÃ¨s'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'الطالبة:' : 'Étudiante:'}</span> مراح ابتسام</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'ماستر 2:' : 'Master 2:'}</span> {language === 'ar' ? 'قانون عام' : 'Droit Général'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'السنة الجامعية:' : 'Année Universitaire:'}</span> 2025/2026</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'الكلية:' : 'Faculté:'}</span> {language === 'ar' ? 'كلية الحقوق والعلوم السياسية' : 'Faculté de Droit et Sciences Politiques'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'الجامعة:' : 'Université:'}</span> {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djilali Liabès Sidi Bel Abbès'}</p>
                 <p><span className="font-semibold text-white">{language === 'ar' ? 'الإشراف:' : 'Supervision:'}</span> {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}</p>
               </div>
             </div>
             <div>
               <h3 className="text-2xl font-black mb-4 text-emerald-400">
-                {language === 'ar' ? 'Ø§Ù„Ø¥Ù†ØªØ§Ø¬ ÙˆØ§Ù„ØªØ·ÙˆÙŠØ±' : 'Production et DÃ©veloppement'}
+                {language === 'ar' ? 'الإنتاج والتطوير' : 'Production et Développement'}
               </h3>
               <div className="space-y-3 text-slate-300">
                 <p><span className="font-semibold text-white">DR:</span> BEHIRI ABDELKADER</p>
-                <p className="text-2xl font-bold text-emerald-400">Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±</p>
+                <p className="text-2xl font-bold text-emerald-400">د بحيري عبد القادر</p>
               </div>
             </div>
           </div>
