@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ATTRIBUTIONS } from '@/constants';
@@ -28,14 +28,14 @@ export function Footer() {
               <div className="flex flex-col">
                 <span className="font-extrabold text-4xl text-white tracking-tight">UNIMOVE-DZ</span>
                 <span className="text-xl text-emerald-300 font-bold mt-2">
-                  {language === 'ar' ? 'الجامعة أقرب، أسهل، و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
+                  {language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø© Ø£Ù‚Ø±Ø¨ØŒ Ø£Ø³Ù‡Ù„ØŒ Ùˆ Ø£Ø£Ù…Ù†' : 'L\'universitÃ© plus proche, plus facile et plus sÃ»re'}
                 </span>
               </div>
             </div>
             <p className="text-slate-300 text-xl leading-[2.2] mb-8 font-medium">
               {language === 'ar'
-                ? 'نظام نقل جامعي ذكي للطلاب والأساتذة والموظفين'
-                : 'Système de transport universitaire intelligent pour étudiants, enseignants et personnel'}
+                ? 'Ù†Ø¸Ø§Ù… Ù†Ù‚Ù„ Ø¬Ø§Ù…Ø¹ÙŠ Ø°ÙƒÙŠ Ù„Ù„Ø·Ù„Ø§Ø¨ ÙˆØ§Ù„Ø£Ø³Ø§ØªØ°Ø© ÙˆØ§Ù„Ù…ÙˆØ¸ÙÙŠÙ†'
+                : 'SystÃ¨me de transport universitaire intelligent pour Ã©tudiants, enseignants et personnel'}
             </p>
             <div className="flex items-center gap-4 text-xl text-emerald-300 mb-8">
               <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
@@ -54,32 +54,32 @@ export function Footer() {
           {/* Quick Links */}
           <div>
             <h4 className="font-black text-2xl text-white mb-8">
-              {language === 'ar' ? 'روابط سريعة' : 'Liens rapides'}
+              {language === 'ar' ? 'Ø±ÙˆØ§Ø¨Ø· Ø³Ø±ÙŠØ¹Ø©' : 'Liens rapides'}
             </h4>
             <ul className="space-y-6">
               <li>
                 <Link href="/" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'الرئيسية' : 'Accueil'}
+                  {language === 'ar' ? 'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©' : 'Accueil'}
                 </Link>
               </li>
               <li>
                 <Link href="#about" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'من نحن' : 'À propos'}
+                  {language === 'ar' ? 'Ù…Ù† Ù†Ø­Ù†' : 'Ã€ propos'}
                 </Link>
               </li>
               <li>
                 <Link href="#services" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'الخدمات' : 'Services'}
+                  {language === 'ar' ? 'Ø§Ù„Ø®Ø¯Ù…Ø§Øª' : 'Services'}
                 </Link>
               </li>
               <li>
                 <Link href="#booking" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'الحجز' : 'Réservation'}
+                  {language === 'ar' ? 'Ø§Ù„Ø­Ø¬Ø²' : 'RÃ©servation'}
                 </Link>
               </li>
               <li>
                 <Link href="/demo" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-bold">
-                  {language === 'ar' ? 'عرض توضيحي' : 'Démo'}
+                  {language === 'ar' ? 'Ø¹Ø±Ø¶ ØªÙˆØ¶ÙŠØ­ÙŠ' : 'DÃ©mo'}
                 </Link>
               </li>
             </ul>
@@ -88,27 +88,27 @@ export function Footer() {
           {/* Legal */}
           <div>
             <h4 className="font-black text-2xl text-white mb-8">
-              {language === 'ar' ? 'قانوني' : 'Légal'}
+              {language === 'ar' ? 'Ù‚Ø§Ù†ÙˆÙ†ÙŠ' : 'LÃ©gal'}
             </h4>
             <ul className="space-y-6">
               <li>
                 <Link href="/terms" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'الشروط والأحكام' : 'Conditions d\'utilisation'}
+                  {language === 'ar' ? 'Ø§Ù„Ø´Ø±ÙˆØ· ÙˆØ§Ù„Ø£Ø­ÙƒØ§Ù…' : 'Conditions d\'utilisation'}
                 </Link>
               </li>
               <li>
                 <Link href="/privacy" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'سياسة الخصوصية' : 'Politique de confidentialité'}
+                  {language === 'ar' ? 'Ø³ÙŠØ§Ø³Ø© Ø§Ù„Ø®ØµÙˆØµÙŠØ©' : 'Politique de confidentialitÃ©'}
                 </Link>
               </li>
               <li>
                 <Link href="/help" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'المساعدة' : 'Aide'}
+                  {language === 'ar' ? 'Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯Ø©' : 'Aide'}
                 </Link>
               </li>
               <li>
                 <Link href="/credits" className="text-slate-300 hover:text-emerald-300 transition-colors text-xl font-medium">
-                  {language === 'ar' ? 'الاعتمادات' : 'Crédits'}
+                  {language === 'ar' ? 'Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯Ø§Øª' : 'CrÃ©dits'}
                 </Link>
               </li>
             </ul>
@@ -117,26 +117,26 @@ export function Footer() {
           {/* Academic Attribution */}
           <div>
             <h4 className="font-black text-2xl text-white mb-8">
-              {language === 'ar' ? 'المشروع الأكاديمي' : 'Projet académique'}
+              {language === 'ar' ? 'Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠ' : 'Projet acadÃ©mique'}
             </h4>
             <ul className="space-y-6">
               <li className="text-slate-300">
                 <span className="font-black text-white block mb-2 text-xl">
-                  {language === 'ar' ? 'الطالبة' : 'Étudiante'}
+                  {language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©' : 'Ã‰tudiante'}
                 </span>
                 <span className="text-xl font-medium">{ATTRIBUTIONS.academic.nameAr}</span>
               </li>
               <li className="text-slate-300">
                 <span className="font-black text-white block mb-2 text-xl">
-                  {language === 'ar' ? 'التخصص' : 'Spécialité'}
+                  {language === 'ar' ? 'Ø§Ù„ØªØ®ØµØµ' : 'SpÃ©cialitÃ©'}
                 </span>
                 <span className="text-xl font-medium">{ATTRIBUTIONS.academic.title}</span>
               </li>
               <li className="text-slate-300">
                 <span className="font-black text-white block mb-2 text-xl">
-                  {language === 'ar' ? 'الإشراف' : 'Supervision'}
+                  {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
                 </span>
-                <span className="text-xl font-medium">{language === 'ar' ? 'الدكتورة رمدوم نورة' : 'Dr. Ramdum Noura'}</span>
+                <span className="text-xl font-medium">{language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}</span>
               </li>
             </ul>
           </div>
@@ -163,12 +163,12 @@ export function Footer() {
           {/* Copyright */}
           <div className="text-center md:text-right">
             <p className="text-slate-300 text-xl font-medium">
-              © 2025/2026 UNIMOVE-DZ. {language === 'ar' ? 'جميع الحقوق محفوظة' : 'Tous droits réservés'}
+              Â© 2025/2026 UNIMOVE-DZ. {language === 'ar' ? 'Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©' : 'Tous droits rÃ©servÃ©s'}
             </p>
             <p className="text-slate-400 text-lg mt-3 font-medium">
               {language === 'ar'
-                ? 'مشروع تخرج ماستر 2 في القانون والعلوم السياسية'
-                : 'Projet de fin d\'études en Droit et Sciences Politiques'}
+                ? 'Ù…Ø´Ø±ÙˆØ¹ ØªØ®Ø±Ø¬ Ù…Ø§Ø³ØªØ± 2 ÙÙŠ Ø§Ù„Ù‚Ø§Ù†ÙˆÙ† ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©'
+                : 'Projet de fin d\'Ã©tudes en Droit et Sciences Politiques'}
             </p>
           </div>
         </div>

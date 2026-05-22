@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
@@ -29,7 +29,7 @@ export default function FinancialPlanPage() {
 
   const kpis = [
     { 
-      name: language === 'ar' ? 'الإيرادات السنوية' : 'Revenus Annuels', 
+      name: language === 'ar' ? 'Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø§Ù„Ø³Ù†ÙˆÙŠØ©' : 'Revenus Annuels', 
       value: '12,500,000 DA', 
       change: '+25%', 
       positive: true,
@@ -37,7 +37,7 @@ export default function FinancialPlanPage() {
       color: 'from-emerald-500 to-emerald-600'
     },
     { 
-      name: language === 'ar' ? 'التدفق النقدي' : 'Cash Flow', 
+      name: language === 'ar' ? 'Ø§Ù„ØªØ¯ÙÙ‚ Ø§Ù„Ù†Ù‚Ø¯ÙŠ' : 'Cash Flow', 
       value: '3,200,000 DA', 
       change: '+18%', 
       positive: true,
@@ -45,7 +45,7 @@ export default function FinancialPlanPage() {
       color: 'from-blue-500 to-blue-600'
     },
     { 
-      name: language === 'ar' ? 'إجمالي التكاليف' : 'Coûts Totaux', 
+      name: language === 'ar' ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„ØªÙƒØ§Ù„ÙŠÙ' : 'CoÃ»ts Totaux', 
       value: '8,500,000 DA', 
       change: '-12%', 
       positive: true,
@@ -53,7 +53,7 @@ export default function FinancialPlanPage() {
       color: 'from-orange-500 to-orange-600'
     },
     { 
-      name: language === 'ar' ? 'صافي الأرباح' : 'Bénéfices Nets', 
+      name: language === 'ar' ? 'ØµØ§ÙÙŠ Ø§Ù„Ø£Ø±Ø¨Ø§Ø­' : 'BÃ©nÃ©fices Nets', 
       value: '4,000,000 DA', 
       change: '+32%', 
       positive: true,
@@ -63,94 +63,94 @@ export default function FinancialPlanPage() {
   ];
 
   const revenueProjections = [
-    { month: language === 'ar' ? 'يناير' : 'Jan', value: 800000 },
-    { month: language === 'ar' ? 'فبراير' : 'Fév', value: 950000 },
-    { month: language === 'ar' ? 'مارس' : 'Mar', value: 1100000 },
-    { month: language === 'ar' ? 'أبريل' : 'Avr', value: 1050000 },
-    { month: language === 'ar' ? 'مايو' : 'Mai', value: 1200000 },
-    { month: language === 'ar' ? 'يونيو' : 'Juin', value: 1350000 },
-    { month: language === 'ar' ? 'يوليو' : 'Juil', value: 1250000 },
-    { month: language === 'ar' ? 'أغسطس' : 'Août', value: 1150000 },
-    { month: language === 'ar' ? 'سبتمبر' : 'Sep', value: 1300000 },
-    { month: language === 'ar' ? 'أكتوبر' : 'Oct', value: 1450000 },
-    { month: language === 'ar' ? 'نوفمبر' : 'Nov', value: 1400000 },
-    { month: language === 'ar' ? 'ديسمبر' : 'Déc', value: 1500000 },
+    { month: language === 'ar' ? 'ÙŠÙ†Ø§ÙŠØ±' : 'Jan', value: 800000 },
+    { month: language === 'ar' ? 'ÙØ¨Ø±Ø§ÙŠØ±' : 'FÃ©v', value: 950000 },
+    { month: language === 'ar' ? 'Ù…Ø§Ø±Ø³' : 'Mar', value: 1100000 },
+    { month: language === 'ar' ? 'Ø£Ø¨Ø±ÙŠÙ„' : 'Avr', value: 1050000 },
+    { month: language === 'ar' ? 'Ù…Ø§ÙŠÙˆ' : 'Mai', value: 1200000 },
+    { month: language === 'ar' ? 'ÙŠÙˆÙ†ÙŠÙˆ' : 'Juin', value: 1350000 },
+    { month: language === 'ar' ? 'ÙŠÙˆÙ„ÙŠÙˆ' : 'Juil', value: 1250000 },
+    { month: language === 'ar' ? 'Ø£ØºØ³Ø·Ø³' : 'AoÃ»t', value: 1150000 },
+    { month: language === 'ar' ? 'Ø³Ø¨ØªÙ…Ø¨Ø±' : 'Sep', value: 1300000 },
+    { month: language === 'ar' ? 'Ø£ÙƒØªÙˆØ¨Ø±' : 'Oct', value: 1450000 },
+    { month: language === 'ar' ? 'Ù†ÙˆÙÙ…Ø¨Ø±' : 'Nov', value: 1400000 },
+    { month: language === 'ar' ? 'Ø¯ÙŠØ³Ù…Ø¨Ø±' : 'DÃ©c', value: 1500000 },
   ];
 
   const costBreakdown = [
-    { name: language === 'ar' ? 'تطوير التطبيق' : 'Développement application', value: 18, color: 'bg-emerald-500' },
-    { name: language === 'ar' ? 'استضافة السحابة' : 'Hébergement cloud', value: 8, color: 'bg-blue-500' },
+    { name: language === 'ar' ? 'ØªØ·ÙˆÙŠØ± Ø§Ù„ØªØ·Ø¨ÙŠÙ‚' : 'DÃ©veloppement application', value: 18, color: 'bg-emerald-500' },
+    { name: language === 'ar' ? 'Ø§Ø³ØªØ¶Ø§ÙØ© Ø§Ù„Ø³Ø­Ø§Ø¨Ø©' : 'HÃ©bergement cloud', value: 8, color: 'bg-blue-500' },
     { name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', value: 7, color: 'bg-cyan-500' },
-    { name: language === 'ar' ? 'الوقود' : 'Carburant', value: 22, color: 'bg-orange-500' },
-    { name: language === 'ar' ? 'صيانة المركبات' : 'Maintenance véhicules', value: 12, color: 'bg-purple-500' },
-    { name: language === 'ar' ? 'الرواتب' : 'Salaires', value: 16, color: 'bg-pink-500' },
-    { name: language === 'ar' ? 'التسويق' : 'Marketing', value: 7, color: 'bg-lime-500' },
-    { name: language === 'ar' ? 'التأمينات' : 'Assurances', value: 4, color: 'bg-indigo-500' },
-    { name: language === 'ar' ? 'المكتب' : 'Bureau', value: 3, color: 'bg-slate-500' },
-    { name: language === 'ar' ? 'الضرائب' : 'Taxes', value: 3, color: 'bg-red-500' },
+    { name: language === 'ar' ? 'Ø§Ù„ÙˆÙ‚ÙˆØ¯' : 'Carburant', value: 22, color: 'bg-orange-500' },
+    { name: language === 'ar' ? 'ØµÙŠØ§Ù†Ø© Ø§Ù„Ù…Ø±ÙƒØ¨Ø§Øª' : 'Maintenance vÃ©hicules', value: 12, color: 'bg-purple-500' },
+    { name: language === 'ar' ? 'Ø§Ù„Ø±ÙˆØ§ØªØ¨' : 'Salaires', value: 16, color: 'bg-pink-500' },
+    { name: language === 'ar' ? 'Ø§Ù„ØªØ³ÙˆÙŠÙ‚' : 'Marketing', value: 7, color: 'bg-lime-500' },
+    { name: language === 'ar' ? 'Ø§Ù„ØªØ£Ù…ÙŠÙ†Ø§Øª' : 'Assurances', value: 4, color: 'bg-indigo-500' },
+    { name: language === 'ar' ? 'Ø§Ù„Ù…ÙƒØªØ¨' : 'Bureau', value: 3, color: 'bg-slate-500' },
+    { name: language === 'ar' ? 'Ø§Ù„Ø¶Ø±Ø§Ø¦Ø¨' : 'Taxes', value: 3, color: 'bg-red-500' },
   ];
 
   const revenueStreams = [
-    { name: language === 'ar' ? 'حجوزات مباشرة' : 'Réservations directes', value: '30%', amount: '3.75M DA' },
-    { name: language === 'ar' ? 'الاشتراكات' : 'Abonnements', value: '45%', amount: '5.62M DA' },
-    { name: language === 'ar' ? 'إعلانات التطبيق' : 'Publicité application', value: '5%', amount: '625K DA' },
-    { name: language === 'ar' ? 'عمولات المستثمرين' : 'Commissions investisseurs', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'نقل الأحداث' : 'Transport événements', value: '6%', amount: '750K DA' },
-    { name: language === 'ar' ? 'نقل المطار' : 'Transport aéroport', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: '2%', amount: '250K DA' },
+    { name: language === 'ar' ? 'Ø­Ø¬ÙˆØ²Ø§Øª Ù…Ø¨Ø§Ø´Ø±Ø©' : 'RÃ©servations directes', value: '30%', amount: '3.75M DA' },
+    { name: language === 'ar' ? 'Ø§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª' : 'Abonnements', value: '45%', amount: '5.62M DA' },
+    { name: language === 'ar' ? 'Ø¥Ø¹Ù„Ø§Ù†Ø§Øª Ø§Ù„ØªØ·Ø¨ÙŠÙ‚' : 'PublicitÃ© application', value: '5%', amount: '625K DA' },
+    { name: language === 'ar' ? 'Ø¹Ù…ÙˆÙ„Ø§Øª Ø§Ù„Ù…Ø³ØªØ«Ù…Ø±ÙŠÙ†' : 'Commissions investisseurs', value: '4%', amount: '500K DA' },
+    { name: language === 'ar' ? 'Ù†Ù‚Ù„ Ø§Ù„Ø£Ø­Ø¯Ø§Ø«' : 'Transport Ã©vÃ©nements', value: '6%', amount: '750K DA' },
+    { name: language === 'ar' ? 'Ù†Ù‚Ù„ Ø§Ù„Ù…Ø·Ø§Ø±' : 'Transport aÃ©roport', value: '4%', amount: '500K DA' },
+    { name: language === 'ar' ? 'Ø±Ø­Ù„Ø§Øª Ø³ÙŠØ§Ø­ÙŠØ©' : 'Voyages touristiques', value: '4%', amount: '500K DA' },
+    { name: language === 'ar' ? 'Ø´Ø±Ø§ÙƒØ§Øª Ø§Ù„Ø¬Ø§Ù…Ø¹Ø§Øª' : 'Partenariats universitÃ©s', value: '2%', amount: '250K DA' },
   ];
 
   const growthMetrics = [
     { 
-      name: language === 'ar' ? 'نمو المستخدمين' : 'Croissance Utilisateurs', 
+      name: language === 'ar' ? 'Ù†Ù…Ùˆ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†' : 'Croissance Utilisateurs', 
       value: '45%', 
       icon: Users,
-      desc: language === 'ar' ? 'زيادة شهرية' : 'Augmentation mensuelle'
+      desc: language === 'ar' ? 'Ø²ÙŠØ§Ø¯Ø© Ø´Ù‡Ø±ÙŠØ©' : 'Augmentation mensuelle'
     },
     { 
-      name: language === 'ar' ? 'نمو الرحلات' : 'Croissance Trajets', 
+      name: language === 'ar' ? 'Ù†Ù…Ùˆ Ø§Ù„Ø±Ø­Ù„Ø§Øª' : 'Croissance Trajets', 
       value: '38%', 
       icon: Car,
-      desc: language === 'ar' ? 'زيادة شهرية' : 'Augmentation mensuelle'
+      desc: language === 'ar' ? 'Ø²ÙŠØ§Ø¯Ø© Ø´Ù‡Ø±ÙŠØ©' : 'Augmentation mensuelle'
     },
     { 
-      name: language === 'ar' ? 'معدل الاحتفاظ' : 'Taux de Rétention', 
+      name: language === 'ar' ? 'Ù…Ø¹Ø¯Ù„ Ø§Ù„Ø§Ø­ØªÙØ§Ø¸' : 'Taux de RÃ©tention', 
       value: '85%', 
       icon: Shield,
-      desc: language === 'ar' ? 'معدل عالٍ' : 'Taux élevé'
+      desc: language === 'ar' ? 'Ù…Ø¹Ø¯Ù„ Ø¹Ø§Ù„Ù' : 'Taux Ã©levÃ©'
     },
     { 
-      name: language === 'ar' ? 'الوقت المستجيب' : 'Temps de Réponse', 
+      name: language === 'ar' ? 'Ø§Ù„ÙˆÙ‚Øª Ø§Ù„Ù…Ø³ØªØ¬ÙŠØ¨' : 'Temps de RÃ©ponse', 
       value: '2.5s', 
       icon: Zap,
-      desc: language === 'ar' ? 'متوسط التطبيق' : 'Moyenne application'
+      desc: language === 'ar' ? 'Ù…ØªÙˆØ³Ø· Ø§Ù„ØªØ·Ø¨ÙŠÙ‚' : 'Moyenne application'
     },
   ];
 
   const quarterlyGoals = [
     { 
-      quarter: language === 'ar' ? 'الربع الأول' : 'Q1 2025', 
-      target: language === 'ar' ? 'إطلاق النسخة التجريبية' : 'Lancement Beta',
-      status: language === 'ar' ? 'مكتمل' : 'Complété',
+      quarter: language === 'ar' ? 'Ø§Ù„Ø±Ø¨Ø¹ Ø§Ù„Ø£ÙˆÙ„' : 'Q1 2025', 
+      target: language === 'ar' ? 'Ø¥Ø·Ù„Ø§Ù‚ Ø§Ù„Ù†Ø³Ø®Ø© Ø§Ù„ØªØ¬Ø±ÙŠØ¨ÙŠØ©' : 'Lancement Beta',
+      status: language === 'ar' ? 'Ù…ÙƒØªÙ…Ù„' : 'ComplÃ©tÃ©',
       completed: true
     },
     { 
-      quarter: language === 'ar' ? 'الربع الثاني' : 'Q2 2025', 
-      target: language === 'ar' ? 'توسع إلى 3 جامعات' : 'Expansion 3 universités',
-      status: language === 'ar' ? 'قيد التقدم' : 'En cours',
+      quarter: language === 'ar' ? 'Ø§Ù„Ø±Ø¨Ø¹ Ø§Ù„Ø«Ø§Ù†ÙŠ' : 'Q2 2025', 
+      target: language === 'ar' ? 'ØªÙˆØ³Ø¹ Ø¥Ù„Ù‰ 3 Ø¬Ø§Ù…Ø¹Ø§Øª' : 'Expansion 3 universitÃ©s',
+      status: language === 'ar' ? 'Ù‚ÙŠØ¯ Ø§Ù„ØªÙ‚Ø¯Ù…' : 'En cours',
       completed: false
     },
     { 
-      quarter: language === 'ar' ? 'الربع الثالث' : 'Q3 2025', 
-      target: language === 'ar' ? 'إطلاق الإصدار الكامل' : 'Lancement complet',
-      status: language === 'ar' ? 'قادم' : 'À venir',
+      quarter: language === 'ar' ? 'Ø§Ù„Ø±Ø¨Ø¹ Ø§Ù„Ø«Ø§Ù„Ø«' : 'Q3 2025', 
+      target: language === 'ar' ? 'Ø¥Ø·Ù„Ø§Ù‚ Ø§Ù„Ø¥ØµØ¯Ø§Ø± Ø§Ù„ÙƒØ§Ù…Ù„' : 'Lancement complet',
+      status: language === 'ar' ? 'Ù‚Ø§Ø¯Ù…' : 'Ã€ venir',
       completed: false
     },
     { 
-      quarter: language === 'ar' ? 'الربع الرابع' : 'Q4 2025', 
-      target: language === 'ar' ? 'الربحية' : 'Rentabilité',
-      status: language === 'ar' ? 'قادم' : 'À venir',
+      quarter: language === 'ar' ? 'Ø§Ù„Ø±Ø¨Ø¹ Ø§Ù„Ø±Ø§Ø¨Ø¹' : 'Q4 2025', 
+      target: language === 'ar' ? 'Ø§Ù„Ø±Ø¨Ø­ÙŠØ©' : 'RentabilitÃ©',
+      status: language === 'ar' ? 'Ù‚Ø§Ø¯Ù…' : 'Ã€ venir',
       completed: false
     },
   ];
@@ -179,16 +179,16 @@ export default function FinancialPlanPage() {
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Sparkles className="w-5 h-5" />
               <span className="text-sm font-semibold">
-                {language === 'ar' ? 'الخطة المالية' : 'Plan Financier'}
+                {language === 'ar' ? 'Ø§Ù„Ø®Ø·Ø© Ø§Ù„Ù…Ø§Ù„ÙŠØ©' : 'Plan Financier'}
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-              {language === 'ar' ? 'لوحة التحكم المالية' : 'Tableau de Bord Financier'}
+              {language === 'ar' ? 'Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ… Ø§Ù„Ù…Ø§Ù„ÙŠØ©' : 'Tableau de Bord Financier'}
             </h1>
             <p className="text-xl md:text-2xl font-medium text-emerald-100 max-w-3xl mx-auto">
               {language === 'ar' 
-                ? 'نظرة شاملة على الأداء المالي والتوقعات المستقبلية'
-                : 'Vue complète de la performance financière et des projections futures'}
+                ? 'Ù†Ø¸Ø±Ø© Ø´Ø§Ù…Ù„Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø¯Ø§Ø¡ Ø§Ù„Ù…Ø§Ù„ÙŠ ÙˆØ§Ù„ØªÙˆÙ‚Ø¹Ø§Øª Ø§Ù„Ù…Ø³ØªÙ‚Ø¨Ù„ÙŠØ©'
+                : 'Vue complÃ¨te de la performance financiÃ¨re et des projections futures'}
             </p>
           </motion.div>
         </div>
@@ -234,10 +234,10 @@ export default function FinancialPlanPage() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
-                  {language === 'ar' ? 'توقعات الإيرادات' : 'Projections Revenus'}
+                  {language === 'ar' ? 'ØªÙˆÙ‚Ø¹Ø§Øª Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª' : 'Projections Revenus'}
                 </h2>
                 <p className="text-gray-600">
-                  {language === 'ar' ? 'الإيرادات الشهرية المتوقعة' : 'Revenus mensuels projetés'}
+                  {language === 'ar' ? 'Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ© Ø§Ù„Ù…ØªÙˆÙ‚Ø¹Ø©' : 'Revenus mensuels projetÃ©s'}
                 </p>
               </div>
               <div className="p-3 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl">
@@ -282,10 +282,10 @@ export default function FinancialPlanPage() {
               </div>
               <div>
                 <h2 className="text-2xl md:text-3xl font-black text-gray-900">
-                  {language === 'ar' ? 'مصادر الإيرادات' : 'Sources de revenus'}
+                  {language === 'ar' ? 'Ù…ØµØ§Ø¯Ø± Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª' : 'Sources de revenus'}
                 </h2>
                 <p className="text-gray-600">
-                  {language === 'ar' ? 'تنويع الإيرادات حسب خطة الأعمال' : 'Diversification des revenus selon le business plan'}
+                  {language === 'ar' ? 'ØªÙ†ÙˆÙŠØ¹ Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø­Ø³Ø¨ Ø®Ø·Ø© Ø§Ù„Ø£Ø¹Ù…Ø§Ù„' : 'Diversification des revenus selon le business plan'}
                 </p>
               </div>
             </div>
@@ -328,10 +328,10 @@ export default function FinancialPlanPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl md:text-3xl font-black text-gray-900">
-                    {language === 'ar' ? 'توزيع التكاليف' : 'Répartition Coûts'}
+                    {language === 'ar' ? 'ØªÙˆØ²ÙŠØ¹ Ø§Ù„ØªÙƒØ§Ù„ÙŠÙ' : 'RÃ©partition CoÃ»ts'}
                   </h2>
                   <p className="text-gray-600">
-                    {language === 'ar' ? 'تحليل هيكل التكاليف' : 'Analyse structure coûts'}
+                    {language === 'ar' ? 'ØªØ­Ù„ÙŠÙ„ Ù‡ÙŠÙƒÙ„ Ø§Ù„ØªÙƒØ§Ù„ÙŠÙ' : 'Analyse structure coÃ»ts'}
                   </p>
                 </div>
               </div>
@@ -375,10 +375,10 @@ export default function FinancialPlanPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl md:text-3xl font-black text-gray-900">
-                    {language === 'ar' ? 'مقاييس النمو' : 'Métriques Croissance'}
+                    {language === 'ar' ? 'Ù…Ù‚Ø§ÙŠÙŠØ³ Ø§Ù„Ù†Ù…Ùˆ' : 'MÃ©triques Croissance'}
                   </h2>
                   <p className="text-gray-600">
-                    {language === 'ar' ? 'مؤشرات الأداء الرئيسية' : 'Indicateurs clés performance'}
+                    {language === 'ar' ? 'Ù…Ø¤Ø´Ø±Ø§Øª Ø§Ù„Ø£Ø¯Ø§Ø¡ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©' : 'Indicateurs clÃ©s performance'}
                   </p>
                 </div>
               </div>
@@ -419,10 +419,10 @@ export default function FinancialPlanPage() {
               </div>
               <div>
                 <h2 className="text-2xl md:text-3xl font-black text-gray-900">
-                  {language === 'ar' ? 'الأهداف الفصلية' : 'Objectifs Trimestriels'}
+                  {language === 'ar' ? 'Ø§Ù„Ø£Ù‡Ø¯Ø§Ù Ø§Ù„ÙØµÙ„ÙŠØ©' : 'Objectifs Trimestriels'}
                 </h2>
                 <p className="text-gray-600">
-                  {language === 'ar' ? 'خارطة الطريق المالية' : 'Feuille de route financière'}
+                  {language === 'ar' ? 'Ø®Ø§Ø±Ø·Ø© Ø§Ù„Ø·Ø±ÙŠÙ‚ Ø§Ù„Ù…Ø§Ù„ÙŠØ©' : 'Feuille de route financiÃ¨re'}
                 </p>
               </div>
             </div>
@@ -465,24 +465,24 @@ export default function FinancialPlanPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-black mb-4 text-emerald-400">
-                {language === 'ar' ? 'معلومات المشروع الأكاديمية' : 'Informations Académiques du Projet'}
+                {language === 'ar' ? 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠØ©' : 'Informations AcadÃ©miques du Projet'}
               </h3>
               <div className="space-y-3 text-slate-300">
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'الطالبة:' : 'Étudiante:'}</span> مراح ابتسام</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'ماستر 2:' : 'Master 2:'}</span> {language === 'ar' ? 'قانون عام' : 'Droit Général'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'السنة الجامعية:' : 'Année Universitaire:'}</span> 2025/2026</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'الكلية:' : 'Faculté:'}</span> {language === 'ar' ? 'كلية الحقوق والعلوم السياسية' : 'Faculté de Droit et Sciences Politiques'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'الجامعة:' : 'Université:'}</span> {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djilali Liabès Sidi Bel Abbès'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'الإشراف:' : 'Supervision:'}</span> {language === 'ar' ? 'الدكتورة رمدوم نورة' : 'Dr. RMDOM Noura'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©:' : 'Ã‰tudiante:'}</span> Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ù…Ø§Ø³ØªØ± 2:' : 'Master 2:'}</span> {language === 'ar' ? 'Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù…' : 'Droit GÃ©nÃ©ral'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©:' : 'AnnÃ©e Universitaire:'}</span> 2025/2026</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„ÙƒÙ„ÙŠØ©:' : 'FacultÃ©:'}</span> {language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©:' : 'UniversitÃ©:'}</span> {language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³' : 'UniversitÃ© Djilali LiabÃ¨s Sidi Bel AbbÃ¨s'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù:' : 'Supervision:'}</span> {language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}</p>
               </div>
             </div>
             <div>
               <h3 className="text-2xl font-black mb-4 text-emerald-400">
-                {language === 'ar' ? 'الإنتاج والتطوير' : 'Production et Développement'}
+                {language === 'ar' ? 'Ø§Ù„Ø¥Ù†ØªØ§Ø¬ ÙˆØ§Ù„ØªØ·ÙˆÙŠØ±' : 'Production et DÃ©veloppement'}
               </h3>
               <div className="space-y-3 text-slate-300">
                 <p><span className="font-semibold text-white">DR:</span> BEHIRI ABDELKADER</p>
-                <p className="text-2xl font-bold text-emerald-400">د بحيري عبد القادر</p>
+                <p className="text-2xl font-bold text-emerald-400">Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±</p>
               </div>
             </div>
           </div>

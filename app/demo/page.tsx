@@ -100,7 +100,7 @@ export default function DemoPage() {
               </div>
               <div className="rounded-3xl bg-slate-950 p-5 text-white">
                 <p className="text-sm font-bold text-emerald-300">إشراف</p>
-                <h3 className="mt-1 text-xl font-black">الدكتورة رمدوم نورة</h3>
+                <h3 className="mt-1 text-xl font-black">د:رمدوم نورة</h3>
               </div>
               <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-700 p-5 text-white">
                 <p className="text-sm font-bold text-emerald-100">إنجاز وتطوير</p>
