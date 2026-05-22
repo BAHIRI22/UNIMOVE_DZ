@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardTopbar } from './DashboardTopbar';
@@ -14,6 +15,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const { isAuthenticated, isLoading } = useAuth();
+  const { isRTL } = useLanguage();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,25 +33,31 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-emerald-950">
+    <div className="min-h-screen bg-black">
       <DashboardSidebar role={role} />
-      <div className="lg:ml-64">
-        <DashboardTopbar onMobileMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
-        <main className="relative flex-1 overflow-hidden min-h-screen">
+      <div className={`relative flex min-h-screen flex-col ${isRTL ? 'lg:mr-64' : 'lg:ml-64'}`}>
+        <main className="fixed inset-y-0 left-0 right-0 z-0 overflow-hidden lg:left-0 lg:right-64">
+          {/* VIDEO BACKGROUND */}
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-30 z-0"
+            className="absolute inset-0 h-full w-full object-cover"
           >
             <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
           </video>
+        </main>
 
-          <div className="absolute inset-0 bg-emerald-950/60 z-10" />
-
-          <div className="relative z-20 p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8">
-            {children}
+        <div className="relative z-20">
+          <DashboardTopbar onMobileMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+        </div>
+        <main className="relative z-10 flex-1 overflow-hidden min-h-screen">
+          {/* DASHBOARD CONTENT */}
+          <div className="relative z-20">
+            <div className="p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8">
+              {children}
+            </div>
           </div>
         </main>
       </div>

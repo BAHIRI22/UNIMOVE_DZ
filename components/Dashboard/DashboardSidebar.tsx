@@ -29,7 +29,7 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ role }: DashboardSidebarProps) {
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -70,11 +70,11 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:sticky top-0 left-0 z-50 h-screen
-          bg-white/95 backdrop-blur-xl border-r border-emerald-100
+          fixed lg:sticky top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen
+          bg-white/95 backdrop-blur-xl border-emerald-100
           transition-all duration-500 ease-in-out
           ${isCollapsed ? 'w-20' : 'w-64'}
-          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${isMobileOpen ? 'translate-x-0' : isRTL ? 'translate-x-full lg:translate-x-0' : '-translate-x-full lg:translate-x-0'}
           shadow-2xl shadow-emerald-900/10
         `}
       >
