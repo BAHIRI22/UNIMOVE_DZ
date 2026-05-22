@@ -1,0 +1,62 @@
+[
+  {
+    "id": "route-001",
+    "nameAr": "سيدي بلعباس - وهران",
+    "nameFr": "Sidi Bel Abbès - Oran",
+    "startPoint": "محطة سيدي بلعباس",
+    "endPoint": "محطة وهران",
+    "distance": "65 km",
+    "duration": "90 min",
+    "departureTime": "08:00",
+    "arrivalTime": "09:30",
+    "frequency": "يومي / Quotidien",
+    "busCapacity": 50,
+    "currentPassengers": 35,
+    "price": 500
+  },
+  {
+    "id": "route-002",
+    "nameAr": "سيدي بلعباس - الجزائر",
+    "nameFr": "Sidi Bel Abbès - Alger",
+    "startPoint": "محطة سيدي بلعباس",
+    "endPoint": "محطة الجزائر",
+    "distance": "400 km",
+    "duration": "6 hours",
+    "departureTime": "07:00",
+    "arrivalTime": "13:00",
+    "frequency": "3 مرات أسبوعياً / 3 fois par semaine",
+    "busCapacity": 60,
+    "currentPassengers": 45,
+    "price": 2000
+  },
+  {
+    "id": "route-003",
+    "nameAr": "سيدي بلعباس - مستغانم",
+    "nameFr": "Sidi Bel Abbès - Mostaganem",
+    "startPoint": "محطة سيدي بلعباس",
+    "endPoint": "محطة مستغانم",
+    "distance": "80 km",
+    "duration": "2 hours",
+    "departureTime": "09:00",
+    "arrivalTime": "11:00",
+    "frequency": "يومي / Quotidien",
+    "busCapacity": 50,
+    "currentPassengers": 28,
+    "price": 600
+  },
+  {
+    "id": "route-004",
+    "nameAr": "سيدي بلعباس - تلمسان",
+    "nameFr": "Sidi Bel Abbès - Tlemcen",
+    "startPoint": "محطة سيدي بلعباس",
+    "endPoint": "محطة تلمسان",
+    "distance": "98 km",
+    "duration": "2.5 hours",
+    "departureTime": "06:30",
+    "arrivalTime": "09:00",
+    "frequency": "يومي / Quotidien",
+    "busCapacity": 50,
+    "currentPassengers": 42,
+    "price": 700
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sub-daily",
+    "typeAr": "يومي",
+    "typeFr": "Quotidien",
+    "priceAr": "السعر",
+    "priceFr": "Prix",
+    "price": 500,
+    "currency": "DA",
+    "validity": "1 day",
+    "trips": 2,
+    "description": "للاستخدام اليومي"
+  },
+  {
+    "id": "sub-weekly",
+    "typeAr": "أسبوعي",
+    "typeFr": "Hebdomadaire",
+    "priceAr": "السعر",
+    "priceFr": "Prix",
+    "price": 2500,
+    "currency": "DA",
+    "validity": "7 days",
+    "trips": 14,
+    "description": "للاستخدام الأسبوعي"
+  },
+  {
+    "id": "sub-monthly",
+    "typeAr": "شهري",
+    "typeFr": "Mensuel",
+    "priceAr": "السعر",
+    "priceFr": "Prix",
+    "price": 8000,
+    "currency": "DA",
+    "validity": "30 days",
+    "trips": 60,
+    "description": "للاستخدام الشهري"
+  }
+]

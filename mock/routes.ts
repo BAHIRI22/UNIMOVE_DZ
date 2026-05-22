@@ -1,0 +1,170 @@
+import { Route, Location } from '@/types/reservation';
+
+// Locations for Sidi Bel Abbès
+export const locations: Location[] = [
+  {
+    id: 'uni-djillali-liabes',
+    name: 'Université Djillali Liabes',
+    nameAr: 'جامعة الجيلالي اليابس',
+    type: 'university',
+  },
+  {
+    id: 'fac-droit',
+    name: 'Faculté de Droit et Sciences Politiques',
+    nameAr: 'كلية الحقوق والعلوم السياسية',
+    type: 'faculty',
+  },
+  {
+    id: 'fac-medecine',
+    name: 'Faculté de Médecine',
+    nameAr: 'كلية الطب',
+    type: 'faculty',
+  },
+  {
+    id: 'fac-sciences',
+    name: 'Faculté des Sciences Exactes',
+    nameAr: 'كلية العلوم الدقيقة',
+    type: 'faculty',
+  },
+  {
+    id: 'fac-technologie',
+    name: 'Faculté de Technologie',
+    nameAr: 'كلية التكنولوجيا',
+    type: 'faculty',
+  },
+  {
+    id: 'inst-economie',
+    name: 'Institut des Sciences Économiques',
+    nameAr: 'معهد العلوم الاقتصادية',
+    type: 'institute',
+  },
+  {
+    id: 'res-1',
+    name: 'Résidence Universitaire 1',
+    nameAr: 'السكن الجامعي 1',
+    type: 'residence',
+  },
+  {
+    id: 'res-2',
+    name: 'Résidence Universitaire 2',
+    nameAr: 'السكن الجامعي 2',
+    type: 'residence',
+  },
+  {
+    id: 'gare-routiere',
+    name: 'Gare Routière',
+    nameAr: 'محطة الحافلات',
+    type: 'station',
+  },
+  {
+    id: 'centre-ville',
+    name: 'Centre-ville',
+    nameAr: 'وسط المدينة',
+    type: 'city_center',
+  },
+  {
+    id: 'quartier-nour',
+    name: 'Quartier El Nour',
+    nameAr: 'حي النور',
+    type: 'city_center',
+  },
+  {
+    id: 'quartier-salam',
+    name: 'Quartier Es Salam',
+    nameAr: 'حي السلام',
+    type: 'city_center',
+  },
+];
+
+// Routes for Sidi Bel Abbès
+export const routes: Route[] = [
+  {
+    id: 'route-centrale',
+    name: 'Route Centrale',
+    nameAr: 'الطريق المركزي',
+    departure: locations.find(l => l.id === 'centre-ville')!,
+    destination: locations.find(l => l.id === 'uni-djillali-liabes')!,
+    stops: [
+      locations.find(l => l.id === 'centre-ville')!,
+      locations.find(l => l.id === 'gare-routiere')!,
+      locations.find(l => l.id === 'uni-djillali-liabes')!,
+    ],
+    distance: 5,
+    estimatedTime: 15,
+    basePrice: 50,
+  },
+  {
+    id: 'route-nord',
+    name: 'Route Nord',
+    nameAr: 'الطريق الشمالي',
+    departure: locations.find(l => l.id === 'quartier-nour')!,
+    destination: locations.find(l => l.id === 'uni-djillali-liabes')!,
+    stops: [
+      locations.find(l => l.id === 'quartier-nour')!,
+      locations.find(l => l.id === 'res-1')!,
+      locations.find(l => l.id === 'uni-djillali-liabes')!,
+    ],
+    distance: 8,
+    estimatedTime: 20,
+    basePrice: 60,
+  },
+  {
+    id: 'route-sud',
+    name: 'Route Sud',
+    nameAr: 'الطريق الجنوبي',
+    departure: locations.find(l => l.id === 'quartier-salam')!,
+    destination: locations.find(l => l.id === 'uni-djillali-liabes')!,
+    stops: [
+      locations.find(l => l.id === 'quartier-salam')!,
+      locations.find(l => l.id === 'res-2')!,
+      locations.find(l => l.id === 'uni-djillali-liabes')!,
+    ],
+    distance: 7,
+    estimatedTime: 18,
+    basePrice: 55,
+  },
+  {
+    id: 'route-faculte-droit',
+    name: 'Route Faculté de Droit',
+    nameAr: 'طريق كلية الحقوق',
+    departure: locations.find(l => l.id === 'centre-ville')!,
+    destination: locations.find(l => l.id === 'fac-droit')!,
+    stops: [
+      locations.find(l => l.id === 'centre-ville')!,
+      locations.find(l => l.id === 'gare-routiere')!,
+      locations.find(l => l.id === 'fac-droit')!,
+    ],
+    distance: 6,
+    estimatedTime: 16,
+    basePrice: 55,
+  },
+  {
+    id: 'route-fac-medecine',
+    name: 'Route Faculté de Médecine',
+    nameAr: 'طريق كلية الطب',
+    departure: locations.find(l => l.id === 'centre-ville')!,
+    destination: locations.find(l => l.id === 'fac-medecine')!,
+    stops: [
+      locations.find(l => l.id === 'centre-ville')!,
+      locations.find(l => l.id === 'gare-routiere')!,
+      locations.find(l => l.id === 'fac-medecine')!,
+    ],
+    distance: 7,
+    estimatedTime: 18,
+    basePrice: 60,
+  },
+  {
+    id: 'route-residences',
+    name: 'Route Résidences',
+    nameAr: 'طريق السكن الجامعي',
+    departure: locations.find(l => l.id === 'gare-routiere')!,
+    destination: locations.find(l => l.id === 'res-1')!,
+    stops: [
+      locations.find(l => l.id === 'gare-routiere')!,
+      locations.find(l => l.id === 'res-1')!,
+    ],
+    distance: 4,
+    estimatedTime: 12,
+    basePrice: 40,
+  },
+];

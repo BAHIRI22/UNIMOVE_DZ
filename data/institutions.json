@@ -1,0 +1,62 @@
+[
+  {
+    "id": "inst-001",
+    "nameAr": "كلية الحقوق والعلوم السياسية",
+    "nameFr": "Faculté de Droit et Sciences Politiques",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": true,
+    "established": 1989
+  },
+  {
+    "id": "inst-002",
+    "nameAr": "كلية التكنولوجيا",
+    "nameFr": "Faculté de Technologie",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": false,
+    "established": 1995
+  },
+  {
+    "id": "inst-003",
+    "nameAr": "كلية العلوم",
+    "nameFr": "Faculté des Sciences",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": false,
+    "established": 1990
+  },
+  {
+    "id": "inst-004",
+    "nameAr": "كلية الآداب والعلوم الإنسانية",
+    "nameFr": "Faculté des Lettres et Sciences Humaines",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": false,
+    "established": 1990
+  },
+  {
+    "id": "inst-005",
+    "nameAr": "كلية العلوم الاقتصادية والتجارية",
+    "nameFr": "Faculté des Sciences Économiques et Commerciales",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": false,
+    "established": 2000
+  },
+  {
+    "id": "inst-006",
+    "nameAr": "كلية الهندسة",
+    "nameFr": "Faculté d'Ingénierie",
+    "university": "جامعة جيلالي اليابس",
+    "universityEn": "Université Djillali Liabes",
+    "location": "سيدي بلعباس",
+    "featured": false,
+    "established": 1998
+  }
+]

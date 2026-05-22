@@ -1,0 +1,31 @@
+{
+  "name": "UNIMOVE-DZ",
+  "short_name": "UNIMOVE-DZ",
+  "description": "Plateforme intelligente de transport universitaire - الجامعة أقرب، أسهل، و أأمن",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ecfdf5",
+  "theme_color": "#059669",
+  "categories": ["transport", "education", "productivity"],
+  "lang": "ar-DZ",
+  "dir": "auto",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "UNIMOVE-DZ mobile app"
+    }
+  ]
+}
