@@ -63,7 +63,7 @@ export default function CreditsPage() {
                 {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
               </h3>
               <p className="text-2xl font-bold text-primary">
-                {language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}
+                {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}
               </p>
             </div>
           </div>

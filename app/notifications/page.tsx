@@ -1,6 +1,6 @@
 'use client';
 
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import { AlertBanner } from '@/components/AlertBanner';
 import { useLanguage } from '@/contexts/LanguageContext';

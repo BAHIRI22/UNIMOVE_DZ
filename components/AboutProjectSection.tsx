@@ -17,7 +17,7 @@ export function AboutProjectSection() {
     { label: 'AnnÃ©e universitaire', value: '2025/2026' },
     { label: 'FacultÃ©', value: 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' },
     { label: 'UniversitÃ©', value: 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³\n19 Ù…Ø§Ø±Ø³ 1962' },
-    { label: 'Sous la supervision de', value: 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' },
+    { label: 'Sous la supervision de', value: 'د:رمدوم نورة' },
   ];
 
   const arabicServices = [

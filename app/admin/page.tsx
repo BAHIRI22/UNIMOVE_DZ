@@ -1,6 +1,6 @@
 'use client';
 
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { AdminStatsCard } from '@/components/AdminStatsCard';
 import { AdminTable } from '@/components/AdminTable';
 import { useLanguage } from '@/contexts/LanguageContext';

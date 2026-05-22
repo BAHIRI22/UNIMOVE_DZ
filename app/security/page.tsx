@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { SecuritySettings } from '@/components/SecuritySettings';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';

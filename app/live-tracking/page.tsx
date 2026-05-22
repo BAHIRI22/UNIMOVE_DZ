@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { LiveBusCard } from '@/components/LiveBusCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { mockLiveBuses, mockRoutes, mockStops } from '@/mock/routes-data';

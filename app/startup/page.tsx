@@ -204,7 +204,7 @@ export default function StartupPage() {
               <p>{language === 'ar' ? 'Ø§Ù„Ø·Ø§Ù„Ø¨Ø©: Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…' : 'Ã‰tudiante : Ù…Ø±Ø§Ø­ Ø§Ø¨ØªØ³Ø§Ù…'}</p>
               <p>{language === 'ar' ? 'Ù…Ø§Ø³ØªØ± 2 Ù‚Ø§Ù†ÙˆÙ† Ø¹Ø§Ù… - 2025/2026' : 'Master 2 Droit GÃ©nÃ©ral - 2025/2026'}</p>
               <p>{language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³' : 'UniversitÃ© Djilali LiabÃ¨s Sidi Bel AbbÃ¨s'}</p>
-              <p>{language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù: Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'Supervision : DR RAMDOUM NORA'}</p>
+              <p>{language === 'ar' ? 'الإشراف: د:رمدوم نورة' : 'Supervision : DR RAMDOUM NORA'}</p>
               <p>DR BEHIRI ABDELKADER - Ø¯ Ø¨Ø­ÙŠØ±ÙŠ Ø¹Ø¨Ø¯ Ø§Ù„Ù‚Ø§Ø¯Ø±</p>
             </div>
           </div>

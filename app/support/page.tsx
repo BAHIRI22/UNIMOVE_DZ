@@ -1,6 +1,6 @@
 'use client';
 
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { SupportCard } from '@/components/SupportCard';
 import { EmergencyButton } from '@/components/EmergencyButton';
 import { useLanguage } from '@/contexts/LanguageContext';

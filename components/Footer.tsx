@@ -136,7 +136,7 @@ export function Footer() {
                 <span className="font-black text-white block mb-2 text-xl">
                   {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
                 </span>
-                <span className="text-xl font-medium">{language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}</span>
+                <span className="text-xl font-medium">{language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}</span>
               </li>
             </ul>
           </div>

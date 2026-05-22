@@ -119,7 +119,7 @@ export function AcademicInfoCard() {
               {language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù' : 'Supervision'}
             </div>
             <div className="text-gray-700">
-              {language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}
+              {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}
             </div>
           </div>
         </div>

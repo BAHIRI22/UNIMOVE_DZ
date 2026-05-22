@@ -334,7 +334,7 @@ export default function InvestorsPage() {
                   <p>2025/2026</p>
                   <p>{language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}</p>
                   <p>{language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³' : 'UniversitÃ© Djilali LiabÃ¨s'}</p>
-                  <p>{language === 'ar' ? 'Ø¥Ø´Ø±Ø§Ù: Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'Supervision : DR RAMDOUM NORA'}</p>
+                  <p>{language === 'ar' ? 'إشراف: د:رمدوم نورة' : 'Supervision : DR RAMDOUM NORA'}</p>
                 </div>
               </div>
             </div>

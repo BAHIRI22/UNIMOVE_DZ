@@ -333,7 +333,7 @@ export default function PricingPage() {
                 <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¬Ø§Ù…Ø¹ÙŠØ©:' : 'AnnÃ©e Universitaire:'}</span> 2025/2026</p>
                 <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„ÙƒÙ„ÙŠØ©:' : 'FacultÃ©:'}</span> {language === 'ar' ? 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ©' : 'FacultÃ© de Droit et Sciences Politiques'}</p>
                 <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø¬Ø§Ù…Ø¹Ø©:' : 'UniversitÃ©:'}</span> {language === 'ar' ? 'Ø¬Ø§Ù…Ø¹Ø© Ø§Ù„Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³' : 'UniversitÃ© Djilali LiabÃ¨s Sidi Bel AbbÃ¨s'}</p>
-                <p><span className="font-semibold text-white">{language === 'ar' ? 'Ø§Ù„Ø¥Ø´Ø±Ø§Ù:' : 'Supervision:'}</span> {language === 'ar' ? 'Ø§Ù„Ø¯ÙƒØªÙˆØ±Ø© Ø±Ù…Ø¯ÙˆÙ… Ù†ÙˆØ±Ø©' : 'DR RAMDOUM NORA'}</p>
+                <p><span className="font-semibold text-white">{language === 'ar' ? 'الإشراف:' : 'Supervision:'}</span> {language === 'ar' ? 'د:رمدوم نورة' : 'DR RAMDOUM NORA'}</p>
               </div>
             </div>
             <div>

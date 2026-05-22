@@ -121,7 +121,7 @@ export function QRCard({ className }: QRCardProps) {
         <p className="font-medium text-gray-700 mt-2">
           {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
         </p>
-        <p>مراح ابتسام - Master Droit Public 2025/2026</p>
+        <p>د:رمدوم نورة</p>
       </div>
     </div>
   );

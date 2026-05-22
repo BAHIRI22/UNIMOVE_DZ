@@ -72,5 +72,5 @@ export const APP_METADATA = {
   university: 'Ø¬Ø§Ù…Ø¹Ø© Ø¬ÙŠÙ„Ø§Ù„ÙŠ Ø§Ù„ÙŠØ§Ø¨Ø³ â€“ Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³ / UniversitÃ© Djillali Liabes â€“ Sidi Bel AbbÃ¨s',
   student: 'Ù…Ø±Ø§Ø­ ÙØ±ÙŠØ§Ù„ / Ù…Ø±Ø§Ø­ Ø£Ù…ÙŠÙ†Ø© / Merah Amina',
   faculty: 'ÙƒÙ„ÙŠØ© Ø§Ù„Ø­Ù‚ÙˆÙ‚ ÙˆØ§Ù„Ø¹Ù„ÙˆÙ… Ø§Ù„Ø³ÙŠØ§Ø³ÙŠØ© / FacultÃ© de Droit et Sciences Politiques',
-  supervisor: 'Ø¯. Ø±Ù…Ø¯ÙˆØ¯ Ù†ÙˆØ±Ø© / DR RAMDOUM NORA',
+  supervisor: 'د:رمدوم نورة / DR RAMDOUM NORA',
 };

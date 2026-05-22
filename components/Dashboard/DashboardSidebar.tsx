@@ -174,7 +174,7 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
                 <p className="font-semibold text-gray-700 mt-3">
                   {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
                 </p>
-                <p>{ATTRIBUTIONS.academic.nameAr}</p>
+                <p>د:رمدوم نورة</p>
               </motion.div>
             )}
             <motion.button

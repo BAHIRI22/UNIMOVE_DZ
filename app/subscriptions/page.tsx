@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
