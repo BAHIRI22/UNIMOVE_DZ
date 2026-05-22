@@ -119,7 +119,8 @@ export default function AboutProjectPage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <Lightbulb className="mb-5 h-10 w-10 text-emerald-300" />
-              <h2 className="text-4xl font-black md:text-5xl"د بحيري عبد القادر"mt-5 text-lg leading-8 text-slate-300">
+              <h2 className="text-4xl font-black md:text-5xl text-emerald-300">د بحيري عبد القادر</h2>
+              <p className="mt-5 text-lg leading-8 text-slate-300">
                 {language === 'ar'
                   ? 'يجمع المشروع بين تجربة مستخدم بسيطة ونظام تشغيل قابل للقياس، ما يجعله قابلاً للتطبيق داخل الجامعة والتوسع إلى مؤسسات أخرى.'
                   : 'Le projet combine une expérience utilisateur simple et un système d’exploitation mesurable, applicable à l’université et extensible à d’autres institutions.'}

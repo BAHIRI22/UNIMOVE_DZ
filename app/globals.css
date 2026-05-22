@@ -74,7 +74,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', 'Poppins', 'Geist', 'Geist Fallback';
+  --font-sans: 'Cairo', 'Inter', 'Poppins', 'Geist', 'Geist Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -154,9 +154,9 @@
     @apply tracking-tight;
   }
   
-  /* Arabic font optimization */
+  /* Arabic font optimization - prioritize Cairo for Arabic text */
   html[dir="rtl"] body {
-    font-family: 'Inter', 'Poppins', 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
   }
   
   /* French font optimization */

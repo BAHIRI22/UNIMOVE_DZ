@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Cairo, Inter, Poppins, Geist, Geist_Mono } from 'next/font/google'
+import { Cairo, Tajawal, Inter, Poppins, Geist, Geist_Mono } from 'next/font/google'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
@@ -35,6 +35,14 @@ const cairo = Cairo({
   subsets: ['arabic', 'latin'],
   variable: '--font-cairo',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
+});
+
+const tajawal = Tajawal({
+  subsets: ['arabic', 'latin'],
+  variable: '--font-tajawal',
+  display: 'swap',
+  weight: ['400', '500', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -46,6 +54,7 @@ export const metadata: Metadata = {
   publisher: 'UNIMOVE-DZ',
   manifest: '/manifest.json',
   applicationName: 'UNIMOVE-DZ',
+  charset: 'UTF-8',
   appleWebApp: {
     capable: true,
     title: 'UNIMOVE-DZ',
@@ -76,7 +85,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className={`${cairo.className} ${inter.className} ${poppins.className} ${geist.className} antialiased relative`}>
+      <body className={`${cairo.className} ${tajawal.className} ${inter.className} ${poppins.className} ${geist.className} antialiased relative`}>
         <LanguageProvider>
           <AuthProvider>
             {/* Background image */}
