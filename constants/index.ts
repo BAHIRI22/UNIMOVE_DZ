@@ -3,9 +3,9 @@ export const APP_VERSION = '1.0.0';
 
 export const ATTRIBUTIONS = {
   developer: {
-    name: 'Dr. Behiri Abdelkader',
-    nameAr: 'د بحيري عبد القادر',
-    title: 'Développeur Principal'
+    name: 'UNIMOVE-DZ',
+    nameAr: 'مشروع UNIMOVE-DZ',
+    title: 'Plateforme de transport universitaire intelligent'
   },
   academic: {
     name: 'Merah Ibtissam',

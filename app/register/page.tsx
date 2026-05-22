@@ -21,12 +21,11 @@ type Step = 'phone' | 'role' | 'institution' | 'subscription' | 'payment' | 'suc
 interface RegistrationData {
   phone: string;
   firebaseUser: any;
-  role: 'student' | 'teacher' | 'admin';
+  role: 'student' | 'teacher' | 'admin' | 'driver';
   institution: string;
   subscription: 'daily' | 'weekly' | 'monthly';
   fullName: string;
   homePoint: string;
-  preferredRoute: string;
   cardNumber: string;
   qrCode: string;
   validUntil: string;
@@ -61,7 +60,6 @@ export default function RegisterPage() {
     subscription: 'daily' | 'weekly' | 'monthly';
     fullName: string;
     homePoint: string;
-    preferredRoute: string;
   }) => {
     setData((prev) => ({ ...prev, ...subData }));
     setCurrentStep('payment');
@@ -84,7 +82,6 @@ export default function RegisterPage() {
       subscription: data.subscription,
       fullName: data.fullName,
       homePoint: data.homePoint || '',
-      preferredRoute: data.preferredRoute || '',
       cardNumber,
       qrCode,
       validUntil,
@@ -104,7 +101,6 @@ export default function RegisterPage() {
       subscription: finalData.subscription,
       validUntil: finalData.validUntil,
       homePoint: finalData.homePoint,
-      preferredRoute: finalData.preferredRoute,
     });
 
     setCurrentStep('success');

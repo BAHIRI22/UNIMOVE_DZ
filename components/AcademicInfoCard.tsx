@@ -134,7 +134,7 @@ export function AcademicInfoCard() {
               {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
             </div>
             <div className="text-gray-700">
-              DR: BEHIRI ABDELKADER / د بحيري عبد القادر
+              {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}
             </div>
           </div>
         </div>

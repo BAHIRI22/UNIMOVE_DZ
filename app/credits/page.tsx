@@ -80,7 +80,7 @@ export default function CreditsPage() {
                 {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
               </h3>
               <p className="text-2xl font-bold text-emerald-700">
-                DR: BEHIRI ABDELKADER / د بحيري عبد القادر
+                {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}
               </p>
             </div>
           </div>

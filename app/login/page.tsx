@@ -7,8 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
+import { Bus, Shield, CheckCircle2, Zap, Clock, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Bus, Shield, CheckCircle2, Sparkles, MapPinned, RadioTower } from 'lucide-react';
 
 export default function LoginPage() {
   const { language, isRTL } = useLanguage();
@@ -49,67 +49,50 @@ export default function LoginPage() {
     },
   ];
 
-  const videoFeatures = [
-    { icon: Bus, label: language === 'ar' ? 'نقل ذكي' : 'Transport intelligent' },
-    { icon: MapPinned, label: language === 'ar' ? 'مدينة متصلة' : 'Ville connectée' },
-    { icon: RadioTower, label: language === 'ar' ? 'خدمة موثوقة' : 'Service fiable' },
-  ];
-
   return (
-    <div className="min-h-screen flex flex-col overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.16),_transparent_34%),linear-gradient(135deg,#f8fafc_0%,#ecfdf5_48%,#f8fafc_100%)]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-emerald-50/30 to-gray-50">
       <Header />
 
-      <main className="relative flex-1 py-10 md:py-14 lg:py-16">
-        <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 bottom-16 h-80 w-80 rounded-full bg-teal-400/20 blur-3xl" />
-
-        <div className="relative mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
-          <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-[0.8fr_1fr_1fr] lg:gap-7 xl:gap-8" dir="ltr">
+      <main className="flex-1 py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Desktop: 3 cards grid */}
+          <div className="hidden lg:grid lg:grid-cols-[0.8fr_1fr_1fr] gap-6 items-start">
+            
+            {/* LEFT CARD - Why UNIMOVE-DZ (smaller) */}
             <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55 }}
-              className="order-3 md:order-2 lg:order-1"
+              initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <Card dir={isRTL ? 'rtl' : 'ltr'} className="h-full rounded-[2rem] border border-white/60 bg-white/65 p-6 shadow-2xl shadow-emerald-950/10 backdrop-blur-2xl md:p-7 lg:min-h-[620px]">
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/80 px-4 py-2 text-sm font-bold text-emerald-700">
-                  <Sparkles className="h-4 w-4" />
-                  UNIMOVE-DZ
-                </div>
-                <h2 className="mb-6 text-2xl font-black text-gray-950">
+              <Card className="p-6 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl h-full">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   {language === 'ar' ? 'لماذا UNIMOVE-DZ؟' : 'Pourquoi UNIMOVE-DZ ?'}
                 </h2>
-
+                
                 <div className="space-y-5">
                   {features.map((feature, index) => {
                     const Icon = feature.icon;
                     return (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: isRTL ? 18 : -18 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + index * 0.08 }}
-                        className="group flex gap-4 rounded-3xl border border-white/70 bg-white/55 p-4 shadow-lg shadow-emerald-950/5 transition hover:-translate-y-1 hover:bg-white/80 hover:shadow-xl"
-                      >
-                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25">
-                          <Icon className="h-5 w-5 text-white" />
+                      <div key={index} className="flex gap-3">
+                        <div className="w-11 h-11 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div>
-                          <h3 className="mb-1 font-black text-gray-950">{feature.title}</h3>
-                          <p className="text-sm leading-6 text-gray-600">{feature.description}</p>
+                          <h3 className="font-semibold text-gray-900 mb-1 text-sm">{feature.title}</h3>
+                          <p className="text-xs text-gray-600 leading-relaxed">{feature.description}</p>
                         </div>
-                      </motion.div>
+                      </div>
                     );
                   })}
                 </div>
 
-                <div className="mt-7 border-t border-emerald-100 pt-6">
-                  <p className="mb-4 text-sm font-medium text-gray-600">
+                <div className="mt-6 pt-5 border-t border-gray-200/50">
+                  <p className="text-xs text-gray-600 mb-3">
                     {language === 'ar' ? 'ليس لديك حساب؟' : 'Vous n\'avez pas de compte ?'}
                   </p>
                   <a
                     href="/register"
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-3.5 text-center font-black text-white shadow-xl shadow-emerald-600/20 transition hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-emerald-600/30"
+                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25 text-sm"
                   >
                     {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
                   </a>
@@ -117,50 +100,174 @@ export default function LoginPage() {
               </Card>
             </motion.div>
 
+            {/* CENTER CARD - Promotional Video */}
             <motion.div
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.08 }}
-              whileHover={{ y: -6, scale: 1.01 }}
-              className="order-2 md:order-1 lg:order-2"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="h-full"
             >
-              <Card dir={isRTL ? 'rtl' : 'ltr'} className="relative h-full overflow-hidden rounded-[2rem] border border-emerald-200/70 bg-slate-950 p-0 shadow-2xl shadow-emerald-950/20 lg:min-h-[620px]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.34),transparent_42%)]" />
-                <div className="relative z-10 flex h-full flex-col p-5 md:p-6">
-                  <div className="mb-5">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-white/10 px-4 py-2 text-xs font-black text-emerald-100 backdrop-blur-xl">
-                      <Sparkles className="h-4 w-4 text-emerald-300" />
-                      UNIMOVE-DZ
-                    </div>
-                    <h2 className="text-2xl font-black text-white md:text-3xl">
-                      {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L’université plus proche, plus simple et plus sûre'}
-                    </h2>
-                  </div>
-
-                  <div className="relative min-h-[300px] flex-1 overflow-hidden rounded-[1.75rem] border border-white/10 bg-emerald-950 shadow-2xl shadow-emerald-900/30">
-                    <video
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      poster="/images/UNIMOVE_DZ.jpg"
-                      className="h-full w-full object-cover transition duration-700 hover:scale-105"
+              <Card className="overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-950/90 to-slate-900/90 backdrop-blur-xl rounded-3xl h-full flex flex-col">
+                {/* Video Container */}
+                <div className="relative flex-1 min-h-[400px] overflow-hidden group">
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  >
+                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
+                  </video>
+                  
+                  {/* Cinematic Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
+                  
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                      <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
-                    </video>
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-emerald-950/10 to-transparent" />
+                      <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
+                        UNIMOVE_DZ
+                      </h1>
+                      <p className="text-emerald-100 text-sm font-medium mb-4">
+                        {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
+                      </p>
+                    </motion.div>
                   </div>
+                </div>
 
-                  <div className="mt-5 grid grid-cols-3 gap-3">
-                    {videoFeatures.map((item) => {
+                {/* Premium Mini Features */}
+                <div className="p-5 bg-gradient-to-r from-emerald-950/50 to-slate-900/50 backdrop-blur-sm">
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { icon: Zap, label: language === 'ar' ? 'نقل ذكي' : 'Transport intelligent' },
+                      { icon: Clock, label: language === 'ar' ? 'خدمة موثوقة' : 'Service fiable' },
+                      { icon: Star, label: language === 'ar' ? 'تجربة مميزة' : 'Expérience premium' },
+                    ].map((item, index) => {
                       const Icon = item.icon;
                       return (
-                        <div key={item.label} className="rounded-2xl border border-white/10 bg-white/10 p-3 text-center backdrop-blur-xl shadow-lg shadow-emerald-500/5">
-                          <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/15 shadow-lg shadow-emerald-400/10">
-                            <Icon className="h-4 w-4 text-emerald-200" />
+                        <motion.div
+                          key={index}
+                          whileHover={{ scale: 1.05 }}
+                          className="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
+                        >
+                          <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <Icon className="w-4 h-4 text-emerald-400" />
                           </div>
-                          <p className="text-xs font-black text-white">{item.label}</p>
+                          <span className="text-xs text-emerald-100 text-center font-medium">
+                            {item.label}
+                          </span>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* RIGHT CARD - Login OTP (same size as video) */}
+            <motion.div
+              initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="h-full"
+            >
+              <Card className="p-6 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl h-full flex flex-col">
+                <div className="mb-6">
+                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                    {language === 'ar' ? 'تسجيل الدخول' : 'Connexion'}
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    {language === 'ar' 
+                      ? 'أدخل رقم هاتفك للدخول إلى حسابك' 
+                      : 'Entrez votre numéro de téléphone pour accéder à votre compte'
+                    }
+                  </p>
+                </div>
+
+                <div className="flex-1">
+                  <PhoneOtpAuth
+                    mode="login"
+                    onAuthSuccess={handleAuthSuccess}
+                    onAuthError={handleAuthError}
+                  />
+                </div>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Tablet: Stacked */}
+          <div className="hidden md:grid lg:hidden gap-6">
+            {/* Login Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card className="p-8 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl">
+                <div className="mb-6">
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    {language === 'ar' ? 'تسجيل الدخول' : 'Connexion'}
+                  </h1>
+                  <p className="text-gray-600">
+                    {language === 'ar' 
+                      ? 'أدخل رقم هاتفك للدخول إلى حسابك' 
+                      : 'Entrez votre numéro de téléphone pour accéder à votre compte'
+                    }
+                  </p>
+                </div>
+                <PhoneOtpAuth
+                  mode="login"
+                  onAuthSuccess={handleAuthSuccess}
+                  onAuthError={handleAuthError}
+                />
+              </Card>
+            </motion.div>
+
+            {/* Video Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-950/90 to-slate-900/90 backdrop-blur-xl rounded-3xl">
+                <div className="relative h-[300px] overflow-hidden">
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  >
+                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                    <h1 className="text-3xl font-black text-white mb-2">UNIMOVE_DZ</h1>
+                    <p className="text-emerald-100 text-sm font-medium">
+                      {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-5 bg-gradient-to-r from-emerald-950/50 to-slate-900/50 backdrop-blur-sm">
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { icon: Zap, label: language === 'ar' ? 'نقل ذكي' : 'Transport intelligent' },
+                      { icon: Clock, label: language === 'ar' ? 'خدمة موثوقة' : 'Service fiable' },
+                      { icon: Star, label: language === 'ar' ? 'تجربة مميزة' : 'Expérience premium' },
+                    ].map((item, index) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={index} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-500/10">
+                          <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <Icon className="w-4 h-4 text-emerald-400" />
+                          </div>
+                          <span className="text-xs text-emerald-100 text-center font-medium">{item.label}</span>
                         </div>
                       );
                     })}
@@ -169,35 +276,158 @@ export default function LoginPage() {
               </Card>
             </motion.div>
 
+            {/* Why UNIMOVE-DZ Card */}
             <motion.div
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.16 }}
-              className="order-1 md:order-3 lg:order-3"
+              transition={{ delay: 0.2 }}
             >
-              <Card dir={isRTL ? 'rtl' : 'ltr'} className="h-full rounded-[2rem] border border-white/70 bg-white/78 p-6 shadow-2xl shadow-emerald-950/10 backdrop-blur-2xl md:p-7 lg:min-h-[620px]">
-                <div className="mb-8">
-                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">
-                    <Shield className="h-4 w-4" />
-                    OTP Secure
-                  </div>
-                  <h1 className="mb-2 text-3xl font-black text-gray-950 md:text-4xl">
-                  {language === 'ar' ? 'تسجيل الدخول' : 'Connexion'}
-                </h1>
-                  <p className="text-sm leading-6 text-gray-600 md:text-base">
-                  {language === 'ar' 
-                    ? 'أدخل رقم هاتفك للدخول إلى حسابك' 
-                    : 'Entrez votre numéro de téléphone pour accéder à votre compte'
-                  }
-                </p>
-              </div>
+              <Card className="p-8 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  {language === 'ar' ? 'لماذا UNIMOVE-DZ؟' : 'Pourquoi UNIMOVE-DZ ?'}
+                </h2>
+                <div className="space-y-6">
+                  {features.map((feature, index) => {
+                    const Icon = feature.icon;
+                    return (
+                      <div key={index} className="flex gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-1">{feature.title}</h3>
+                          <p className="text-sm text-gray-600">{feature.description}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-8 pt-6 border-t border-gray-200/50">
+                  <p className="text-sm text-gray-600 mb-4">
+                    {language === 'ar' ? 'ليس لديك حساب؟' : 'Vous n\'avez pas de compte ?'}
+                  </p>
+                  <a
+                    href="/register"
+                    className="inline-block w-full text-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25"
+                  >
+                    {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
+                  </a>
+                </div>
+              </Card>
+            </motion.div>
+          </div>
 
-                <div className="rounded-[1.5rem] border border-emerald-100/80 bg-white/70 p-4 shadow-inner shadow-emerald-950/5">
-                  <PhoneOtpAuth
-                    mode="login"
-                    onAuthSuccess={handleAuthSuccess}
-                    onAuthError={handleAuthError}
-                  />
+          {/* Mobile: Vertical - Login, Video, Why */}
+          <div className="md:hidden space-y-6">
+            {/* Login Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card className="p-6 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl">
+                <div className="mb-6">
+                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                    {language === 'ar' ? 'تسجيل الدخول' : 'Connexion'}
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    {language === 'ar' 
+                      ? 'أدخل رقم هاتفك للدخول إلى حسابك' 
+                      : 'Entrez votre numéro de téléphone pour accéder à votre compte'
+                    }
+                  </p>
+                </div>
+                <PhoneOtpAuth
+                  mode="login"
+                  onAuthSuccess={handleAuthSuccess}
+                  onAuthError={handleAuthError}
+                />
+              </Card>
+            </motion.div>
+
+            {/* Video Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-950/90 to-slate-900/90 backdrop-blur-xl rounded-3xl">
+                <div className="relative h-[250px] overflow-hidden">
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  >
+                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-5">
+                    <h1 className="text-2xl font-black text-white mb-1">UNIMOVE_DZ</h1>
+                    <p className="text-emerald-100 text-xs font-medium">
+                      {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-emerald-950/50 to-slate-900/50 backdrop-blur-sm">
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { icon: Zap, label: language === 'ar' ? 'نقل ذكي' : 'Transport intelligent' },
+                      { icon: Clock, label: language === 'ar' ? 'خدمة موثوقة' : 'Service fiable' },
+                      { icon: Star, label: language === 'ar' ? 'تجربة مميزة' : 'Expérience premium' },
+                    ].map((item, index) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={index} className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-emerald-500/10">
+                          <div className="w-7 h-7 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <Icon className="w-3.5 h-3.5 text-emerald-400" />
+                          </div>
+                          <span className="text-[10px] text-emerald-100 text-center font-medium">{item.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* Why UNIMOVE-DZ Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="p-6 border-0 shadow-2xl bg-white/70 backdrop-blur-xl rounded-3xl">
+                <h2 className="text-xl font-bold text-gray-900 mb-5">
+                  {language === 'ar' ? 'لماذا UNIMOVE-DZ؟' : 'Pourquoi UNIMOVE-DZ ?'}
+                </h2>
+                <div className="space-y-4">
+                  {features.map((feature, index) => {
+                    const Icon = feature.icon;
+                    return (
+                      <div key={index} className="flex gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-1 text-sm">{feature.title}</h3>
+                          <p className="text-xs text-gray-600">{feature.description}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-6 pt-5 border-t border-gray-200/50">
+                  <p className="text-xs text-gray-600 mb-3">
+                    {language === 'ar' ? 'ليس لديك حساب؟' : 'Vous n\'avez pas de compte ?'}
+                  </p>
+                  <a
+                    href="/register"
+                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all text-sm"
+                  >
+                    {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
+                  </a>
                 </div>
               </Card>
             </motion.div>

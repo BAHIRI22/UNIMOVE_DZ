@@ -104,8 +104,8 @@ export default function DemoPage() {
               </div>
               <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-700 p-5 text-white">
                 <p className="text-sm font-bold text-emerald-100">إنجاز وتطوير</p>
-                <h3 className="mt-1 text-xl font-black">DR: BEHIRI ABDELKADER</h3>
-                <p className="mt-2 text-lg font-black">د بحيري عبد القادر</p>
+                <h3 className="mt-1 text-xl font-black">{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</h3>
+                <p className="mt-2 text-lg font-black">{language === 'ar' ? 'منصة النقل الجامعي الذكي' : 'Plateforme de transport universitaire intelligent'}</p>
               </div>
             </div>
           </Card>

@@ -1,0 +1,168 @@
+{
+  "university": {
+    "id": "djillali-liabes",
+    "name": "Université Djillali Liabès",
+    "nameAr": "جامعة جيلالي ليابس",
+    "location": "Sidi Bel Abbès",
+    "faculties": [
+      {
+        "id": "medicine",
+        "name": "Faculté de Médecine",
+        "nameAr": "كلية الطب",
+        "code": "MED",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "law",
+        "name": "Faculté de Droit et Sciences Politiques",
+        "nameAr": "كلية الحقوق والعلوم السياسية",
+        "code": "LAW",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "sciences-exactes",
+        "name": "Faculté des Sciences Exactes",
+        "nameAr": "كلية العلوم الدقيقة",
+        "code": "SCI",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "technology",
+        "name": "Faculté de Technologie",
+        "nameAr": "كلية التكنولوجيا",
+        "code": "TECH",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "economics",
+        "name": "Faculté des Sciences Économiques",
+        "nameAr": "كلية العلوم الاقتصادية",
+        "code": "ECO",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "letters",
+        "name": "Faculté des Lettres et Langues",
+        "nameAr": "كلية الآداب واللغات",
+        "code": "LET",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "human-sciences",
+        "name": "Faculté des Sciences Humaines et Sociales",
+        "nameAr": "كلية العلوم الإنسانية والاجتماعية",
+        "code": "HUM",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "nature-sciences",
+        "name": "Faculté des Sciences de la Nature et de la Vie",
+        "nameAr": "كلية علوم الطبيعة والحياة",
+        "code": "NAT",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "civil-engineering",
+        "name": "Faculté de Génie Civil et Architecture",
+        "nameAr": "كلية الهندسة المدنية والمعمارية",
+        "code": "GCA",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "computer-science",
+        "name": "Faculté d'Informatique",
+        "nameAr": "كلية علوم الحاسوب",
+        "code": "INF",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "electrical-engineering",
+        "name": "Faculté de Génie Électrique",
+        "nameAr": "كلية الهندسة الكهربائية",
+        "code": "GEL",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "chemistry",
+        "name": "Faculté de Chimie",
+        "nameAr": "كلية الكيمياء",
+        "code": "CHM",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "mathematics",
+        "name": "Faculté de Mathématiques",
+        "nameAr": "كلية الرياضيات",
+        "code": "MAT",
+        "location": "Campus Universitaire"
+      }
+    ],
+    "institutes": [
+      {
+        "id": "ista",
+        "name": "Institut des Sciences et Techniques Appliquées",
+        "nameAr": "معهد العلوم والتقنيات التطبيقية",
+        "code": "ISTA",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "eps",
+        "name": "Institut d'Éducation Physique et Sportive",
+        "nameAr": "معهد التربية البدنية والرياضية",
+        "code": "EPS",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "ish",
+        "name": "Institut des Sciences Humaines",
+        "nameAr": "معهد العلوم الإنسانية",
+        "code": "ISH",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "il",
+        "name": "Institut de Langues",
+        "nameAr": "معهد اللغات",
+        "code": "IL",
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "it",
+        "name": "Institut des Technologies",
+        "nameAr": "معهد التكنولوجيات",
+        "code": "IT",
+        "location": "Campus Universitaire"
+      }
+    ],
+    "residences": [
+      {
+        "id": "residence-boys",
+        "name": "Résidence Universitaire Garçons",
+        "nameAr": "السكن الجامعي للذكور",
+        "capacity": 1000,
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "residence-girls",
+        "name": "Résidence Universitaire Filles",
+        "nameAr": "السكن الجامعي للإناث",
+        "capacity": 800,
+        "location": "Campus Universitaire"
+      },
+      {
+        "id": "cite-universitaire",
+        "name": "Cité Universitaire",
+        "nameAr": "المدينة الجامعية",
+        "capacity": 2000,
+        "location": "Pôle Universitaire"
+      },
+      {
+        "id": "pole-universitaire",
+        "name": "Pôle Universitaire",
+        "nameAr": "القطب الجامعي",
+        "capacity": 3000,
+        "location": "Sidi Bel Abbès Centre"
+      }
+    ]
+  }
+}

@@ -1,0 +1,622 @@
+{
+  "routes": [
+    {
+      "id": "sfisef-medicine",
+      "from": {
+        "daïra": "sfisef",
+        "commune": "centre-ville-sfisef",
+        "point": "Centre-ville Sfisef"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "medicine",
+        "name": "Faculté de Médecine",
+        "nameAr": "كلية الطب"
+      },
+      "transport": {
+        "price": 150,
+        "duration": 45,
+        "distance": 35,
+        "seatsAvailable": 28,
+        "totalSeats": 45,
+        "driver": {
+          "name": "Ahmed Benali",
+          "phone": "+213 555 123 456",
+          "rating": 4.8
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Mercedes Sprinter",
+          "plate": "12345 SBA 01",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "07:00",
+          "arrival": "07:45"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "telagh-university",
+      "from": {
+        "daïra": "telagh",
+        "commune": "centre-ville-telagh",
+        "point": "Centre-ville Telagh"
+      },
+      "to": {
+        "type": "university",
+        "id": "djillali-liabes",
+        "name": "Université Djillali Liabès",
+        "nameAr": "جامعة جيلالي ليابس"
+      },
+      "transport": {
+        "price": 200,
+        "duration": 50,
+        "distance": 40,
+        "seatsAvailable": 32,
+        "totalSeats": 50,
+        "driver": {
+          "name": "Mohamed Kaddour",
+          "phone": "+213 555 234 567",
+          "rating": 4.9
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Iveco Daily",
+          "plate": "23456 SBA 02",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "06:30",
+          "arrival": "07:20"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "ras-el-ma-technology",
+      "from": {
+        "daïra": "ras-el-ma",
+        "commune": "centre-ville-ras-el-ma",
+        "point": "Centre-ville Ras El Ma"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "technology",
+        "name": "Faculté de Technologie",
+        "nameAr": "كلية التكنولوجيا"
+      },
+      "transport": {
+        "price": 180,
+        "duration": 40,
+        "distance": 32,
+        "seatsAvailable": 25,
+        "totalSeats": 40,
+        "driver": {
+          "name": "Yacine Boudiaf",
+          "phone": "+213 555 345 678",
+          "rating": 4.7
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Renault Master",
+          "plate": "34567 SBA 03",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:15",
+          "arrival": "07:55"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "ben-badis-law",
+      "from": {
+        "daïra": "ben-badis",
+        "commune": "centre-ville-ben-badis",
+        "point": "Centre-ville Ben Badis"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "law",
+        "name": "Faculté de Droit et Sciences Politiques",
+        "nameAr": "كلية الحقوق والعلوم السياسية"
+      },
+      "transport": {
+        "price": 120,
+        "duration": 35,
+        "distance": 28,
+        "seatsAvailable": 18,
+        "totalSeats": 35,
+        "driver": {
+          "name": "Karim Hadj",
+          "phone": "+213 555 456 789",
+          "rating": 4.6
+        },
+        "vehicle": {
+          "type": "Minibus",
+          "model": "Toyota Hiace",
+          "plate": "45678 SBA 04",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:30",
+          "arrival": "08:05"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "ain-el-berd-computer",
+      "from": {
+        "daïra": "ain-el-berd",
+        "commune": "centre-ville-ain-el-berd",
+        "point": "Centre-ville Aïn El Berd"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "computer-science",
+        "name": "Faculté d'Informatique",
+        "nameAr": "كلية علوم الحاسوب"
+      },
+      "transport": {
+        "price": 140,
+        "duration": 38,
+        "distance": 30,
+        "seatsAvailable": 22,
+        "totalSeats": 38,
+        "driver": {
+          "name": "Said Messaoud",
+          "phone": "+213 555 567 890",
+          "rating": 4.8
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Mercedes Sprinter",
+          "plate": "56789 SBA 05",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "06:45",
+          "arrival": "07:23"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "marhoum-campus",
+      "from": {
+        "daïra": "marhoum",
+        "commune": "centre-ville-marhoum",
+        "point": "Centre-ville Marhoum"
+      },
+      "to": {
+        "type": "residence",
+        "id": "cite-universitaire",
+        "name": "Cité Universitaire",
+        "nameAr": "المدينة الجامعية"
+      },
+      "transport": {
+        "price": 100,
+        "duration": 30,
+        "distance": 25,
+        "seatsAvailable": 15,
+        "totalSeats": 30,
+        "driver": {
+          "name": "Abdelkader Slimani",
+          "phone": "+213 555 678 901",
+          "rating": 4.5
+        },
+        "vehicle": {
+          "type": "Minibus",
+          "model": "Toyota Hiace",
+          "plate": "67890 SBA 06",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": false,
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:00",
+          "arrival": "07:30"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "merine-sciences",
+      "from": {
+        "daïra": "merine",
+        "commune": "centre-ville-merine",
+        "point": "Centre-ville Merine"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "sciences-exactes",
+        "name": "Faculté des Sciences Exactes",
+        "nameAr": "كلية العلوم الدقيقة"
+      },
+      "transport": {
+        "price": 130,
+        "duration": 36,
+        "distance": 29,
+        "seatsAvailable": 20,
+        "totalSeats": 36,
+        "driver": {
+          "name": "Nacer Eddine",
+          "phone": "+213 555 789 012",
+          "rating": 4.7
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Iveco Daily",
+          "plate": "78901 SBA 07",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:10",
+          "arrival": "07:46"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "tenira-residence",
+      "from": {
+        "daïra": "tenira",
+        "commune": "centre-ville-tenira",
+        "point": "Centre-ville Tenira"
+      },
+      "to": {
+        "type": "residence",
+        "id": "residence-boys",
+        "name": "Résidence Universitaire Garçons",
+        "nameAr": "السكن الجامعي للذكور"
+      },
+      "transport": {
+        "price": 110,
+        "duration": 32,
+        "distance": 26,
+        "seatsAvailable": 17,
+        "totalSeats": 32,
+        "driver": {
+          "name": "Hamza Berrah",
+          "phone": "+213 555 890 123",
+          "rating": 4.6
+        },
+        "vehicle": {
+          "type": "Minibus",
+          "model": "Toyota Hiace",
+          "plate": "89012 SBA 08",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "06:50",
+          "arrival": "07:22"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "moulay-slissen-economics",
+      "from": {
+        "daïra": "moulay-slissen",
+        "commune": "centre-ville-moulay",
+        "point": "Centre-ville Moulay Slissen"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "economics",
+        "name": "Faculté des Sciences Économiques",
+        "nameAr": "كلية العلوم الاقتصادية"
+      },
+      "transport": {
+        "price": 160,
+        "duration": 42,
+        "distance": 33,
+        "seatsAvailable": 24,
+        "totalSeats": 42,
+        "driver": {
+          "name": "Omar Bensalem",
+          "phone": "+213 555 901 234",
+          "rating": 4.8
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Mercedes Sprinter",
+          "plate": "90123 SBA 09",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "06:40",
+          "arrival": "07:22"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "sidi-ali-boussidi-languages",
+      "from": {
+        "daïra": "sidi-ali-boussidi",
+        "commune": "centre-ville-sidi-ali-boussidi",
+        "point": "Centre-ville Sidi Ali Boussidi"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "letters",
+        "name": "Faculté des Lettres et Langues",
+        "nameAr": "كلية الآداب واللغات"
+      },
+      "transport": {
+        "price": 145,
+        "duration": 39,
+        "distance": 31,
+        "seatsAvailable": 21,
+        "totalSeats": 39,
+        "driver": {
+          "name": "Rachid Bouazza",
+          "phone": "+213 555 012 345",
+          "rating": 4.7
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Renault Master",
+          "plate": "01234 SBA 10",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:05",
+          "arrival": "07:44"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "sidi-lahcen-university",
+      "from": {
+        "daïra": "sidi-lahcen",
+        "commune": "centre-ville-sidi-lahcen",
+        "point": "Centre-ville Sidi Lahcen"
+      },
+      "to": {
+        "type": "university",
+        "id": "djillali-liabes",
+        "name": "Université Centrale",
+        "nameAr": "الجامعة المركزية"
+      },
+      "transport": {
+        "price": 175,
+        "duration": 44,
+        "distance": 34,
+        "seatsAvailable": 26,
+        "totalSeats": 44,
+        "driver": {
+          "name": "Kamel Zerhouni",
+          "phone": "+213 555 123 456",
+          "rating": 4.9
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Mercedes Sprinter",
+          "plate": "12345 SBA 11",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "06:35",
+          "arrival": "07:19"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "mostefa-civil",
+      "from": {
+        "daïra": "mostefa-ben-ibrahim",
+        "commune": "centre-ville-mostefa",
+        "point": "Centre-ville Mostefa Ben Ibrahim"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "civil-engineering",
+        "name": "Faculté de Génie Civil et Architecture",
+        "nameAr": "كلية الهندسة المدنية والمعمارية"
+      },
+      "transport": {
+        "price": 155,
+        "duration": 41,
+        "distance": 32,
+        "seatsAvailable": 23,
+        "totalSeats": 41,
+        "driver": {
+          "name": "Lyes Hamadi",
+          "phone": "+213 555 234 567",
+          "rating": 4.6
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Iveco Daily",
+          "plate": "23456 SBA 12",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:00",
+          "arrival": "07:41"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "sidi-ali-ben-youb-ista",
+      "from": {
+        "daïra": "sidi-ali-ben-youb",
+        "commune": "centre-ville-sidi-ali-ben-youb",
+        "point": "Centre-ville Sidi Ali Ben Youb"
+      },
+      "to": {
+        "type": "institute",
+        "id": "ista",
+        "name": "Institut des Sciences et Techniques Appliquées",
+        "nameAr": "معهد العلوم والتقنيات التطبيقية"
+      },
+      "transport": {
+        "price": 135,
+        "duration": 37,
+        "distance": 28,
+        "seatsAvailable": 19,
+        "totalSeats": 37,
+        "driver": {
+          "name": "Samir Benabderrahmane",
+          "phone": "+213 555 345 678",
+          "rating": 4.7
+        },
+        "vehicle": {
+          "type": "Minibus",
+          "model": "Toyota Hiace",
+          "plate": "34567 SBA 13",
+          "premium": false
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": false
+        },
+        "schedule": {
+          "departure": "07:15",
+          "arrival": "07:52"
+        },
+        "status": "active"
+      }
+    },
+    {
+      "id": "tesala-chemistry",
+      "from": {
+        "daïra": "tesala",
+        "commune": "centre-ville-tesala",
+        "point": "Centre-ville Tessala"
+      },
+      "to": {
+        "type": "faculty",
+        "id": "chemistry",
+        "name": "Faculté de Chimie",
+        "nameAr": "كلية الكيمياء"
+      },
+      "transport": {
+        "price": 165,
+        "duration": 43,
+        "distance": 35,
+        "seatsAvailable": 25,
+        "totalSeats": 43,
+        "driver": {
+          "name": "Nabil Cherif",
+          "phone": "+213 555 456 789",
+          "rating": 4.8
+        },
+        "vehicle": {
+          "type": "Bus",
+          "model": "Mercedes Sprinter",
+          "plate": "45678 SBA 14",
+          "premium": true
+        },
+        "amenities": {
+          "airConditioning": true,
+          "wifi": true,
+          "wifiPassword": "UNIMOVE_DZ",
+          "usbCharging": true
+        },
+        "schedule": {
+          "departure": "06:45",
+          "arrival": "07:28"
+        },
+        "status": "active"
+      }
+    }
+  ],
+  "pricing": {
+    "shortDistance": {
+      "min": 80,
+      "max": 150
+    },
+    "mediumDistance": {
+      "min": 200,
+      "max": 350
+    },
+    "longDistance": {
+      "min": 400,
+      "max": 700
+    },
+    "premium": {
+      "min": 800
+    }
+  }
+}

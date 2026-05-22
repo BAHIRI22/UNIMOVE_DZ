@@ -205,7 +205,7 @@ export default function StartupPage() {
               <p>{language === 'ar' ? 'ماستر 2 قانون عام - 2025/2026' : 'Master 2 Droit Général - 2025/2026'}</p>
               <p>{language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djilali Liabès Sidi Bel Abbès'}</p>
               <p>{language === 'ar' ? 'الإشراف: د:رمدوم نورة' : 'Supervision : DR RAMDOUM NORA'}</p>
-              <p>DR BEHIRI ABDELKADER - د بحيري عبد القادر</p>
+              <p>{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</p>
             </div>
           </div>
         </Card>

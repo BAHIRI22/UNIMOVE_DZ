@@ -247,8 +247,8 @@ export function AboutProjectSection() {
                   <p className="text-lg text-slate-600 italic mb-4 font-medium">
                     {language === 'ar' ? 'Conception et développement supervisés par:' : 'Conception et développement supervisés par:'}
                   </p>
-                  <p className="text-3xl font-black text-emerald-600 mb-3">DR: BEHIRI ABDELKADER</p>
-                  <p className="text-xl text-slate-500 font-medium">د بحيري عبد القادر</p>
+                  <p className="text-3xl font-black text-emerald-600 mb-3">{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</p>
+                  <p className="text-xl text-slate-500 font-medium">{language === 'ar' ? 'منصة النقل الجامعي الذكي' : 'Plateforme de transport universitaire intelligent'}</p>
                 </div>
               </Card>
             </motion.div>

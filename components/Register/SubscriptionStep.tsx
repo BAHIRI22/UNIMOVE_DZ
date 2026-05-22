@@ -12,7 +12,6 @@ interface SubscriptionData {
   subscription: 'daily' | 'weekly' | 'monthly';
   fullName: string;
   homePoint: string;
-  preferredRoute: string;
 }
 
 interface SubscriptionStepProps {
@@ -25,7 +24,6 @@ export function SubscriptionStep({ onNext, onPrevious }: SubscriptionStepProps) 
   const [selectedSub, setSelectedSub] = useState<'daily' | 'weekly' | 'monthly' | null>(null);
   const [fullName, setFullName] = useState('');
   const [homePoint, setHomePoint] = useState('');
-  const [preferredRoute, setPreferredRoute] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNext = () => {
@@ -34,18 +32,18 @@ export function SubscriptionStep({ onNext, onPrevious }: SubscriptionStepProps) 
     if (!selectedSub) newErrors.subscription = t('register.subscription');
     if (!fullName.trim()) newErrors.fullName = t('register.fullName');
     if (!homePoint.trim()) newErrors.homePoint = t('register.homePoint');
-    if (!preferredRoute) newErrors.preferredRoute = t('register.preferredRoute');
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    if (!selectedSub) return;
+
     onNext({
       subscription: selectedSub,
       fullName: fullName.trim(),
       homePoint: homePoint.trim(),
-      preferredRoute,
     });
   };
 
@@ -127,25 +125,6 @@ export function SubscriptionStep({ onNext, onPrevious }: SubscriptionStepProps) 
             className="h-14 text-lg rounded-xl border-2 focus:border-emerald-500"
           />
           {errors.homePoint && <p className="text-red-600 text-base font-medium">{errors.homePoint}</p>}
-        </div>
-
-        <div className="space-y-3">
-          <Label htmlFor="route" className="text-lg font-bold text-gray-900">
-            {t('register.preferredRoute')}
-          </Label>
-          <select
-            id="route"
-            value={preferredRoute}
-            onChange={(e) => setPreferredRoute(e.target.value)}
-            className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-          >
-            <option value="">اختر طريقاً...</option>
-            <option value="route-1">سيدي بلعباس - وهران</option>
-            <option value="route-2">سيدي بلعباس - الجزائر</option>
-            <option value="route-3">سيدي بلعباس - مستغانم</option>
-            <option value="route-4">سيدي بلعباس - تلمسان</option>
-          </select>
-          {errors.preferredRoute && <p className="text-red-600 text-base font-medium">{errors.preferredRoute}</p>}
         </div>
       </div>
 

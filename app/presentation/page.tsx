@@ -85,8 +85,8 @@ export default function PresentationPage() {
             </h3>
             <p className="text-sm text-gray-600">
               {language === 'ar'
-                ? 'استخدم بيانات الاختبار: 0557077069 / 123456'
-                : 'Utilisez les données de test: 0557077069 / 123456'}
+                ? 'استخدم أي رقم هاتف مع الكود 123456'
+                : 'Utilisez n\'importe quel numéro avec le code 123456'}
             </p>
             <p className="text-sm text-gray-600">
               {language === 'ar'

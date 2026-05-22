@@ -50,7 +50,7 @@ export function Header() {
               transition={{ duration: 0.3 }}
             >
               <Image
-                src="/images/logo.png"
+                src="/images/logo.png?v=2026-logo-update"
                 alt="UNIMOVE-DZ Logo"
                 fill
                 className="object-contain"

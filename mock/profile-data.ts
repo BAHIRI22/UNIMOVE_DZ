@@ -2,7 +2,7 @@ import { UserProfile, AccountSettings, SecuritySettings, LoginHistory } from '@/
 
 export const mockUserProfile: UserProfile = {
   id: 'user-001',
-  phone: '0557077069',
+  phone: '0600000000',
   phoneVerified: true,
   email: 'ahmed.benali@univ-sba.dz',
   emailVerified: true,

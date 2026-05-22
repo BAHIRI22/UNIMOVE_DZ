@@ -117,7 +117,7 @@ export function QRCard({ className }: QRCardProps) {
         <p className="font-medium text-gray-700">
           {language === 'ar' ? 'التطوير:' : 'Développement:'}
         </p>
-        <p>د بحيري عبد القادر</p>
+        <p>{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</p>
         <p className="font-medium text-gray-700 mt-2">
           {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
         </p>

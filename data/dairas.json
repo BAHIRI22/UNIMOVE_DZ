@@ -1,0 +1,242 @@
+{
+  "dairas": [
+    {
+      "id": "sidi-bel-abbes",
+      "name": "دائرة سيدي بلعباس",
+      "nameFr": "Sidi Bel Abbès",
+      "communes": [
+        {
+          "id": "centre-ville",
+          "name": "Centre-ville",
+          "nameAr": "وسط المدينة",
+          "departurePoints": [
+            "Centre-ville",
+            "Gare Routière",
+            "Gare Ferroviaire",
+            "Campus Universitaire",
+            "Résidence Universitaire 1000 lits",
+            "Résidence Universitaire 2000 lits",
+            "Pôle Universitaire"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tesala",
+      "name": "دائرة تسالة",
+      "nameFr": "Tessala",
+      "communes": [
+        {
+          "id": "centre-ville-tesala",
+          "name": "Centre-ville Tessala",
+          "nameAr": "وسط مدينة تسالة",
+          "departurePoints": [
+            "Centre-ville Tessala",
+            "Gare Routière Tessala",
+            "Station Universitaire Tessala"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ras-el-ma",
+      "name": "دائرة رأس الماء",
+      "nameFr": "Ras El Ma",
+      "communes": [
+        {
+          "id": "centre-ville-ras-el-ma",
+          "name": "Centre-ville Ras El Ma",
+          "nameAr": "وسط مدينة رأس الماء",
+          "departurePoints": [
+            "Centre-ville Ras El Ma",
+            "Station Ras El Ma"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sfisef",
+      "name": "دائرة سفيزف",
+      "nameFr": "Sfisef",
+      "communes": [
+        {
+          "id": "centre-ville-sfisef",
+          "name": "Centre-ville Sfisef",
+          "nameAr": "وسط مدينة سفيزف",
+          "departurePoints": [
+            "Centre-ville Sfisef",
+            "Gare Routière Sfisef",
+            "Station Universitaire Sfisef"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "telagh",
+      "name": "دائرة تلاغ",
+      "nameFr": "Telagh",
+      "communes": [
+        {
+          "id": "centre-ville-telagh",
+          "name": "Centre-ville Telagh",
+          "nameAr": "وسط مدينة تلاغ",
+          "departurePoints": [
+            "Centre-ville Telagh",
+            "Arrêt Bus Telagh",
+            "Point Transport Étudiants"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tenira",
+      "name": "دائرة تنيرة",
+      "nameFr": "Tenira",
+      "communes": [
+        {
+          "id": "centre-ville-tenira",
+          "name": "Centre-ville Tenira",
+          "nameAr": "وسط مدينة تنيرة",
+          "departurePoints": [
+            "Centre-ville Tenira"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ben-badis",
+      "name": "دائرة بن باديس",
+      "nameFr": "Ben Badis",
+      "communes": [
+        {
+          "id": "centre-ville-ben-badis",
+          "name": "Centre-ville Ben Badis",
+          "nameAr": "وسط مدينة بن باديس",
+          "departurePoints": [
+            "Centre-ville Ben Badis"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ain-el-berd",
+      "name": "دائرة عين البرد",
+      "nameFr": "Aïn El Berd",
+      "communes": [
+        {
+          "id": "centre-ville-ain-el-berd",
+          "name": "Centre-ville Aïn El Berd",
+          "nameAr": "وسط مدينة عين البرد",
+          "departurePoints": [
+            "Centre-ville Aïn El Berd"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "marhoum",
+      "name": "دائرة مرحوم",
+      "nameFr": "Marhoum",
+      "communes": [
+        {
+          "id": "centre-ville-marhoum",
+          "name": "Centre-ville Marhoum",
+          "nameAr": "وسط مدينة مرحوم",
+          "departurePoints": [
+            "Centre-ville Marhoum"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "merine",
+      "name": "دائرة مرين",
+      "nameFr": "Merine",
+      "communes": [
+        {
+          "id": "centre-ville-merine",
+          "name": "Centre-ville Merine",
+          "nameAr": "وسط مدينة مرين",
+          "departurePoints": [
+            "Centre-ville Merine"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mostefa-ben-ibrahim",
+      "name": "دائرة مصطفى بن إبراهيم",
+      "nameFr": "Mostefa Ben Ibrahim",
+      "communes": [
+        {
+          "id": "centre-ville-mostefa",
+          "name": "Centre-ville Mostefa Ben Ibrahim",
+          "nameAr": "وسط مدينة مصطفى بن إبراهيم",
+          "departurePoints": [
+            "Centre-ville Mostefa Ben Ibrahim"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moulay-slissen",
+      "name": "دائرة مولاي سليسن",
+      "nameFr": "Moulay Slissen",
+      "communes": [
+        {
+          "id": "centre-ville-moulay",
+          "name": "Centre-ville Moulay Slissen",
+          "nameAr": "وسط مدينة مولاي سليسن",
+          "departurePoints": [
+            "Centre-ville Moulay Slissen"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sidi-ali-ben-youb",
+      "name": "دائرة سيدي علي بن يوب",
+      "nameFr": "Sidi Ali Ben Youb",
+      "communes": [
+        {
+          "id": "centre-ville-sidi-ali-ben-youb",
+          "name": "Centre-ville Sidi Ali Ben Youb",
+          "nameAr": "وسط مدينة سيدي علي بن يوب",
+          "departurePoints": [
+            "Centre-ville Sidi Ali Ben Youb"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sidi-ali-boussidi",
+      "name": "دائرة سيدي علي بوسيدي",
+      "nameFr": "Sidi Ali Boussidi",
+      "communes": [
+        {
+          "id": "centre-ville-sidi-ali-boussidi",
+          "name": "Centre-ville Sidi Ali Boussidi",
+          "nameAr": "وسط مدينة سيدي علي بوسيدي",
+          "departurePoints": [
+            "Centre-ville Sidi Ali Boussidi"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sidi-lahcen",
+      "name": "دائرة سيدي لحسن",
+      "nameFr": "Sidi Lahcen",
+      "communes": [
+        {
+          "id": "centre-ville-sidi-lahcen",
+          "name": "Centre-ville Sidi Lahcen",
+          "nameAr": "وسط مدينة سيدي لحسن",
+          "departurePoints": [
+            "Centre-ville Sidi Lahcen"
+          ]
+        }
+      ]
+    }
+  ]
+}

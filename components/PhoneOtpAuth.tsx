@@ -40,10 +40,10 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
   const DEMO_OTP_CODE = '123456';
   const ENABLE_REAL_FIREBASE_SMS = false;
   const DEMO_USERS: Record<string, { role: 'student' | 'teacher' | 'admin' | 'driver'; fullName: string; labelFr: string; labelAr: string }> = {
-    '+213557077069': { role: 'student', fullName: 'Demo Student', labelFr: 'Étudiant', labelAr: 'طالب' },
-    '+213660000001': { role: 'student', fullName: 'Demo Étudiant', labelFr: 'Étudiant', labelAr: 'طالب' },
-    '+213660000002': { role: 'teacher', fullName: 'Demo Enseignant', labelFr: 'Enseignant', labelAr: 'أستاذ' },
-    '+213660000003': { role: 'admin', fullName: 'Demo Administrateur', labelFr: 'Administrateur', labelAr: 'مدير' },
+    '0600000000': { role: 'student', fullName: 'Demo Student', labelFr: 'Étudiant', labelAr: 'طالب' },
+    '660000001': { role: 'student', fullName: 'Demo Étudiant', labelFr: 'Étudiant', labelAr: 'طالب' },
+    '770000004': { role: 'teacher', fullName: 'Demo Enseignant', labelFr: 'Enseignant', labelAr: 'أستاذ' },
+    '12345678': { role: 'admin', fullName: 'Demo Administrateur', labelFr: 'Administrateur', labelAr: 'مدير' },
     '+213770000004': { role: 'driver', fullName: 'Demo Chauffeur', labelFr: 'Chauffeur', labelAr: 'سائق' },
   };
   // Algerian phone number normalization
@@ -127,48 +127,36 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
       return;
     }
 
-    if (DEMO_USERS[normalizedPhone]) {
-      const currentDemoUser = DEMO_USERS[normalizedPhone];
-      setLoading(true);
-      setError('');
-      setSuccess(language === 'ar' ? 'تم إرسال كود التحقق التجريبي' : 'Code OTP de démonstration envoyé');
-      setConfirmationResult({ confirm: async (code: string) => {
-        if (code === DEMO_OTP_CODE) {
-          return {
-            user: {
-              phoneNumber: normalizedPhone,
-              uid: `demo-${normalizedPhone.replace(/\D/g, '')}`,
-              demoUserData: {
-                fullName: currentDemoUser.fullName,
-                role: currentDemoUser.role,
-                institution: 'Université Djillali Liabes Sidi Bel Abbès',
-                faculty: 'Faculté de Droit et Sciences Politiques',
-                subscription: 'monthly',
-                validUntil: '2026-12-31',
-                homePoint: 'Sidi Bel Abbès',
-                preferredRoute: 'Campus Universitaire',
-                isApproved: true,
-              },
+    // Demo mode: accept any phone number
+    setLoading(true);
+    setError('');
+    setSuccess(language === 'ar' ? 'تم إرسال كود التحقق التجريبي' : 'Code OTP de démonstration envoyé');
+    setConfirmationResult({ confirm: async (code: string) => {
+      if (code === DEMO_OTP_CODE) {
+        return {
+          user: {
+            phoneNumber: normalizedPhone,
+            uid: `demo-${normalizedPhone.replace(/\D/g, '')}`,
+            demoUserData: {
+              fullName: 'Demo User',
+              role: 'student',
+              institution: 'Université Djillali Liabes Sidi Bel Abbès',
+              faculty: 'Faculté de Droit et Sciences Politiques',
+              subscription: 'monthly',
+              validUntil: '2026-12-31',
+              homePoint: 'Sidi Bel Abbès',
+              preferredRoute: 'Campus Universitaire',
+              isApproved: true,
             },
-          };
-        }
-        throw new Error('demo/invalid-otp-code');
-      } } as any);
-      setCanResend(false);
-      setResendCountdown(60);
-      setLoading(false);
-      return;
-    }
-
-    if (!ENABLE_REAL_FIREBASE_SMS) {
-      setError(
-        language === 'ar'
-          ? 'هذا الرقم غير متاح في الوضع التجريبي. الرسائل الحقيقية تتطلب Firebase Billing'
-          : 'Ce numéro n’est pas disponible en mode démo. Le SMS réel nécessite Firebase Billing'
-      );
-      if (onAuthError) onAuthError(language === 'ar' ? 'هذا الرقم غير متاح في الوضع التجريبي' : 'Le SMS réel nécessite Firebase Billing');
-      return;
-    }
+          },
+        };
+      }
+      throw new Error('demo/invalid-otp-code');
+    } } as any);
+    setCanResend(false);
+    setResendCountdown(60);
+    setLoading(false);
+    return;
 
     // Real Firebase OTP
     const firebasePhone = normalizedPhone;
@@ -318,7 +306,7 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   type="tel"
-                  placeholder={language === 'ar' ? '0557077069' : '0557077069'}
+                  placeholder={language === 'ar' ? 'رقم الهاتف' : 'Numéro de téléphone'}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="pl-10 h-12 text-lg border-gray-300 focus:border-primary focus:ring-primary"

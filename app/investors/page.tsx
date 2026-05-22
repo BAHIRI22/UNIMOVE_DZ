@@ -322,8 +322,8 @@ export default function InvestorsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <Rocket className="mb-4 h-8 w-8 text-emerald-600" />
-                <h3 className="text-xl font-black">DR: BEHIRI ABDELKADER</h3>
-                <p className="mt-2 text-2xl font-black text-emerald-700">د بحيري عبد القادر</p>
+                <h3 className="text-xl font-black">{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</h3>
+                <p className="mt-2 text-2xl font-black text-emerald-700">{language === 'ar' ? 'منصة النقل الجامعي الذكي' : 'Plateforme de transport universitaire intelligent'}</p>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
                 <GraduationCap className="mb-4 h-8 w-8 text-emerald-600" />

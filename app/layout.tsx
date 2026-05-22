@@ -55,8 +55,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: '/favicon.svg',
-    apple: '/icon.svg',
+    icon: '/images/logo.png?v=2026-logo-update',
+    apple: '/images/logo.png?v=2026-logo-update',
   },
 }
 

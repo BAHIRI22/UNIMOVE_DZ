@@ -291,8 +291,8 @@ export default function FinancialPlanPage() {
                 {language === 'ar' ? 'الإنتاج والتطوير' : 'Production et Développement'}
               </h3>
               <div className="space-y-3 text-slate-300">
-                <p><span className="font-semibold text-white">DR:</span> BEHIRI ABDELKADER</p>
-                <p className="text-2xl font-bold text-emerald-400">د بحيري عبد القادر</p>
+                <p className="font-semibold text-white">{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</p>
+                <p className="text-2xl font-bold text-emerald-400">{language === 'ar' ? 'منصة النقل الجامعي الذكي' : 'Plateforme de transport universitaire intelligent'}</p>
               </div>
             </div>
           </div>

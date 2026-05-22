@@ -38,7 +38,7 @@ export default function AboutProjectPage() {
       icon: CheckCircle2,
       title: language === 'ar' ? 'الحل' : 'Solution',
       text: language === 'ar'
-        ? 'د بحيري عبد القادر'
+        ? 'UNIMOVE-DZ propose une plateforme digitale pour réservation, QR, GPS, notifications, abonnements et paiement flexible.'
         : 'UNIMOVE-DZ propose une plateforme digitale pour réservation, QR, GPS, notifications, abonnements et paiement flexible.',
       tone: 'from-emerald-500 to-teal-500',
     },
@@ -46,7 +46,7 @@ export default function AboutProjectPage() {
       icon: ShieldCheck,
       title: language === 'ar' ? 'الأمان' : 'Sécurité',
       text: language === 'ar'
-        ? 'د بحيري عبد القادر'
+        ? 'Cartes digitales, suivi des trajets, informations claires et chauffeurs organisés renforcent la confiance et la sécurité.'
         : 'Cartes digitales, suivi des trajets, informations claires et chauffeurs organisés renforcent la confiance et la sécurité.',
       tone: 'from-blue-500 to-cyan-500',
     },
@@ -119,7 +119,10 @@ export default function AboutProjectPage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <Lightbulb className="mb-5 h-10 w-10 text-emerald-300" />
-              <h2 className="text-4xl font-black md:text-5xl"د بحيري عبد القادر"mt-5 text-lg leading-8 text-slate-300">
+              <h2 className="text-4xl font-black md:text-5xl mb-5">
+                {language === 'ar' ? 'الابتكار' : 'Innovation'}
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-slate-300">
                 {language === 'ar'
                   ? 'يجمع المشروع بين تجربة مستخدم بسيطة ونظام تشغيل قابل للقياس، ما يجعله قابلاً للتطبيق داخل الجامعة والتوسع إلى مؤسسات أخرى.'
                   : 'Le projet combine une expérience utilisateur simple et un système d’exploitation mesurable, applicable à l’université et extensible à d’autres institutions.'}
@@ -170,8 +173,8 @@ export default function AboutProjectPage() {
                 {language === 'ar' ? 'التطوير' : 'Développement'}
               </h2>
               <div className="mt-6 space-y-3 text-lg font-semibold text-emerald-50">
-                <p>DR BEHIRI ABDELKADER</p>
-                <p className="text-2xl font-black">د بحيري عبد القادر</p>
+                <p>{language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}</p>
+                <p className="text-2xl font-black">{language === 'ar' ? 'منصة النقل الجامعي الذكي' : 'Plateforme de transport universitaire intelligent'}</p>
               </div>
             </div>
           </div>
