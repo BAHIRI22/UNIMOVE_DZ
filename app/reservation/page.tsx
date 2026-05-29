@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { createNotification } from '@/lib/notifications';
 
 export default function ReservationPage() {
   const { language } = useLanguage();
@@ -25,7 +26,23 @@ export default function ReservationPage() {
     return 'RES-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
   };
 
-  const handleReservationSubmit = async (data: ReservationFormData & { totalPrice: number; selectedRoute: any; selectedVehicle: any }) => {
+  const handleReservationSubmit = async (data: {
+    tripCategory: string;
+    departurePoint: string;
+    destination: string;
+    date: string;
+    time: string;
+    vehicleType: 'car' | 'minibus' | 'bus';
+    seats: number;
+    paymentMethod: string;
+    roundTrip: boolean;
+    totalPrice: number;
+    estimatedDistanceKm: number;
+    estimatedTravelTime: number;
+    vehicleRecommended: string;
+    comfortLevel: string;
+    groupBooking: boolean;
+  }) => {
     // Block if user is not verified or approved
     const isVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
     const isApproved = user?.status === 'approved' || user?.accountStatus === 'active';
@@ -35,8 +52,6 @@ export default function ReservationPage() {
     }
 
     const reservationNumber = generateReservationNumber();
-    const departure = locations.find(l => l.id === data.departurePoint);
-    const destination = locations.find(l => l.id === data.destination);
 
     // Persist to Firestore (collection: bookings)
     try {
@@ -45,22 +60,43 @@ export default function ReservationPage() {
         fullName: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
         phoneNumber: user.phoneNumber || user.phone || '',
         role: user.role || 'student',
-        fromPoint: departure?.name || data.departurePoint,
-        toDestination: destination?.name || data.destination,
+        fromPoint: data.departurePoint,
+        toDestination: data.destination,
         daira: user.daira || '',
         commune: user.commune || '',
         date: data.date,
         time: data.time,
-        vehicleType: data.selectedVehicle?.type || data.selectedVehicle?.name || '',
-        passengersCount: data.seats || 1,
+        vehicleType: data.vehicleType,
+        passengersCount: data.seats,
         price: data.totalPrice,
         status: 'pending',
         paymentStatus: 'unpaid',
         paymentMethod: data.paymentMethod || 'cash',
         reservationNumber,
         createdAt: serverTimestamp(),
+        // Phase 10 fields
+        tripCategory: data.tripCategory,
+        vehicleRecommended: data.vehicleRecommended,
+        comfortLevel: data.comfortLevel,
+        groupBooking: data.groupBooking,
+        estimatedDistanceKm: data.estimatedDistanceKm,
+        estimatedTravelTime: data.estimatedTravelTime,
+        estimatedPrice: data.totalPrice,
+        finalPrice: data.totalPrice,
+        roundTrip: data.roundTrip,
       });
-      console.log('[Reservation] Booking created in Firestore:', reservationNumber);
+      console.log('[Reservation] Phase 10 Booking created in Firestore:', reservationNumber);
+
+      // Create booking notification for the user
+      await createNotification({
+        userId: user.id,
+        titleAr: 'تم استلام طلب الرحلة الذكية ⏳',
+        titleFr: 'Demande de trajet intelligent reçue ⏳',
+        messageAr: `طلب الحجز رقم #${reservationNumber} لرحلتك من ${data.departurePoint} إلى ${data.destination} قيد المراجعة الآن من طرف الإدارة.`,
+        messageFr: `Votre demande de trajet #${reservationNumber} de ${data.departurePoint} à ${data.destination} est en cours de validation par l'administration.`,
+        type: 'system',
+      });
+
     } catch (e) {
       console.error('[Reservation] Failed to save booking:', e);
       alert(language === 'ar' ? 'تعذر حفظ الحجز' : 'Impossible d\'enregistrer la réservation');

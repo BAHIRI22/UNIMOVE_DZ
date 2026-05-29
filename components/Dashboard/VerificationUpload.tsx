@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, Upload, FileCheck2, Loader2, CheckCircle2, FileText, ImageIcon, X } from 'lucide-react';
 import { compressImageToMaxSize } from '@/lib/imageCompression';
+import { createNotification } from '@/lib/notifications';
 
 const DOC_OPTIONS_AR = [
   { value: 'student_card', label: 'بطاقة الطالب' },
@@ -191,11 +192,11 @@ export function VerificationUpload() {
       // Compress images before upload
       if (file.type.startsWith('image/')) {
         setCompressing(true);
-        console.log('[VerificationUpload] Original file size:', file.size, 'bytes');
+        // [VerificationUpload] compressing image
         fileToUpload = await compressImageToMaxSize(file, 5);
         setCompressing(false);
         setCompressedSize(fileToUpload.size);
-        console.log('[VerificationUpload] Compressed file size:', fileToUpload.size, 'bytes');
+        // [VerificationUpload] compression complete
 
         if (fileToUpload.size > MAX_SIZE) {
           setError(
@@ -215,7 +216,7 @@ export function VerificationUpload() {
         throw new Error('Cloudinary secure_url is missing');
       }
 
-      console.log('[VerificationUpload] Cloudinary upload success URL:', secureUrl);
+      // [VerificationUpload] Cloudinary upload success
 
       await updateDoc(doc(db, 'users', user.id), {
         verificationDocumentUrl: secureUrl,
@@ -245,9 +246,22 @@ export function VerificationUpload() {
         adminNote: '',
       });
 
+      // Create admin notification
+      await createNotification({
+        userId: 'admin',
+        userPhone: user.phoneNumber || user.phone || '',
+        titleAr: 'وثيقة تحقق جديدة',
+        titleFr: 'Nouveau document de vérification',
+        messageAr: `قام المستخدم ${user.fullName || user.firstName || 'مستخدم'} برفع وثيقة تحقق جديدة في انتظار المراجعة.`,
+        messageFr: `L'utilisateur ${user.fullName || user.firstName || 'Utilisateur'} a téléversé un nouveau document de vérification en attente de revue.`,
+        type: 'document_uploaded',
+        relatedEntityId: user.id,
+        relatedEntityType: 'user',
+      });
+
       setDone(true);
     } catch (e: any) {
-      console.error('[VerificationUpload] error:', e);
+      console.error('[VerificationUpload] upload error');
       setError(
         e?.message === 'Cloudinary configuration is missing'
           ? language === 'ar'

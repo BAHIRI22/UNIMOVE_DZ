@@ -26,37 +26,31 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
     const storedPhone = typeof window !== 'undefined' ? localStorage.getItem('unimove_current_phone') : null;
     const normalized = storedPhone ? normalizePhone(storedPhone) : null;
 
-    console.log('[DashboardLayout Debug]');
-    console.log('- localStorage phone:', storedPhone);
-    console.log('- normalized phone:', normalized);
-    console.log('- user found:', user ? user.fullName : 'null');
-    console.log('- role:', user ? user.role : 'null');
-
     if (!user) {
-      console.log('- redirect reason: No current user found and loading is complete. Redirecting to /login');
+      // redirect reason: No current user found; redirecting to /login
       router.replace('/login');
       return;
     }
 
     if (role === 'admin' && user.role !== 'admin') {
-      console.log('- redirect reason: User is not an admin on admin route. Redirecting to /dashboard');
+      // redirect reason: User is not an admin; redirecting to /dashboard
       router.replace('/dashboard');
       return;
     }
 
     if (role !== 'admin' && user.role === 'admin') {
-      console.log('- redirect reason: Admin accessing user route. Redirecting to /admin');
+      // redirect reason: Admin accessing user route; redirecting to /admin
       router.replace('/admin');
       return;
     }
 
     if (role !== 'admin' && user.verified === false && pathname !== '/dashboard') {
-      console.log('- redirect reason: User is unverified on a user protected route. Redirecting to /dashboard');
+      // redirect reason: User is unverified; redirecting to /dashboard
       router.replace('/dashboard');
       return;
     }
 
-    console.log('- redirect reason: Access allowed');
+    // access allowed
   }, [user, isLoading, role, pathname, router]);
 
   if (isLoading) {

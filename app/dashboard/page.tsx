@@ -88,6 +88,28 @@ export default function DashboardPage() {
   const isApproved = user?.status === 'approved' || (user as any)?.accountStatus === 'active';
   const isFullyActive = isVerified && isApproved;
 
+  const isSubActive =
+    user?.subscriptionStatus === 'active' &&
+    user?.subscriptionEndDate &&
+    new Date(user.subscriptionEndDate) > new Date();
+
+  let subLabel = language === 'ar' ? 'بدون اشتراك' : 'Aucun';
+  let daysRemaining = 0;
+  if (isSubActive && user?.subscriptionEndDate) {
+    const end = new Date(user.subscriptionEndDate);
+    const diffTime = end.getTime() - new Date().getTime();
+    daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+    const plansMapping: any = {
+      daily: language === 'ar' ? 'يومي' : 'Journalier',
+      weekly: language === 'ar' ? 'أسبوعي' : 'Hebdomadaire',
+      monthly: language === 'ar' ? 'شهري' : 'Mensuel',
+      semester: language === 'ar' ? 'سداسي' : 'Semestriel',
+      yearly: language === 'ar' ? 'سنوي' : 'Annuel',
+    };
+    subLabel = plansMapping[user.subscriptionPlan] || (language === 'ar' ? 'نشط' : 'Actif');
+  }
+
   const stats = [
     {
       icon: Calendar,
@@ -107,11 +129,17 @@ export default function DashboardPage() {
     },
     {
       icon: CreditCard,
-      label: language === 'ar' ? 'الاشتراك' : 'Abonnement',
-      value: isFullyActive ? (language === 'ar' ? 'نشط' : 'Actif') : (language === 'ar' ? 'غير مفعل' : 'Inactif'),
+      label: isSubActive
+        ? (language === 'ar' ? `باقي ${daysRemaining} يوم` : `${daysRemaining} j restants`)
+        : (language === 'ar' ? 'الاشتراك غير نشط' : 'Abonnement Inactif'),
+      value: subLabel,
       color: 'from-purple-500 to-purple-600',
       shadowColor: 'shadow-purple-500/30',
       bgColor: 'bg-gradient-to-br from-purple-50 to-purple-100',
+      cta: !isSubActive ? {
+        label: language === 'ar' ? 'اختيار اشتراك' : 'Choisir',
+        href: '/subscriptions',
+      } : undefined,
     },
     {
       icon: TrendingUp,
@@ -306,9 +334,19 @@ export default function DashboardPage() {
                         >
                           <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
                         </motion.div>
-                        <div>
+                        <div className="flex-1">
                           <p className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900">{stat.value}</p>
-                          <p className="text-sm md:text-base lg:text-lg text-slate-600 font-bold">{stat.label}</p>
+                          <p className="text-sm md:text-base lg:text-lg text-slate-600 font-bold mb-2">{stat.label}</p>
+                          {stat.cta && (
+                            <Link href={stat.cta.href}>
+                              <Button
+                                size="sm"
+                                className="h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs mt-1 px-3 py-1"
+                              >
+                                {stat.cta.label}
+                              </Button>
+                            </Link>
+                          )}
                         </div>
                       </div>
                     </Card>

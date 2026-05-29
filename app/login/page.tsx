@@ -17,16 +17,12 @@ export default function LoginPage() {
 
   const handleAuthSuccess = async (firebaseUser: any) => {
     const rawPhone = firebaseUser.phoneNumber || '';
-    console.log('LOGIN PHONE:', rawPhone);
-
-    // Normalize for logging
+    // Normalize phone
     const digits = rawPhone.replace(/\D/g, '');
     let normalized = rawPhone;
     if (digits.startsWith('0') && digits.length === 10) {
       normalized = '+213' + digits.slice(1);
     }
-    console.log('NORMALIZED PHONE:', normalized);
-
     // loginWithFirebase now searches multiple phone formats via findUserByPhone
     const existingUser = await loginWithFirebase(firebaseUser);
 
@@ -37,10 +33,7 @@ export default function LoginPage() {
       const vStatus = (existingUser as any).verificationStatus;
       const aStatus = (existingUser as any).accountStatus;
 
-      console.log('FIRESTORE USER FOUND:', existingUser.id || existingUser.phone);
-      console.log('ROLE FOUND:', role);
-      console.log('VERIFIED:', verified, '| verificationStatus:', vStatus);
-      console.log('STATUS:', status, '| accountStatus:', aStatus);
+      // User found in Firestore; checking role & status
 
       if (typeof window !== 'undefined') {
         localStorage.setItem('unimove_current_phone', rawPhone);
@@ -49,20 +42,24 @@ export default function LoginPage() {
       }
 
       const isAdminRole = role === 'admin';
-      const isVerified = verified === true || vStatus === 'verified' || aStatus === 'active';
-      const isApproved = status === 'approved' || aStatus === 'active' || vStatus === 'verified';
+      const isDriverRole = role === 'driver';
+      const isVerified = verified === true || vStatus === 'verified' || aStatus === 'active' || isDriverRole;
+      const isApproved = status === 'approved' || aStatus === 'active' || vStatus === 'verified' || isDriverRole;
 
       if (isAdminRole && isVerified && isApproved) {
-        console.log('REDIRECT TARGET: /admin-panel');
+        // Redirecting to admin panel
         router.replace('/admin-panel');
+      } else if (isDriverRole) {
+        // Redirecting to driver dashboard
+        router.replace('/driver-dashboard');
       } else {
-        console.log('REDIRECT TARGET: /dashboard', { isAdminRole, isVerified, isApproved });
+        // Redirecting to user dashboard
         router.replace('/dashboard');
       }
       return;
     }
 
-    console.log('REDIRECT TARGET: /register (no user found)');
+    // Redirecting to registration
     router.replace(`/register?phone=${encodeURIComponent(rawPhone)}`);
   };
 

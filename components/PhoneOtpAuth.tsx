@@ -67,7 +67,7 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
     setError('');
     setSuccess('');
 
-    console.log('DEV OTP BYPASS ACTIVE');
+    // Demo OTP bypass active (development only)
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('unimove_dev_phone', phone);
@@ -76,8 +76,8 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
 
     setOtpStep(true);
     setSuccess(language === 'ar'
-      ? 'وضع التطوير: أدخل الرمز 123456'
-      : 'Mode d\u00e9veloppement : entrez le code 123456');
+      ? 'نسخة تجريبية: أدخل الرمز 123456'
+      : 'Version de démonstration : entrez le code 123456');
     setCanResend(false);
     setResendCountdown(60);
     setLoading(false);
@@ -138,7 +138,7 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
         <div className="flex flex-wrap items-center justify-center gap-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700">
             <Shield className="h-4 w-4" />
-            DEV OTP MODE
+            {language === 'ar' ? 'نسخة تجريبية' : 'Version de démonstration'}
           </div>
         </div>
 
@@ -203,7 +203,9 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
           <div className="space-y-4">
             {isDev && (
               <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm font-bold text-amber-800">
-                {language === 'ar' ? 'وضع التطوير مفعل: استعمل الرمز 123456' : 'Mode d\u00e9veloppement actif : utilisez le code 123456'}
+                {language === 'ar'
+                  ? 'نسخة تجريبية: استعمل الرمز 123456'
+                  : 'Version de démonstration : utilisez le code 123456'}
               </div>
             )}
             <div>

@@ -4,14 +4,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
-import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock } from 'lucide-react';
+import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export function MembershipCard() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const [showQR, setShowQR] = useState(false);
+  const router = useRouter();
 
   if (!user) return null;
 
@@ -37,6 +39,40 @@ export function MembershipCard() {
             <div className="inline-flex items-center gap-2 rounded-full bg-amber-300/15 px-4 py-2 text-sm font-bold text-amber-100">
               {language === 'ar' ? 'في انتظار التحقق' : 'En attente de vérification'}
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isSubscriptionActive =
+    user.subscriptionStatus === 'active' &&
+    user.subscriptionEndDate &&
+    new Date(user.subscriptionEndDate) > new Date();
+
+  if (!isSubscriptionActive) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{t('dashboard.myCard')}</h2>
+        <div className="relative bg-gradient-to-br from-slate-800 via-emerald-950 to-slate-900 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl overflow-hidden border border-white/10">
+          <div className="flex flex-col items-center justify-center text-center space-y-5 py-8">
+            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+              <CreditCard className="w-8 h-8 text-emerald-400" />
+            </div>
+            <h3 className="text-xl md:text-2xl font-extrabold text-red-200">
+              {language === 'ar' ? 'الاشتراك غير نشط' : 'Abonnement Inactif'}
+            </h3>
+            <p className="text-sm md:text-base opacity-90 max-w-xs leading-6 text-center">
+              {language === 'ar'
+                ? 'يرجى اختيار اشتراك لتفعيل البطاقة الرقمية والتمكن من حجز الرحلات.'
+                : 'Veuillez choisir un abonnement pour activer votre carte numérique et réserver des trajets.'}
+            </p>
+            <Button
+              onClick={() => router.push('/subscriptions')}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 px-6 rounded-xl shadow-lg transition-transform hover:scale-105"
+            >
+              {language === 'ar' ? 'اختيار اشتراك' : 'Choisir un abonnement'}
+            </Button>
           </div>
         </div>
       </div>

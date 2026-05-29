@@ -1,0 +1,169 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ========== HELPER FUNCTIONS ==========
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verified == true
+        && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == "approved"
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.accountStatus == "active");
+    }
+
+    function isDriver() {
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "driver";
+    }
+
+    function isVerifiedUser() {
+      return isAuthenticated()
+        && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verified == true
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == "approved"
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == "verified");
+    }
+
+    // ========== USERS ==========
+    match /users/{userId} {
+      // Anyone authenticated can read own profile
+      allow read: if isOwner(userId) || isAdmin();
+      // Admin can write any user
+      allow write: if isAdmin();
+      // User can update limited own fields only
+      allow update: if isOwner(userId)
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(["fullName", "phone", "phoneNumber", "university", "profileImage", "preferences", "address", "emergencyContact"]);
+      // User can create their own document on first register
+      allow create: if isOwner(userId)
+        && request.resource.data.role == "user"
+        && request.resource.data.verified == false
+        && request.resource.data.status == "pending";
+    }
+
+    // ========== BOOKINGS ==========
+    match /bookings/{bookingId} {
+      // Owner can read own bookings; driver can read assigned bookings; admin can read all
+      allow read: if isAdmin()
+        || (isAuthenticated() && resource.data.userId == request.auth.uid)
+        || (isDriver() && resource.data.assignedDriverId == request.auth.uid);
+      // Admin can create/update/delete any booking
+      allow write: if isAdmin();
+      // Driver can update only status of assigned bookings (trip execution)
+      allow update: if isDriver()
+        && resource.data.assignedDriverId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(["status", "startedAt", "completedAt", "cancelledAt", "cancelReason"]);
+      // User can create their own booking
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // ========== NOTIFICATIONS ==========
+    match /notifications/{notificationId} {
+      // User can read their own notifications; admin can read admin notifications
+      allow read: if isAdmin()
+        || (isAuthenticated() && resource.data.userId == request.auth.uid)
+        || (isAuthenticated() && resource.data.userId == "admin" && isAdmin());
+      // Admin and internal functions can create notifications
+      allow create: if isAdmin() || isAuthenticated();
+      // No updates/deletes by normal users
+      allow update, delete: if isAdmin();
+    }
+
+    // ========== SUBSCRIPTIONS ==========
+    match /subscriptions/{subscriptionId} {
+      // Owner can read own; admin can read all
+      allow read: if isAdmin()
+        || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      // Admin can manage all subscriptions
+      allow write: if isAdmin();
+      // User can create their own subscription (pending)
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == "pending"
+        && request.resource.data.paymentStatus == "unpaid";
+      // User can update only their own pending subscription (checkout)
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid
+        && resource.data.status == "pending"
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(["status", "paymentStatus", "startDate", "endDate"]);
+    }
+
+    // ========== PAYMENTS ==========
+    match /payments/{paymentId} {
+      // Owner can read own; admin can read all
+      allow read: if isAdmin()
+        || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      // Admin can manage all payments
+      allow write: if isAdmin();
+      // User can create their own pending payment
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.paymentStatus == "pending";
+      // User can update only limited fields of their own payment (mock pay)
+      allow update: if isAuthenticated()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(["paymentStatus", "paidAt", "transactionRef", "receiptNumber"]);
+    }
+
+    // ========== VEHICLES ==========
+    match /vehicles/{vehicleId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ========== DRIVERS ==========
+    match /drivers/{driverId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ========== ROUTES ==========
+    match /routes/{routeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ========== QR VALIDATIONS (tripValidations) ==========
+    match /tripValidations/{validationId} {
+      // Driver can create validations for their assigned trips
+      allow create: if isDriver()
+        && request.resource.data.driverId == request.auth.uid;
+      // Admin and involved driver/user can read
+      allow read: if isAdmin()
+        || (isDriver() && resource.data.driverId == request.auth.uid)
+        || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // ========== TRIP LOCATIONS ==========
+    match /tripLocations/{locationId} {
+      // Driver can write location for their assigned trip
+      allow create: if isDriver()
+        && request.resource.data.driverId == request.auth.uid;
+      // Admin and trip participants can read
+      allow read: if isAdmin()
+        || (isAuthenticated() && resource.data.userId == request.auth.uid)
+        || (isDriver() && resource.data.driverId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // ========== CLOUDINARY NOTE ==========
+    // For production, use signed upload via a secure API route.
+    // Unsigned upload is acceptable for development only.
+
+    // ========== DEFAULT DENY ==========
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { calculateDynamicPricing, recommendVehicle, PricingResult } from '@/lib/pricing';
 import {
   MapPin,
   Calendar,
@@ -16,548 +18,529 @@ import {
   CreditCard,
   Wallet,
   Smartphone,
-  Wifi,
   CheckCircle,
   AlertCircle,
+  Sparkles,
   Navigation,
-  ShieldCheck,
-  Timer,
-  Sparkles
+  ArrowRightLeft,
+  ChevronRight,
+  Info
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import dairasData from '@/data/dairas.json';
-import universityData from '@/data/university-destinations.json';
-import additionalDestinations from '@/data/additional-destinations.json';
-import routesData from '@/data/sidi-bel-abbes-routes.json';
-import { ReservationFormData, VehicleType, PaymentMethod } from '@/types/reservation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SmartReservationFormProps {
-  onReservationSubmit: (data: ReservationFormData & { totalPrice: number; selectedRoute: any; selectedVehicle: any }) => void;
+  onReservationSubmit: (data: {
+    tripCategory: string;
+    departurePoint: string;
+    destination: string;
+    customDeparture?: string;
+    customDestination?: string;
+    date: string;
+    time: string;
+    vehicleType: 'car' | 'minibus' | 'bus';
+    seats: number;
+    paymentMethod: string;
+    roundTrip: boolean;
+    totalPrice: number;
+    estimatedDistanceKm: number;
+    estimatedTravelTime: number;
+    vehicleRecommended: string;
+    comfortLevel: string;
+    groupBooking: boolean;
+  }) => void;
 }
 
 export function SmartReservationForm({ onReservationSubmit }: SmartReservationFormProps) {
-  const { language } = useLanguage();
-  const [formData, setFormData] = useState<ReservationFormData>({
-    departurePoint: '',
-    destination: '',
-    tripType: 'university',
-    university: '',
-    faculty: '',
-    residence: '',
-    date: '',
-    time: '',
-    vehicleType: 'bus',
-    seats: 1,
-    paymentMethod: 'subscription',
-  });
-  const [selectedRoute, setSelectedRoute] = useState<any>(null);
-  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
-  const [estimatedPrice, setEstimatedPrice] = useState(0);
-  const [selectedDaïra, setSelectedDaïra] = useState('');
-  const [selectedCommune, setSelectedCommune] = useState('');
-  const [selectedDeparturePoint, setSelectedDeparturePoint] = useState('');
-  const [selectedDestination, setSelectedDestination] = useState('');
-  const [destinationType, setDestinationType] = useState<'faculty' | 'institute' | 'residence' | 'university' | 'port'>('faculty');
+  const { language, isRTL } = useLanguage();
+  const { user } = useAuth();
 
-  const bookingSteps = [
-    language === 'ar' ? 'المسار' : 'Trajet',
-    language === 'ar' ? 'الوقت' : 'Horaire',
-    language === 'ar' ? 'المركبة' : 'Véhicule',
-    language === 'ar' ? 'الدفع' : 'Paiement',
-  ];
+  const isAr = language === 'ar';
 
-  const vehicleTypes: { value: VehicleType; label: string; labelAr: string; icon: any }[] = [
-    { value: 'bus', label: 'Bus', labelAr: 'حافلة', icon: Bus },
-    { value: 'minibus', label: 'Minibus', labelAr: 'ميني باص', icon: Bus },
-    { value: 'car', label: 'Voiture', labelAr: 'سيارة', icon: Car },
-  ];
+  // Form Fields
+  const [tripCategory, setTripCategory] = useState('daily_university');
+  const [departurePoint, setDeparturePoint] = useState('Centre-ville');
+  const [customDeparture, setCustomDeparture] = useState('');
+  const [destination, setDestination] = useState('Pôle universitaire');
+  const [customDestination, setCustomDestination] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [vehicleType, setVehicleType] = useState<'car' | 'minibus' | 'bus'>('bus');
+  const [seats, setSeats] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [roundTrip, setRoundTrip] = useState(false);
 
-  const paymentMethods: { value: PaymentMethod; label: string; labelAr: string; icon: any; disabled?: boolean }[] = [
-    { value: 'subscription', label: 'Abonnement', labelAr: 'اشتراك', icon: CreditCard },
-    { value: 'cash', label: 'Espèces (au départ)', labelAr: 'نقد (عند الركوب)', icon: Wallet },
-    { value: 'baridimob', label: 'BaridiMob', labelAr: 'باريديموب', icon: Smartphone, disabled: true },
-    { value: 'edahabia', label: 'Edahabia', labelAr: 'الإدحابية', icon: Smartphone, disabled: true },
-  ];
+  // Smart states
+  const [pricing, setPricing] = useState<PricingResult | null>(null);
+  const [similarGroupCount, setSimilarGroupCount] = useState(0);
 
-  const calculatePrice = () => {
-    if (!selectedRoute) return 0;
-    const basePrice = selectedRoute.transport.price;
-    const vehicleMultiplier = formData.vehicleType === 'bus' ? 1 : formData.vehicleType === 'minibus' ? 1.2 : 1.5;
-    return Math.round(basePrice * vehicleMultiplier * formData.seats);
-  };
+  // Check user details for discounts
+  const isStudentVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
+  const isSubscriptionActive = user?.subscriptionStatus === 'active';
 
-  const handleRouteChange = (routeId: string) => {
-    const route = routesData.routes.find((r: any) => r.id === routeId);
-    setSelectedRoute(route);
-    setFormData(prev => ({
-      ...prev,
-      departurePoint: route?.from.point || '',
-      destination: route?.to.name || '',
-      university: route?.to.id || '',
-    }));
-    updatePrice();
-  };
-
-  const handleVehicleTypeChange = (type: VehicleType) => {
-    setFormData(prev => ({ ...prev, vehicleType: type }));
-    setSelectedVehicle({
-      type,
-      features: {
-        wifi: true,
-        wifiPassword: 'UNIMOVE_DZ',
-        usbCharging: type === 'bus',
-        airConditioning: true,
-      },
+  // 1. Recalculate Dynamic Pricing
+  useEffect(() => {
+    const res = calculateDynamicPricing({
+      vehicleType,
+      tripCategory,
+      passengersCount: seats,
+      isStudentVerified,
+      isSubscriptionActive,
+      isRoundTrip: roundTrip,
     });
-    updatePrice();
-  };
+    setPricing(res);
+  }, [vehicleType, tripCategory, seats, isStudentVerified, isSubscriptionActive, roundTrip]);
 
-  const updatePrice = () => {
-    setEstimatedPrice(calculatePrice());
-  };
+  // 2. Auto Recommendation Trigger
+  const recommended = recommendVehicle(seats);
 
+  // 3. Simulate Smart Grouping based on destination, date and time
+  useEffect(() => {
+    if (destination && date && time) {
+      // Deterministic pseudo-random number of matching travelers
+      const seed = (destination.length + date.length + time.length) % 15 + 3;
+      setSimilarGroupCount(seed);
+    } else {
+      setSimilarGroupCount(0);
+    }
+  }, [destination, date, time]);
+
+  // Handle Form Submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedRoute || !selectedVehicle) {
-      alert(language === 'ar' ? 'يرجى اختيار المسار والمركبة' : 'Veuillez choisir la route et le véhicule');
+
+    // Check Capacity Limit
+    const maxCapacity = vehicleType === 'car' ? 4 : vehicleType === 'minibus' ? 18 : 60;
+    if (seats > maxCapacity) {
+      alert(
+        isAr
+          ? `عذراً، سعة الـ ${vehicleType === 'car' ? 'سيارة' : vehicleType === 'minibus' ? 'حافلة صغيرة' : 'حافلة'} القصوى هي ${maxCapacity} ركاب.`
+          : `Désolé, la capacité maximale de type ${vehicleType === 'car' ? 'Voiture' : vehicleType === 'minibus' ? 'Mini Bus' : 'Bus'} est de ${maxCapacity} passagers.`
+      );
       return;
     }
+
+    if (!date || !time) {
+      alert(isAr ? 'يرجى اختيار التاريخ والوقت.' : 'Veuillez choisir la date et l\'heure.');
+      return;
+    }
+
+    const finalDeparture = departurePoint === 'custom' ? customDeparture : departurePoint;
+    const finalDestination = destination === 'custom' ? customDestination : destination;
+
+    if (!finalDeparture || !finalDestination) {
+      alert(isAr ? 'يرجى تحديد نقطة الانطلاق والوصول.' : 'Veuillez préciser le départ et la destination.');
+      return;
+    }
+
     onReservationSubmit({
-      ...formData,
-      totalPrice: estimatedPrice,
-      selectedRoute,
-      selectedVehicle,
+      tripCategory,
+      departurePoint: finalDeparture,
+      destination: finalDestination,
+      customDeparture: departurePoint === 'custom' ? customDeparture : undefined,
+      customDestination: destination === 'custom' ? customDestination : undefined,
+      date,
+      time,
+      vehicleType,
+      seats,
+      paymentMethod,
+      roundTrip,
+      totalPrice: pricing?.estimatedPrice || 100,
+      estimatedDistanceKm: pricing?.estimatedDistanceKm || 5,
+      estimatedTravelTime: pricing?.estimatedTravelTimeMins || 15,
+      vehicleRecommended: recommended.type,
+      comfortLevel: vehicleType === 'car' ? 'high' : vehicleType === 'minibus' ? 'medium' : 'standard',
+      groupBooking: seats > 1,
     });
   };
 
+  // Categories
+  const categories = [
+    { value: 'daily_university', ar: 'تنقل يومي للجامعة', fr: 'Navette Universitaire' },
+    { value: 'inter_commune', ar: 'بين البلديات', fr: 'Inter-communes' },
+    { value: 'inter_daira', ar: 'بين الدوائر', fr: 'Inter-daïras' },
+    { value: 'inter_wilaya', ar: 'بين الولايات', fr: 'Inter-wilayas' },
+    { value: 'airport_transfer', ar: 'نقل إلى المطار ✈️', fr: 'Transfert Aéroport ✈️' },
+    { value: 'port_transfer', ar: 'نقل إلى الميناء 🚢', fr: 'Transfert Port 🚢' },
+    { value: 'scientific_event', ar: 'ملتقيات وعروض علمية 🔬', fr: 'Événement Scientifique 🔬' },
+    { value: 'sport_event', ar: 'فعاليات رياضية 🏆', fr: 'Événement Sportif 🏆' },
+    { value: 'cultural_event', ar: 'تظاهرات ثقافية 🎭', fr: 'Événement Culturel 🎭' },
+    { value: 'tourism_trip', ar: 'رحلات سياحية 🚌', fr: 'Voyage Touristique 🚌' },
+    { value: 'competition_trip', ar: 'مسابقات وطنية 🏅', fr: 'Concours Scientifique 🏅' },
+    { value: 'internship_trip', ar: 'تنقل للتربص والتدريب 💼', fr: 'Trajet de Stage 💼' },
+    { value: 'conference_trip', ar: 'مؤتمرات جامعية 🎤', fr: 'Conférence Universitaire 🎤' },
+    { value: 'special_trip', ar: 'رحلة خاصة مخصصة 🌟', fr: 'Trajet Spécial 🌟' },
+    { value: 'group_trip', ar: 'رحلة جماعية للطلبة 👥', fr: 'Voyage de Groupe 👥' },
+    { value: 'recurring_trip', ar: 'رحلة دورية متكررة 🔄', fr: 'Trajet Récurrent 🔄' },
+  ];
+
+  // Departures
+  const departures = [
+    { value: 'Centre-ville', ar: 'وسط المدينة', fr: 'Centre-ville' },
+    { value: 'Gare routière', ar: 'محطة الحافلات', fr: 'Gare routière' },
+    { value: 'Gare ferroviaire', ar: 'محطة القطار', fr: 'Gare ferroviaire' },
+    { value: 'Résidence universitaire', ar: 'الإقامة الجامعية', fr: 'Résidence universitaire' },
+    { value: 'Faculté', ar: 'الكلية', fr: 'Faculté' },
+    { value: 'Institut', ar: 'المعهد', fr: 'Institut' },
+    { value: 'Pôle universitaire', ar: 'القطب الجامعي', fr: 'Pôle universitaire' },
+    { value: 'Arrêt transport universitaire', ar: 'موقف النقل الجامعي', fr: 'Arrêt transport' },
+    { value: 'Aéroport', ar: 'المطار', fr: 'Aéroport' },
+    { value: 'Port', ar: 'الميناء', fr: 'Port' },
+    { value: 'custom', ar: '📍 نقطة انطلاق مخصصة', fr: '📍 Point personnalisé' },
+  ];
+
+  // Destinations
+  const destinations = [
+    { value: 'Pôle universitaire SB-Abbès', ar: 'القطب الجامعي سيدي بلعباس', fr: 'Pôle universitaire SBA' },
+    { value: 'Université d\'Oran - USTO', ar: 'جامعة العلوم والتكنولوجيا وهران', fr: 'Université d\'Oran USTO' },
+    { value: 'Université de Tlemcen', ar: 'جامعة تلمسان', fr: 'Université de Tlemcen' },
+    { value: 'Résidence Universitaire SBA', ar: 'الإقامة الجامعية سيدي بلعباس', fr: 'Résidence SBA' },
+    { value: 'Aéroport d\'Alger Houari Boumédiène', ar: 'مطار الجزائر الدولي', fr: 'Aéroport d\'Alger' },
+    { value: 'Aéroport d\'Oran Ahmed Ben Bella', ar: 'مطار وهران الدولي', fr: 'Aéroport d\'Oran' },
+    { value: 'Port de Ghazaouet', ar: 'ميناء الغزوات', fr: 'Port de Ghazaouet' },
+    { value: 'Port de Mostaganem', ar: 'ميناء مستغانم', fr: 'Port de Mostaganem' },
+    { value: 'Centre de conférences d\'Oran', ar: 'مركز المؤتمرات وهران', fr: 'Centre de Conférences Oran' },
+    { value: 'Complex olympique de Miloud Hadefi', ar: 'المركب الأولمبي ميلود هدفي', fr: 'Complexe Sportif Oran' },
+    { value: 'custom', ar: '📍 وجهة مخصصة جديدة', fr: '📍 Destination personnalisée' },
+  ];
+
+  const vehicleOptions = [
+    {
+      value: 'car',
+      titleAr: '🚗 سيارة خاصة',
+      titleFr: '🚗 Voiture',
+      capacityAr: '1 إلى 4 ركاب',
+      capacityFr: '1 à 4 passagers',
+      descAr: 'خدمة سريعة، مريحة ومرنة للغاية تناسب التنقل الفردي والمجموعات الصغيرة.',
+      descFr: 'Trajet individuel, rapide et flexible. Idéal pour un confort premium.',
+      priceTextAr: 'سعر مرتفع (35 د.ج/كم)',
+      priceTextFr: 'Tarif élevé (35 DA/km)',
+    },
+    {
+      value: 'minibus',
+      titleAr: '🚐 حافلة صغيرة',
+      titleFr: '🚐 Mini Bus',
+      capacityAr: '5 إلى 18 راكباً',
+      capacityFr: '5 à 18 passagers',
+      descAr: 'مثالية للمجموعات الدراسية المتوسطة، الرحلات العلمية، والتربصات الميدانية.',
+      descFr: 'Transport semi-collectif idéal pour groupes d\'études et stages.',
+      priceTextAr: 'سعر متوسط (25 د.ج/كم)',
+      priceTextFr: 'Tarif moyen (25 DA/km)',
+    },
+    {
+      value: 'bus',
+      titleAr: '🚌 حافلة كبيرة',
+      titleFr: '🚌 Bus',
+      capacityAr: '19 إلى 60 راكباً',
+      capacityFr: '19 à 60 passagers',
+      descAr: 'النقل الجماعي الاقتصادي الأفضل، مثالي للمناسبات الرياضية الكبرى والرحلات المشتركة.',
+      descFr: 'Transport collectif économique. Prix réduit par passager.',
+      priceTextAr: 'سعر منخفض ومخفّض (18 د.ج/كم)',
+      priceTextFr: 'Tarif réduit (18 DA/km)',
+    },
+  ];
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Card className="overflow-hidden rounded-3xl border border-emerald-100 bg-white/85 p-5 shadow-xl backdrop-blur-xl">
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="font-black text-slate-900">
-              {language === 'ar' ? 'تجربة حجز ذكية' : 'Expérience réservation intelligente'}
-            </h3>
-            <p className="text-sm text-slate-500">
-              {language === 'ar' ? 'اختر، أكد، وانطلق مثل تطبيق نقل حقيقي' : 'Choisissez, confirmez et partez comme une vraie app mobilité'}
-            </p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {bookingSteps.map((step, index) => (
-            <div key={step} className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-3">
-              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
-                {index + 1}
-              </div>
-              <p className="text-sm font-black text-slate-800">{step}</p>
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-6 text-slate-100" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* 1. Category Selector */}
+      <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem]">
+        <h3 className="text-lg font-black text-emerald-400 mb-4 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-emerald-400" />
+          {isAr ? 'نوع وتصنيف الرحلة الذكية' : 'Catégorie de trajet intelligent'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {categories.map((cat) => (
+            <button
+              key={cat.value}
+              type="button"
+              onClick={() => setTripCategory(cat.value)}
+              className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${
+                tripCategory === cat.value
+                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                  : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
+              }`}
+            >
+              <span>{isAr ? cat.ar : cat.fr}</span>
+              {tripCategory === cat.value && <CheckCircle className="w-4 h-4 text-emerald-400" />}
+            </button>
           ))}
         </div>
       </Card>
 
-      {/* Daïra Selection */}
-      <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <MapPin className="w-5 h-5" />
-          {language === 'ar' ? 'اختر الدائرة' : 'Choisir la daïra'}
-        </h3>
-        <select
-          value={selectedDaïra}
-          onChange={(e) => {
-            setSelectedDaïra(e.target.value);
-            setSelectedCommune('');
-            setSelectedDeparturePoint('');
-          }}
-          className="w-full p-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-        >
-          <option value="">{language === 'ar' ? 'اختر الدائرة...' : 'Choisir la daïra...'}</option>
-          {dairasData.dairas.map((daïra: any) => (
-            <option key={daïra.id} value={daïra.id}>
-              {language === 'ar' ? daïra.name : daïra.nameFr}
-            </option>
-          ))}
-        </select>
-      </Card>
-
-      {/* Commune Selection */}
-      {selectedDaïra && (
-        <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            {language === 'ar' ? 'اختر البلدية' : 'Choisir la commune'}
+      {/* 2. Departure & Destination */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Departure */}
+        <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem] space-y-4">
+          <h3 className="text-lg font-black text-emerald-400 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-emerald-400" />
+            {isAr ? 'نقطة الانطلاق' : 'Point de départ'}
           </h3>
           <select
-            value={selectedCommune}
-            onChange={(e) => {
-              setSelectedCommune(e.target.value);
-              setSelectedDeparturePoint('');
-            }}
-            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            value={departurePoint}
+            onChange={(e) => setDeparturePoint(e.target.value)}
+            className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 font-semibold"
           >
-            <option value="">{language === 'ar' ? 'اختر البلدية...' : 'Choisir la commune...'}</option>
-            {dairasData.dairas.find((d: any) => d.id === selectedDaïra)?.communes.map((commune: any) => (
-              <option key={commune.id} value={commune.id}>
-                {language === 'ar' ? commune.nameAr : commune.name}
+            {departures.map((dep) => (
+              <option key={dep.value} value={dep.value}>
+                {isAr ? dep.ar : dep.fr}
               </option>
             ))}
           </select>
-        </Card>
-      )}
 
-      {/* Departure Point Selection */}
-      {selectedCommune && (
-        <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            {language === 'ar' ? 'اختر نقطة الانطلاق' : 'Choisir le point de départ'}
+          {departurePoint === 'custom' && (
+            <Input
+              value={customDeparture}
+              onChange={(e) => setCustomDeparture(e.target.value)}
+              placeholder={isAr ? "اكتب نقطة الانطلاق المخصصة بالتفصيل..." : "Saisissez l'adresse de départ personnalisée..."}
+              className="bg-slate-900 border-emerald-500/40 text-white rounded-xl h-11"
+              required
+            />
+          )}
+        </Card>
+
+        {/* Destination */}
+        <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem] space-y-4">
+          <h3 className="text-lg font-black text-emerald-400 flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-emerald-400" />
+            {isAr ? 'الوجهة المحددة' : 'Destination'}
           </h3>
           <select
-            value={selectedDeparturePoint}
-            onChange={(e) => setSelectedDeparturePoint(e.target.value)}
-            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 font-semibold"
           >
-            <option value="">{language === 'ar' ? 'اختر نقطة الانطلاق...' : 'Choisir le point de départ...'}</option>
-            {dairasData.dairas.find((d: any) => d.id === selectedDaïra)?.communes.find((c: any) => c.id === selectedCommune)?.departurePoints.map((point: string, index: number) => (
-              <option key={index} value={point}>
-                {point}
+            {destinations.map((dest) => (
+              <option key={dest.value} value={dest.value}>
+                {isAr ? dest.ar : dest.fr}
               </option>
             ))}
           </select>
-        </Card>
-      )}
 
-      {/* Destination Type Selection */}
-      {selectedDeparturePoint && (
-        <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            {language === 'ar' ? 'نوع الوجهة' : 'Type de destination'}
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { value: 'faculty', label: language === 'ar' ? 'كلية' : 'Faculté', labelAr: 'كلية' },
-              { value: 'institute', label: language === 'ar' ? 'معهد' : 'Institut', labelAr: 'معهد' },
-              { value: 'residence', label: language === 'ar' ? 'سكن' : 'Résidence', labelAr: 'سكن' },
-              { value: 'university', label: language === 'ar' ? 'جامعة' : 'Université', labelAr: 'جامعة' },
-              { value: 'port', label: language === 'ar' ? 'الموانئ' : 'Ports', labelAr: 'الموانئ' },
-            ].map((type) => (
-              <button
-                key={type.value}
-                type="button"
-                onClick={() => setDestinationType(type.value as any)}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  destinationType === type.value
-                    ? 'border-emerald-500 bg-emerald-50'
-                    : 'border-gray-200 hover:border-emerald-200'
-                }`}
-              >
-                <span className="font-medium text-gray-900">{language === 'ar' ? type.labelAr : type.label}</span>
-              </button>
-            ))}
-          </div>
+          {destination === 'custom' && (
+            <Input
+              value={customDestination}
+              onChange={(e) => setCustomDestination(e.target.value)}
+              placeholder={isAr ? "اكتب الوجهة المخصصة بالتفصيل..." : "Saisissez la destination personnalisée..."}
+              className="bg-slate-900 border-emerald-500/40 text-white rounded-xl h-11"
+              required
+            />
+          )}
         </Card>
-      )}
+      </div>
 
-      {/* Destination Selection */}
-      {destinationType && (
-        <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            {language === 'ar' ? 'اختر الوجهة' : 'Choisir la destination'}
-          </h3>
-          <select
-            value={selectedDestination}
-            onChange={(e) => setSelectedDestination(e.target.value)}
-            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-          >
-            <option value="">{language === 'ar' ? 'اختر الوجهة...' : 'Choisir la destination...'}</option>
-            {destinationType === 'faculty' && universityData.university.faculties.map((faculty: any) => (
-              <option key={faculty.id} value={faculty.id}>
-                {language === 'ar' ? faculty.nameAr : faculty.name}
-              </option>
-            ))}
-            {destinationType === 'institute' && universityData.university.institutes.map((institute: any) => (
-              <option key={institute.id} value={institute.id}>
-                {language === 'ar' ? institute.nameAr : institute.name}
-              </option>
-            ))}
-            {destinationType === 'residence' && universityData.university.residences.map((residence: any) => (
-              <option key={residence.id} value={residence.id}>
-                {language === 'ar' ? residence.nameAr : residence.name}
-              </option>
-            ))}
-            {destinationType === 'university' && (
-              <option value={universityData.university.id}>
-                {language === 'ar' ? universityData.university.nameAr : universityData.university.name}
-              </option>
-            )}
-            {destinationType === 'port' && additionalDestinations.ports.map((port: any) => (
-              <option key={port.id} value={port.id}>
-                {language === 'ar' ? port.nameAr : port.name}
-              </option>
-            ))}
-          </select>
-        </Card>
-      )}
-
-      {/* Available Routes */}
-      {selectedDeparturePoint && selectedDestination && (
-        <Card className="p-6 border border-gray-200 rounded-3xl bg-white/85 backdrop-blur-xl shadow-xl">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            {language === 'ar' ? 'المسارات المتاحة' : 'Routes disponibles'}
-          </h3>
-          <div className="space-y-3">
-            {routesData.routes
-              .filter((route: any) => 
-                route.from.point === selectedDeparturePoint && 
-                route.to.id === selectedDestination
-              )
-              .map((route: any, index: number) => (
-              <motion.div
-                key={route.id}
-                whileHover={{ y: -4, scale: 1.01 }}
-                onClick={() => handleRouteChange(route.id)}
-                className={`p-5 rounded-2xl border-2 cursor-pointer transition-all shadow-sm ${
-                  selectedRoute?.id === route.id
-                    ? 'border-emerald-500 bg-emerald-50 shadow-emerald-500/20'
-                    : 'border-gray-200 hover:border-emerald-200 hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <h4 className="font-black text-gray-900">{route.from.point} → {route.to.name}</h4>
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
-                        {language === 'ar' ? 'متاح الآن' : 'Disponible'}
-                      </span>
-                      {index === 0 && (
-                        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
-                          {language === 'ar' ? 'الأسرع' : 'Plus rapide'}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-600 md:grid-cols-4">
-                      <span className="rounded-xl bg-white px-3 py-2 font-bold">{route.transport.distance} km</span>
-                      <span className="rounded-xl bg-white px-3 py-2 font-bold">{route.transport.duration} min</span>
-                      <span className="rounded-xl bg-white px-3 py-2 font-bold">{route.transport.seatsAvailable}/{route.transport.totalSeats} {language === 'ar' ? 'مقاعد' : 'places'}</span>
-                      <span className="rounded-xl bg-white px-3 py-2 font-black text-emerald-700">{route.transport.price} DA</span>
-                    </div>
-                  </div>
-                  {selectedRoute?.id === route.id && (
-                    <CheckCircle className="w-7 h-7 text-emerald-600" />
-                  )}
-                </div>
-              </motion.div>
-            ))}
-            {routesData.routes.filter((route: any) => 
-              route.from.point === selectedDeparturePoint && 
-              route.to.id === selectedDestination
-            ).length === 0 && (
-              <p className="text-center text-gray-500 py-4">
-                {language === 'ar' ? 'لا توجد مسارات متاحة لهذه الوجهة' : 'Aucune route disponible pour cette destination'}
-              </p>
-            )}
-          </div>
-        </Card>
-      )}
-
-      {/* Date and Time */}
-      <Card className="p-6 border border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5" />
-          {language === 'ar' ? 'التاريخ والوقت' : 'Date et heure'}
-        </h3>
-        <div className="grid md:grid-cols-2 gap-4">
+      {/* 3. DateTime & RoundTrip & Passengers */}
+      <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem] space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <Label>{language === 'ar' ? 'التاريخ' : 'Date'}</Label>
+            <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'التاريخ' : 'Date'}</Label>
             <Input
               type="date"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="mt-2"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="bg-slate-900 border-white/10 text-white rounded-xl h-12 font-semibold"
               required
             />
           </div>
           <div>
-            <Label>{language === 'ar' ? 'الوقت' : 'Heure'}</Label>
+            <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'وقت الانطلاق' : 'Heure de départ'}</Label>
             <Input
               type="time"
-              value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="mt-2"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className="bg-slate-900 border-white/10 text-white rounded-xl h-12 font-semibold"
               required
             />
           </div>
-        </div>
-      </Card>
-
-      {/* Vehicle Type */}
-      <Card className="p-6 border border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Bus className="w-5 h-5" />
-          {language === 'ar' ? 'نوع المركبة' : 'Type de véhicule'}
-        </h3>
-        <div className="grid md:grid-cols-3 gap-4">
-          {vehicleTypes.map((type, index) => {
-            const Icon = type.icon;
-            return (
-              <motion.div
-                key={type.value}
-                whileHover={{ y: -4 }}
-                onClick={() => handleVehicleTypeChange(type.value)}
-                className={`p-5 rounded-2xl border-2 cursor-pointer transition-all text-center ${
-                  formData.vehicleType === type.value
-                    ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10'
-                    : 'border-gray-200 hover:border-emerald-200'
-                }`}
-              >
-                <Icon className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="font-medium text-gray-900">{language === 'ar' ? type.labelAr : type.label}</p>
-                <div className="mt-3 flex justify-center gap-2 text-xs">
-                  <span className="rounded-full bg-slate-100 px-2 py-1 font-bold">{language === 'ar' ? 'نشط' : 'Actif'}</span>
-                  <span className="rounded-full bg-emerald-100 px-2 py-1 font-bold text-emerald-700">{language === 'ar' ? 'مقاعد' : 'Places'} {18 - index * 4}</span>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Seats */}
-      <Card className="p-6 border border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Users className="w-5 h-5" />
-          {language === 'ar' ? 'عدد المقاعد' : 'Nombre de sièges'}
-        </h3>
-        <div className="flex items-center gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setFormData({ ...formData, seats: Math.max(1, formData.seats - 1) })}
-            disabled={formData.seats <= 1}
-          >
-            -
-          </Button>
-          <span className="text-2xl font-bold text-gray-900 w-12 text-center">{formData.seats}</span>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setFormData({ ...formData, seats: Math.min(10, formData.seats + 1) })}
-            disabled={formData.seats >= 10}
-          >
-            +
-          </Button>
-        </div>
-      </Card>
-
-      {/* Payment Method */}
-      <Card className="p-6 border border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <CreditCard className="w-5 h-5" />
-          {language === 'ar' ? 'طريقة الدفع' : 'Méthode de paiement'}
-        </h3>
-        <div className="grid md:grid-cols-2 gap-4">
-          {paymentMethods.map((method) => {
-            const Icon = method.icon;
-            return (
-              <div
-                key={method.value}
-                onClick={() => !method.disabled && setFormData({ ...formData, paymentMethod: method.value })}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  formData.paymentMethod === method.value
-                    ? 'border-primary bg-primary/5'
-                    : method.disabled
-                    ? 'border-gray-200 opacity-50 cursor-not-allowed'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Icon className="w-5 h-5 text-primary" />
-                  <span className="font-medium text-gray-900">{language === 'ar' ? method.labelAr : method.label}</span>
-                  {method.disabled && (
-                    <span className="text-xs text-gray-500 ml-auto">
-                      ({language === 'ar' ? 'قريباً' : 'Bientôt'})
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* WiFi Info */}
-      {selectedVehicle?.features.wifi && (
-        <Card className="p-5 border border-blue-200 bg-blue-50 rounded-3xl shadow-lg">
-          <div className="flex items-center gap-3">
-            <Wifi className="w-5 h-5 text-blue-600" />
-            <div>
-              <p className="font-medium text-gray-900">
-                {language === 'ar' ? 'Wi-Fi متاح' : 'Wi-Fi disponible'}
-              </p>
-              <p className="text-sm text-gray-600">
-                {language === 'ar' ? 'كلمة المرور:' : 'Mot de passe:'} {selectedVehicle.features.wifiPassword}
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {selectedRoute && (
-        <Card className="overflow-hidden rounded-3xl border border-emerald-100 bg-slate-950 p-6 text-white shadow-2xl">
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-emerald-300">{language === 'ar' ? 'معاينة المسار المباشر' : 'Aperçu route live'}</p>
-              <h3 className="text-2xl font-black">{language === 'ar' ? 'رحلتك جاهزة' : 'Votre trajet est prêt'}</h3>
-            </div>
-            <Navigation className="h-8 w-8 text-emerald-300" />
-          </div>
-          <div className="relative h-32 rounded-3xl bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.35),transparent_25%),radial-gradient(circle_at_80%_70%,rgba(59,130,246,0.32),transparent_30%)]">
-            <div className="absolute left-8 right-8 top-1/2 h-1 -translate-y-1/2 rounded-full bg-white/20">
-              <motion.div initial={{ width: '10%' }} animate={{ width: '68%' }} transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }} className="h-full rounded-full bg-emerald-300" />
-            </div>
-            <motion.div animate={{ x: [0, 180, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} className="absolute left-8 top-1/2 -translate-y-1/2 rounded-2xl bg-emerald-300 p-3 text-slate-950 shadow-xl">
-              <Bus className="h-5 w-5" />
-            </motion.div>
-          </div>
-          <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
-            <div className="rounded-2xl bg-white/10 p-3">
-              <Timer className="mb-2 h-4 w-4 text-emerald-300" />
-              <p className="font-black">{selectedRoute.estimatedTime} min</p>
-              <p className="text-xs text-slate-300">{language === 'ar' ? 'مدة الرحلة' : 'Durée'}</p>
-            </div>
-            <div className="rounded-2xl bg-white/10 p-3">
-              <Users className="mb-2 h-4 w-4 text-emerald-300" />
-              <p className="font-black">14</p>
-              <p className="text-xs text-slate-300">{language === 'ar' ? 'أماكن متبقية' : 'Places restantes'}</p>
-            </div>
-            <div className="rounded-2xl bg-white/10 p-3">
-              <ShieldCheck className="mb-2 h-4 w-4 text-emerald-300" />
-              <p className="font-black">{language === 'ar' ? 'جاهز' : 'Prêt'}</p>
-              <p className="text-xs text-slate-300">{language === 'ar' ? 'حالة المركبة' : 'Statut véhicule'}</p>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* Price Summary */}
-      <Card className="p-6 border border-gray-200 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-3xl shadow-xl">
-        <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600">{language === 'ar' ? 'السعر المقدر' : 'Prix estimé'}</p>
-            <p className="text-3xl font-bold text-primary">{estimatedPrice} DA</p>
+            <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'عدد المسافرين بالرحلة' : 'Nombre de passagers'}</Label>
+            <div className="flex items-center gap-4 h-12 bg-slate-900 rounded-xl px-4 border border-white/10">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setSeats(Math.max(1, seats - 1))}
+                className="text-emerald-400 hover:text-emerald-300 text-2xl p-0 h-8 w-8 rounded-lg"
+              >
+                -
+              </Button>
+              <span className="flex-1 text-center font-extrabold text-white text-lg">{seats}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setSeats(Math.min(60, seats + 1))}
+                className="text-emerald-400 hover:text-emerald-300 text-2xl p-0 h-8 w-8 rounded-lg"
+              >
+                +
+              </Button>
+            </div>
           </div>
-          <Button
-            type="submit"
-            className="bg-primary hover:bg-secondary text-white px-8 py-4 text-lg font-semibold"
-          >
-            {language === 'ar' ? 'تأكيد الحجز' : 'Confirmer la réservation'}
-          </Button>
         </div>
+
+        {/* Round Trip Toggle */}
+        <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+          <div className="flex items-center gap-3">
+            <ArrowRightLeft className="w-5 h-5 text-emerald-400" />
+            <div>
+              <p className="font-bold text-white text-sm">{isAr ? 'حجز ذهاب وإياب' : 'Aller-Retour'}</p>
+              <p className="text-xs opacity-60">{isAr ? 'وفر 20% على رحلة الإياب الخاصة بك' : 'Économisez 20% sur le trajet retour'}</p>
+            </div>
+          </div>
+          <input
+            type="checkbox"
+            checked={roundTrip}
+            onChange={(e) => setRoundTrip(e.target.checked)}
+            className="w-5 h-5 accent-emerald-500 rounded cursor-pointer"
+          />
+        </div>
+
+        {/* Smart Grouping Display */}
+        {similarGroupCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 bg-blue-500/10 border-2 border-blue-500/30 rounded-xl flex items-center justify-between gap-4"
+          >
+            <div className="space-y-1">
+              <h4 className="font-black text-sm text-blue-300 flex items-center gap-1.5">
+                <Users className="w-4 h-4" />
+                {isAr ? `تم العثور على ${similarGroupCount} مسافرين مشابهين!` : `${similarGroupCount} voyageurs similaires trouvés !`}
+              </h4>
+              <p className="text-xs text-blue-100 opacity-80">
+                {isAr
+                  ? `بناءً على وجهتك ووقتك، نوصي بالحافلات لتوفير لغاية 35% من التكلفة.`
+                  : `Sur la même destination et horaire. Nous recommandons un Bus pour économiser jusqu'à 35%.`}
+              </p>
+            </div>
+            <span className="bg-blue-500/20 text-blue-300 text-xs font-black px-3 py-1 rounded-full whitespace-nowrap">
+              Smart Grouping
+            </span>
+          </motion.div>
+        )}
+      </Card>
+
+      {/* 4. Auto Recommendation Display */}
+      <Card className="p-4 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-[1.5rem] flex items-center gap-3">
+        <Sparkles className="w-8 h-8 text-emerald-400 animate-pulse shrink-0" />
+        <div>
+          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-black uppercase tracking-wider block w-fit mb-1">
+            {isAr ? 'توصية يونيموف الذكية' : 'Recommandation UNIMOVE'}
+          </span>
+          <p className="text-sm font-bold text-white">
+            {isAr
+              ? `المركبة المقترحة لعدد ركابك (${seats}): ${recommended.labelAr} — ${recommended.capacityTextAr}`
+              : `Véhicule recommandé pour vos (${seats}) voyageurs : ${recommended.labelFr} — ${recommended.capacityTextFr}`}
+          </p>
+        </div>
+      </Card>
+
+      {/* 5. Choice of Vehicle */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-black text-white flex items-center gap-2">
+          <Bus className="w-6 h-6 text-emerald-400" />
+          {isAr ? 'اختر فئة المركبة المطلوبة' : 'Sélectionnez la catégorie du véhicule'}
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {vehicleOptions.map((opt) => {
+            const isRecommended = opt.value === recommended.type;
+            const isSelected = opt.value === vehicleType;
+
+            return (
+              <Card
+                key={opt.value}
+                onClick={() => setVehicleType(opt.value as any)}
+                className={`p-6 border-2 rounded-[2rem] cursor-pointer transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+                  isSelected
+                    ? 'border-emerald-500 bg-emerald-950/20 shadow-xl'
+                    : 'border-white/10 bg-black/40 hover:border-emerald-500/30'
+                }`}
+              >
+                {isRecommended && (
+                  <span className="absolute top-0 right-0 bg-emerald-500 text-black text-[9px] font-black px-3 py-1 rounded-bl-xl uppercase tracking-widest flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5 fill-current" />
+                    {isAr ? 'موصى به' : 'Conseillé'}
+                  </span>
+                )}
+
+                <div className="space-y-3">
+                  <h4 className="font-extrabold text-base text-white">{isAr ? opt.titleAr : opt.titleFr}</h4>
+                  <p className="text-xs opacity-65 leading-5 font-semibold text-slate-300">{isAr ? opt.descAr : opt.descFr}</p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
+                  <div className="flex justify-between text-xs font-bold text-slate-300">
+                    <span>{isAr ? 'القدرة القصوى:' : 'Capacité max :'}</span>
+                    <span className="text-emerald-400">{isAr ? opt.capacityAr : opt.capacityFr}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-slate-300">
+                    <span>{isAr ? 'معدل التعريفة:' : 'Tarif de base :'}</span>
+                    <span className="text-emerald-400">{isAr ? opt.priceTextAr : opt.priceTextFr}</span>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 6. Dynamic Pricing Details & Breakdowns */}
+      {pricing && (
+        <Card className="p-6 border border-emerald-500/10 bg-white/5 rounded-[2rem] space-y-4">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <h4 className="font-black text-sm text-emerald-400">{isAr ? 'تفاصيل احتساب السعر التلقائي' : 'Détails du calcul du tarif'}</h4>
+              <p className="text-xs text-slate-300 leading-5">
+                {isAr ? pricing.pricingDetailsAr : pricing.pricingDetailsFr}
+              </p>
+              <p className="text-xs text-emerald-300 font-bold">
+                {isAr ? pricing.discountDetailsAr : pricing.discountDetailsFr}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 border-t border-white/5 text-xs text-slate-400 font-semibold">
+            <div>
+              <p className="opacity-70">{isAr ? 'المسافة المقدرة' : 'Distance estimée'}</p>
+              <p className="text-white font-extrabold text-sm mt-0.5">{pricing.estimatedDistanceKm} كم</p>
+            </div>
+            <div>
+              <p className="opacity-70">{isAr ? 'مدة الرحلة التقريبية' : 'Durée estimée'}</p>
+              <p className="text-white font-extrabold text-sm mt-0.5">{pricing.estimatedTravelTimeMins} دقيقة</p>
+            </div>
+            <div>
+              <p className="opacity-70">{isAr ? 'خصومات الطلاب المطبقة' : 'Réductions cumulées'}</p>
+              <p className="text-emerald-400 font-extrabold text-sm mt-0.5">-{pricing.totalDiscountsPercent}%</p>
+            </div>
+            <div>
+              <p className="opacity-70">{isAr ? 'التكلفة لكل مقعد' : 'Coût par passager'}</p>
+              <p className="text-white font-extrabold text-sm mt-0.5">
+                {Math.round(pricing.estimatedPrice / seats)} DA
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* 7. Warnings and Submissions */}
+      <Card className="p-6 border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-emerald-900/10 to-teal-950/40 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="text-center md:text-right space-y-1">
+          <p className="text-xs text-slate-300/80 font-bold">{isAr ? 'السعر التقديري النهائي للرحلة' : 'Prix total estimé'}</p>
+          <div className="flex items-baseline justify-center md:justify-start gap-1">
+            <span className="text-4xl font-black text-emerald-400">{pricing?.estimatedPrice || 100}</span>
+            <span className="text-sm text-emerald-400 font-bold">DA</span>
+          </div>
+          <p className="text-[10px] text-amber-300 font-semibold">
+            {isAr
+              ? '* السعر تقديري وقد يتغير بعد موافقة الإدارة'
+              : '* Le tarif est estimé et peut être réajusté après validation par l\'administration'}
+          </p>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full md:w-auto h-14 px-10 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
+        >
+          {isAr ? 'تأكيد وحجز الرحلة الذكية' : 'Confirmer et réserver le trajet'}
+          <ChevronRight className="w-5 h-5 shrink-0" />
+        </Button>
       </Card>
     </form>
   );

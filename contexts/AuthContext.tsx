@@ -8,6 +8,7 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -174,6 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Detect demo admin phone (0550000000 or +213550000000)
     const isDemoAdmin = digits === '0550000000' || digits === '213550000000' || digits === '550000000';
+    const isDemoDriver = digits === '0550000001' || digits === '213550000001' || digits === '550000001';
 
     let foundDoc: { id: string; data: any } | null = null;
 
@@ -183,18 +185,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let snapshot = await getDocs(usersQuery);
         if (!snapshot.empty) {
           foundDoc = { id: snapshot.docs[0].id, data: snapshot.docs[0].data() };
-          console.log('[findUserByPhone] Found by phoneNumber:', fmt);
+          // [findUserByPhone] user found (phone hidden)
           break;
         }
         usersQuery = query(collection(db, 'users'), where('phone', '==', fmt), limit(1));
         snapshot = await getDocs(usersQuery);
         if (!snapshot.empty) {
           foundDoc = { id: snapshot.docs[0].id, data: snapshot.docs[0].data() };
-          console.log('[findUserByPhone] Found by phone:', fmt);
+          // [findUserByPhone] user found (phone hidden)
           break;
         }
       } catch (error) {
-        console.error('Firestore user lookup error for', fmt, error);
+        console.error('Firestore user lookup error');
       }
     }
 
@@ -208,7 +210,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             foundDoc.data.verified !== true ||
             foundDoc.data.status !== 'approved';
           if (needsUpdate) {
-            console.log('[findUserByPhone] Auto-promoting demo admin user:', foundDoc.id);
+            // [findUserByPhone] auto-promoting demo admin user
             await updateDoc(doc(db, 'users', foundDoc.id), {
               role: 'admin',
               verified: true,
@@ -228,7 +230,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           // Create demo admin user
           const newId = `phone-${adminPhone.replace(/\D/g, '')}`;
-          console.log('[findUserByPhone] Auto-creating demo admin user:', newId);
+          // [findUserByPhone] auto-creating demo admin user
           const adminData = {
             phone: adminPhone,
             phoneNumber: adminPhone,
@@ -258,7 +260,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           foundDoc = { id: newId, data: adminData };
         }
       } catch (e) {
-        console.error('[findUserByPhone] Failed to auto-promote/create demo admin:', e);
+        console.error('[findUserByPhone] Failed to auto-promote/create demo admin');
+      }
+    }
+
+    // If demo driver phone, force-promote to driver role
+    if (isDemoDriver) {
+      const driverPhone = '+213550000001';
+      try {
+        if (foundDoc) {
+          const needsUpdate =
+            foundDoc.data.role !== 'driver' ||
+            foundDoc.data.verified !== true ||
+            foundDoc.data.status !== 'approved';
+          if (needsUpdate) {
+            // [findUserByPhone] auto-promoting demo driver user
+            await updateDoc(doc(db, 'users', foundDoc.id), {
+              role: 'driver',
+              verified: true,
+              status: 'approved',
+              verificationStatus: 'approved',
+              accountStatus: 'active',
+              isApproved: true,
+              updatedAt: new Date().toISOString(),
+            });
+            foundDoc.data.role = 'driver';
+            foundDoc.data.verified = true;
+            foundDoc.data.status = 'approved';
+            foundDoc.data.verificationStatus = 'approved';
+            foundDoc.data.accountStatus = 'active';
+            foundDoc.data.isApproved = true;
+          }
+        } else {
+          // Create demo driver user
+          const newId = `phone-${driverPhone.replace(/\D/g, '')}`;
+          // [findUserByPhone] auto-creating demo driver user
+          const driverUserData = {
+            phone: driverPhone,
+            phoneNumber: driverPhone,
+            firstName: 'سفيان',
+            lastName: 'دراجي',
+            fullName: 'سفيان دراجي',
+            role: 'driver',
+            university: 'UNIMOVE-DZ',
+            institution: 'UNIMOVE-DZ',
+            verificationStatus: 'approved',
+            accountStatus: 'active',
+            verified: true,
+            status: 'approved',
+            isApproved: true,
+            cardNumber: 'UNIMOVE-DRV-0001',
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${driverPhone}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          await setDoc(doc(db, 'users', newId), driverUserData);
+          foundDoc = { id: newId, data: driverUserData };
+        }
+
+        // Also ensure matching document exists in drivers collection
+        const driversQuery = query(collection(db, 'drivers'), where('phoneNumber', '==', driverPhone));
+        const drvSnapshot = await getDocs(driversQuery);
+        if (drvSnapshot.empty) {
+          // [findUserByPhone] auto-creating record in drivers collection
+          await addDoc(collection(db, 'drivers'), {
+            fullName: 'سفيان دراجي',
+            phoneNumber: driverPhone,
+            email: 'driver.sofiane@unimove.dz',
+            licenseNumber: 'DZ-7728-16',
+            role: 'driver',
+            status: 'active',
+            assignedVehicleId: '',
+            createdAt: serverTimestamp(),
+          });
+        }
+      } catch (e) {
+        console.error('[findUserByPhone] Failed to auto-promote/create demo driver');
       }
     }
 
@@ -280,7 +357,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const storedPhone = localStorage.getItem('unimove_current_phone');
         const storedUserJson = localStorage.getItem('unimove_current_user');
 
-        console.log('[AuthContext Debug] Initializing. localStorage phone:', storedPhone);
+        // [AuthContext] initializing auth
 
         let foundPhone = storedPhone;
         if (!foundPhone && storedUserJson) {
@@ -292,19 +369,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (foundPhone) {
           const normalized = normalizePhone(foundPhone);
-          console.log('[AuthContext Debug] Normalized phone:', normalized);
+          // [AuthContext] phone normalized
 
           try {
             // Use findUserByPhone which now searches multiple formats
             const u = await findUserByPhone(normalized);
             if (u && active) {
-              console.log('[AuthContext Debug] User found by findUserByPhone:', u.fullName, 'Role:', u.role);
+              // [AuthContext] user loaded from localStorage
               setUser(u);
               setIsLoading(false);
               return;
             }
           } catch (err) {
-            console.error('[AuthContext Debug] Error fetching user during init:', err);
+            console.error('[AuthContext] Error fetching user during init');
           }
         }
       }
@@ -329,7 +406,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (typeof window !== 'undefined' && !localStorage.getItem('unimove_current_phone')) {
             const isDev = process.env.NODE_ENV === 'development';
             if (isDev) {
-              console.log('[AuthContext] DEV MODE: No Firebase user but skipping reset — demo OTP may be active');
+              // [AuthContext] DEV MODE: no Firebase user but skipping reset
             }
             if (!isDev) {
               setUser(null);
