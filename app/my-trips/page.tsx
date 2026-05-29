@@ -9,10 +9,12 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Filter, Calendar, Clock, CheckCircle } from 'lucide-react';
 import { Reservation } from '@/types/reservation';
+import { useRouter } from 'next/navigation';
 
 export default function MyTripsPage() {
-  const { language } = useAuth();
+  const { language } = useLanguage();
   const { user } = useAuth();
+  const router = useRouter();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all');
 
@@ -52,10 +54,15 @@ export default function MyTripsPage() {
                 : 'Historique de vos trajets et réservations'}
             </p>
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter className="w-4 h-4" />
-            {language === 'ar' ? 'تصفية' : 'Filtrer'}
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => window.history.length > 1 ? router.back() : router.push('/dashboard')}>
+              {language === 'ar' ? 'رجوع' : 'Retour'}
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Filter className="w-4 h-4" />
+              {language === 'ar' ? 'تصفية' : 'Filtrer'}
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}

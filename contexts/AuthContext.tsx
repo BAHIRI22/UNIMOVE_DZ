@@ -1,31 +1,91 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '@/lib/firebase';
-import { 
+import { auth, db } from '@/lib/firebase';
+import {
   User as FirebaseUser,
   onAuthStateChanged,
-  signOut as firebaseSignOut 
+  signOut as firebaseSignOut,
 } from 'firebase/auth';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 
-export type UserRole = 'student' | 'teacher' | 'admin' | 'driver';
+const stripUndefined = <T extends Record<string, any>>(obj: T): Partial<T> => {
+  const result: Record<string, any> = {};
+  Object.entries(obj).forEach(([k, v]) => {
+    if (v !== undefined) result[k] = v;
+  });
+  return result as Partial<T>;
+};
+
+export const normalizePhone = (phone: string): string => {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.startsWith('0')) {
+    return '+213' + digits.slice(1);
+  }
+  if (digits.startsWith('213')) {
+    return '+' + digits;
+  }
+  if (phone.startsWith('+')) {
+    return phone;
+  }
+  return '+213' + digits;
+};
+
+export type UserRole = 'student' | 'teacher' | 'administrative' | 'driver' | 'admin';
+export type VerificationStatus = 'pending' | 'approved' | 'verified' | 'rejected';
+export type AccountStatus = 'pending' | 'active' | 'suspended';
 
 export interface User {
   id: string;
   phone: string;
+  phoneNumber?: string;
+  firstName?: string;
+  lastName?: string;
   fullName: string;
   role: UserRole;
+  university?: string;
   institution: string;
-  faculty: string;
+  faculty?: string;
+  facultyOrInstitute?: string;
+  department?: string;
+  speciality?: string;
+  academicYear?: string;
+  grade?: string;
+  email?: string;
+  wilaya?: string;
+  daira?: string;
+  commune?: string;
+  departurePoint?: string;
+  homePoint: string;
+  verificationMethod?: 'university_email' | 'student_card' | 'work_badge' | 'certificate';
+  verificationStatus: VerificationStatus;
+  verificationDocumentUrl?: string;
+  verificationDocumentType?: string;
+  verificationDocumentName?: string;
+  verificationSubmittedAt?: any;
+  accountStatus: AccountStatus;
+  verified: boolean;
+  status: 'pending' | 'approved' | 'rejected';
+  adminNote: string;
   cardNumber: string;
   qrCode: string;
   subscription: 'daily' | 'weekly' | 'monthly';
   validUntil: string;
-  homePoint: string;
   preferredRoute: string;
-  email?: string;
   documents?: string[];
   createdAt: string;
+  updatedAt?: string;
   isApproved?: boolean;
   firebaseUser?: FirebaseUser;
 }
@@ -34,158 +94,356 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginWithFirebase: (firebaseUser: FirebaseUser, userData?: Partial<User>) => Promise<void>;
+  findUserByPhone: (phoneNumber: string) => Promise<User | null>;
+  loginWithFirebase: (firebaseUser: FirebaseUser, userData?: Partial<User>) => Promise<User | null>;
   register: (userData: Omit<User, 'id' | 'createdAt' | 'firebaseUser'>) => Promise<void>;
+  createFirestoreUser: (firebaseUser: FirebaseUser, userData: Partial<User>) => Promise<User>;
   logout: () => Promise<void>;
   updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const normalizeStoredUser = (data: any, firebaseUser?: FirebaseUser): User => ({
+  id: data.id || firebaseUser?.uid || '',
+  phone: data.phone || data.phoneNumber || firebaseUser?.phoneNumber || '',
+  phoneNumber: data.phoneNumber || data.phone || firebaseUser?.phoneNumber || '',
+  firstName: data.firstName || '',
+  lastName: data.lastName || '',
+  fullName: data.fullName || `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+  role: data.role || 'student',
+  university: data.university || data.institution || '',
+  institution: data.institution || data.university || '',
+  faculty: data.faculty || data.facultyOrInstitute || '',
+  facultyOrInstitute: data.facultyOrInstitute || data.faculty || '',
+  department: data.department || '',
+  speciality: data.speciality || '',
+  academicYear: data.academicYear || '',
+  grade: data.grade || '',
+  email: data.email || '',
+  wilaya: data.wilaya || '',
+  daira: data.daira || '',
+  commune: data.commune || '',
+  departurePoint: data.departurePoint || data.homePoint || '',
+  homePoint: data.homePoint || data.departurePoint || '',
+  verificationMethod: data.verificationMethod || 'student_card',
+  verificationStatus: data.verificationStatus || 'pending',
+  verificationDocumentUrl: data.verificationDocumentUrl || '',
+  verificationDocumentType: data.verificationDocumentType || '',
+  verificationDocumentName: data.verificationDocumentName || '',
+  verificationSubmittedAt: data.verificationSubmittedAt || null,
+  accountStatus: data.accountStatus || 'pending',
+  verified: data.verified === true ? true : false,
+  status: data.status || 'pending',
+  adminNote: data.adminNote || '',
+  cardNumber: data.cardNumber || `UNIMOVE-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
+  qrCode: data.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${data.phoneNumber || data.phone || firebaseUser?.phoneNumber || ''}`,
+  subscription: data.subscription || 'monthly',
+  validUntil: data.validUntil || '',
+  preferredRoute: data.preferredRoute || '',
+  documents: data.documents || [],
+  createdAt: data.createdAt || new Date().toISOString(),
+  updatedAt: data.updatedAt || new Date().toISOString(),
+  isApproved: data.isApproved ?? (data.verified === true),
+  firebaseUser,
+});
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Listen for Firebase auth state changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // User is signed in with Firebase
-        // Try to get user data from localStorage or create new user
-        const storedUserData = localStorage.getItem(`user_${firebaseUser.phoneNumber}`);
-        
-        if (storedUserData) {
-          const userData: User = JSON.parse(storedUserData);
-          setUser({ ...userData, firebaseUser });
-        } else {
-          // Create new user with minimal data
-          const newUser: User = {
-            id: firebaseUser.uid,
-            phone: firebaseUser.phoneNumber || '',
-            fullName: '',
-            role: 'student',
-            institution: '',
-            faculty: '',
-            cardNumber: '',
-            qrCode: '',
-            subscription: 'daily',
-            validUntil: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            homePoint: '',
-            preferredRoute: '',
-            createdAt: new Date().toISOString(),
-            isApproved: false,
-            firebaseUser,
-          };
-          setUser(newUser);
+  const findUserByPhone = async (phoneNumber: string): Promise<User | null> => {
+    // Build all possible phone formats to search
+    const formats = new Set<string>();
+    formats.add(phoneNumber);
+
+    const digits = phoneNumber.replace(/\D/g, '');
+    if (digits.startsWith('213') && digits.length === 12) {
+      formats.add('+' + digits);
+      formats.add('0' + digits.slice(3));
+    }
+    if (digits.startsWith('0') && digits.length === 10) {
+      formats.add('+213' + digits.slice(1));
+    }
+    if (digits.length === 9) {
+      formats.add('+213' + digits);
+      formats.add('0' + digits);
+    }
+
+    const searchFormats = Array.from(formats);
+
+    // Detect demo admin phone (0550000000 or +213550000000)
+    const isDemoAdmin = digits === '0550000000' || digits === '213550000000' || digits === '550000000';
+
+    let foundDoc: { id: string; data: any } | null = null;
+
+    for (const fmt of searchFormats) {
+      try {
+        let usersQuery = query(collection(db, 'users'), where('phoneNumber', '==', fmt), limit(1));
+        let snapshot = await getDocs(usersQuery);
+        if (!snapshot.empty) {
+          foundDoc = { id: snapshot.docs[0].id, data: snapshot.docs[0].data() };
+          console.log('[findUserByPhone] Found by phoneNumber:', fmt);
+          break;
         }
-      } else {
-        // User is signed out
-        setUser(null);
+        usersQuery = query(collection(db, 'users'), where('phone', '==', fmt), limit(1));
+        snapshot = await getDocs(usersQuery);
+        if (!snapshot.empty) {
+          foundDoc = { id: snapshot.docs[0].id, data: snapshot.docs[0].data() };
+          console.log('[findUserByPhone] Found by phone:', fmt);
+          break;
+        }
+      } catch (error) {
+        console.error('Firestore user lookup error for', fmt, error);
       }
-      setIsLoading(false);
+    }
+
+    // If demo admin phone, force-promote to admin role with verified+approved
+    if (isDemoAdmin) {
+      const adminPhone = '+213550000000';
+      try {
+        if (foundDoc) {
+          const needsUpdate =
+            foundDoc.data.role !== 'admin' ||
+            foundDoc.data.verified !== true ||
+            foundDoc.data.status !== 'approved';
+          if (needsUpdate) {
+            console.log('[findUserByPhone] Auto-promoting demo admin user:', foundDoc.id);
+            await updateDoc(doc(db, 'users', foundDoc.id), {
+              role: 'admin',
+              verified: true,
+              status: 'approved',
+              verificationStatus: 'approved',
+              accountStatus: 'active',
+              isApproved: true,
+              updatedAt: new Date().toISOString(),
+            });
+            foundDoc.data.role = 'admin';
+            foundDoc.data.verified = true;
+            foundDoc.data.status = 'approved';
+            foundDoc.data.verificationStatus = 'approved';
+            foundDoc.data.accountStatus = 'active';
+            foundDoc.data.isApproved = true;
+          }
+        } else {
+          // Create demo admin user
+          const newId = `phone-${adminPhone.replace(/\D/g, '')}`;
+          console.log('[findUserByPhone] Auto-creating demo admin user:', newId);
+          const adminData = {
+            phone: adminPhone,
+            phoneNumber: adminPhone,
+            firstName: 'BEHIRI',
+            lastName: 'ABDELKADER',
+            fullName: 'BEHIRI ABDELKADER',
+            role: 'admin',
+            university: 'UNIMOVE-DZ',
+            institution: 'UNIMOVE-DZ',
+            verificationMethod: 'work_badge',
+            verificationStatus: 'approved',
+            accountStatus: 'active',
+            verified: true,
+            status: 'approved',
+            isApproved: true,
+            adminNote: 'Demo admin user',
+            cardNumber: 'UNIMOVE-ADMIN-0001',
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${adminPhone}`,
+            subscription: 'monthly',
+            validUntil: '',
+            preferredRoute: '',
+            homePoint: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          await setDoc(doc(db, 'users', newId), adminData);
+          foundDoc = { id: newId, data: adminData };
+        }
+      } catch (e) {
+        console.error('[findUserByPhone] Failed to auto-promote/create demo admin:', e);
+      }
+    }
+
+    if (foundDoc) {
+      return normalizeStoredUser({ id: foundDoc.id, ...foundDoc.data });
+    }
+
+    const localUser = typeof window !== 'undefined' ? localStorage.getItem(`user_${phoneNumber}`) : null;
+    return localUser ? normalizeStoredUser(JSON.parse(localUser)) : null;
+  };
+
+  useEffect(() => {
+    let active = true;
+    const initializeAuth = async () => {
+      setIsLoading(true);
+
+      // Try to read from localStorage first
+      if (typeof window !== 'undefined') {
+        const storedPhone = localStorage.getItem('unimove_current_phone');
+        const storedUserJson = localStorage.getItem('unimove_current_user');
+
+        console.log('[AuthContext Debug] Initializing. localStorage phone:', storedPhone);
+
+        let foundPhone = storedPhone;
+        if (!foundPhone && storedUserJson) {
+          try {
+            const parsed = JSON.parse(storedUserJson);
+            foundPhone = parsed.phoneNumber || parsed.phone;
+          } catch (e) {}
+        }
+
+        if (foundPhone) {
+          const normalized = normalizePhone(foundPhone);
+          console.log('[AuthContext Debug] Normalized phone:', normalized);
+
+          try {
+            // Use findUserByPhone which now searches multiple formats
+            const u = await findUserByPhone(normalized);
+            if (u && active) {
+              console.log('[AuthContext Debug] User found by findUserByPhone:', u.fullName, 'Role:', u.role);
+              setUser(u);
+              setIsLoading(false);
+              return;
+            }
+          } catch (err) {
+            console.error('[AuthContext Debug] Error fetching user during init:', err);
+          }
+        }
+      }
+
+      // Fallback to standard Firebase Auth state changed if not loaded from localStorage
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (!active) return;
+        if (firebaseUser?.phoneNumber) {
+          const existingUser = await findUserByPhone(firebaseUser.phoneNumber);
+          if (existingUser) {
+            const normalizedUser = { ...existingUser, firebaseUser };
+            setUser(normalizedUser);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('unimove_current_phone', firebaseUser.phoneNumber);
+              localStorage.setItem('unimove_current_user', JSON.stringify(existingUser));
+            }
+          } else {
+            setUser(null);
+          }
+        } else {
+          // If no firebaseUser and we couldn't load from localStorage above, reset user
+          if (typeof window !== 'undefined' && !localStorage.getItem('unimove_current_phone')) {
+            const isDev = process.env.NODE_ENV === 'development';
+            if (isDev) {
+              console.log('[AuthContext] DEV MODE: No Firebase user but skipping reset — demo OTP may be active');
+            }
+            if (!isDev) {
+              setUser(null);
+            }
+          }
+        }
+        setIsLoading(false);
+      });
+
+      return unsubscribe;
+    };
+
+    let unsub: any;
+    initializeAuth().then((u) => {
+      unsub = u;
     });
 
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      if (unsub) unsub();
+    };
   }, []);
 
   const loginWithFirebase = async (firebaseUser: FirebaseUser, userData?: Partial<User>) => {
     setIsLoading(true);
     try {
-      // Check if user exists in localStorage
-      const storedUserData = localStorage.getItem(`user_${firebaseUser.phoneNumber}`);
-      
-      if (storedUserData) {
-        const existingUser: User = JSON.parse(storedUserData);
-        setUser({ ...existingUser, firebaseUser });
-      } else if (userData) {
-        // Create new user with provided data
-        const newUser: User = {
-          id: firebaseUser.uid,
-          phone: firebaseUser.phoneNumber || '',
-          fullName: userData.fullName || '',
-          role: userData.role || 'student',
-          institution: userData.institution || '',
-          faculty: userData.faculty || '',
-          cardNumber: userData.cardNumber || `UNIMOVE-2026-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
-          qrCode: userData.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${firebaseUser.phoneNumber}`,
-          subscription: userData.subscription || 'daily',
-          validUntil: userData.validUntil || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          homePoint: userData.homePoint || '',
-          preferredRoute: userData.preferredRoute || '',
-          email: userData.email,
-          documents: userData.documents,
-          createdAt: new Date().toISOString(),
-          isApproved: false,
-          firebaseUser,
-        };
-        
-        // Save to localStorage
-        localStorage.setItem(`user_${firebaseUser.phoneNumber}`, JSON.stringify(newUser));
-        setUser(newUser);
+      const phoneNumber = firebaseUser.phoneNumber || userData?.phoneNumber || userData?.phone || '';
+      const existingUser = phoneNumber ? await findUserByPhone(phoneNumber) : null;
+      if (existingUser) {
+        const hydratedUser = { ...existingUser, firebaseUser };
+        setUser(hydratedUser);
+        if (typeof window !== 'undefined' && phoneNumber) {
+          localStorage.setItem('unimove_current_phone', phoneNumber);
+          localStorage.setItem('unimove_current_user', JSON.stringify(existingUser));
+        }
+        return hydratedUser;
       }
+      if (userData) {
+        const newUser = await createFirestoreUser(firebaseUser, userData);
+        if (typeof window !== 'undefined' && phoneNumber) {
+          localStorage.setItem('unimove_current_phone', phoneNumber);
+          localStorage.setItem('unimove_current_user', JSON.stringify(newUser));
+        }
+        return newUser;
+      }
+      setUser(null);
+      return null;
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const createFirestoreUser = async (firebaseUser: FirebaseUser, userData: Partial<User>) => {
+    const now = new Date().toISOString();
+    const phoneNumber = firebaseUser.phoneNumber || userData.phoneNumber || userData.phone || '';
+    const newUser = normalizeStoredUser({
+      ...userData,
+      id: firebaseUser.uid,
+      phone: phoneNumber,
+      phoneNumber,
+      verificationStatus: 'pending',
+      accountStatus: 'pending',
+      verified: false,
+      status: 'pending',
+      subscriptionStatus: 'inactive',
+      adminNote: userData.adminNote || '',
+      createdAt: now,
+      updatedAt: now,
+    }, firebaseUser);
+
+    const firestorePayload = stripUndefined({ ...newUser, firebaseUser: undefined });
+    await setDoc(doc(db, 'users', firebaseUser.uid), firestorePayload, { merge: true });
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`user_${phoneNumber}`, JSON.stringify({ ...newUser, firebaseUser: undefined }));
+      localStorage.setItem('unimove_current_phone', phoneNumber);
+      localStorage.setItem('unimove_current_user', JSON.stringify({ ...newUser, firebaseUser: undefined }));
+    }
+    setUser(newUser);
+    return newUser;
   };
 
   const register = async (userData: Omit<User, 'id' | 'createdAt' | 'firebaseUser'>) => {
-    setIsLoading(true);
-    try {
-      // This will be called after Firebase auth is successful
-      // The actual user creation is handled in loginWithFirebase
-      // This function is kept for backward compatibility
-      const newUser: User = {
-        ...userData,
-        id: `user-${Math.random().toString(36).substr(2, 9)}`,
-        createdAt: new Date().toISOString(),
-        isApproved: false,
-      };
-      
-      setUser(newUser);
-    } finally {
-      setIsLoading(false);
-    }
+    const newUser = normalizeStoredUser({ ...userData, id: `user-${Date.now()}` });
+    setUser(newUser);
   };
 
   const logout = async () => {
-    try {
-      await firebaseSignOut(auth);
-      if (user?.phone) {
-        localStorage.removeItem(`user_${user.phone}`);
+    await firebaseSignOut(auth);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('unimove_current_phone');
+      localStorage.removeItem('unimove_current_user');
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('user_')) {
+          localStorage.removeItem(key);
+        }
       }
-      setUser(null);
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Still clear local state even if Firebase logout fails
-      if (user?.phone) {
-        localStorage.removeItem(`user_${user.phone}`);
-      }
-      setUser(null);
     }
+    setUser(null);
   };
 
   const updateUser = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      if (user.phone) {
-        localStorage.setItem(`user_${user.phone}`, JSON.stringify(updatedUser));
-      }
+    if (!user) return;
+    const updatedUser = normalizeStoredUser({ ...user, ...userData, updatedAt: new Date().toISOString() }, user.firebaseUser);
+    setUser(updatedUser);
+    if (updatedUser.phoneNumber) {
+      localStorage.setItem(`user_${updatedUser.phoneNumber}`, JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
+      updateDoc(doc(db, 'users', updatedUser.id), { ...userData, updatedAt: updatedUser.updatedAt }).catch(console.error);
     }
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        loginWithFirebase,
-        register,
-        logout,
-        updateUser,
-      }}
-    >
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, findUserByPhone, loginWithFirebase, register, createFirestoreUser, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

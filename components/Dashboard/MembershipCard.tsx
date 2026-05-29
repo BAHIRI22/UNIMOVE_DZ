@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
-import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio } from 'lucide-react';
+import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -14,6 +14,34 @@ export function MembershipCard() {
   const [showQR, setShowQR] = useState(false);
 
   if (!user) return null;
+
+  const isVerified = user.verified === true || (user as any).verificationStatus === 'approved' || (user as any).verificationStatus === 'verified';
+
+  if (!isVerified) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{t('dashboard.myCard')}</h2>
+        <div className="relative bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 rounded-[2rem] p-10 text-white shadow-2xl overflow-hidden border border-white/10">
+          <div className="flex flex-col items-center justify-center text-center space-y-5 py-10">
+            <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center backdrop-blur-sm">
+              <Lock className="w-10 h-10 text-amber-300" />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-extrabold">
+              {language === 'ar' ? 'حسابك في انتظار التحقق' : 'Votre compte est en attente de vérification'}
+            </h3>
+            <p className="text-base md:text-lg opacity-90 max-w-sm">
+              {language === 'ar'
+                ? 'بطاقتك الرقمية ستظهر بعد موافقة الإدارة على وثيقة التحقق.'
+                : 'Votre carte numérique apparaîtra après validation de votre document par l’administration.'}
+            </p>
+            <div className="inline-flex items-center gap-2 rounded-full bg-amber-300/15 px-4 py-2 text-sm font-bold text-amber-100">
+              {language === 'ar' ? 'في انتظار التحقق' : 'En attente de vérification'}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const downloadCard = () => {
     const canvas = document.querySelector('canvas');

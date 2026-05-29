@@ -8,42 +8,64 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
 import { AlertCircle, Wifi } from 'lucide-react';
 import { UserCard } from '@/types/user-card';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+
+const safeText = (value: any): string => {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (value?.toDate) return value.toDate().toLocaleDateString('ar-DZ');
+  if (value?.seconds) return new Date(value.seconds * 1000).toLocaleDateString('ar-DZ');
+  return '';
+};
 
 export default function MyCardPage() {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [userCard, setUserCard] = useState<UserCard | null>(null);
 
   useEffect(() => {
-    // Create mock user card data
-    const mockUserCard: UserCard = {
-      id: 'card-001',
-      userId: user?.id || 'user-1',
-      fullName: user?.fullName || 'Ahmed Benali',
-      fullNameAr: user?.fullName?.split('/')[0] || 'أحمد بن علي',
-      userType: 'student',
-      userTypeAr: 'طالب',
-      university: 'Université Djillali Liabes',
-      universityAr: 'جامعة الجيلالي اليابس',
-      faculty: 'Faculté de Droit et Sciences Politiques',
-      facultyAr: 'كلية الحقوق والعلوم السياسية',
-      phone: user?.phone || '+213555123456',
-      email: user?.email,
-      cardNumber: 'UMV-' + Date.now().toString(36).toUpperCase(),
-      isVerified: true,
-      subscriptionType: 'monthly',
-      subscriptionTypeAr: 'شهري',
-      validFrom: '2026-01-01',
-      validUntil: '2026-12-31',
+    if (!isLoading && !user) {
+      router.push('/login');
+      return;
+    }
+    if (!user) return;
+    const safeRole = safeText(user.role);
+    const safeUniversity = safeText(user.university || user.institution);
+    const safeFaculty = safeText(user.facultyOrInstitute || user.faculty);
+    const safePhone = safeText(user.phoneNumber || user.phone);
+    const safeCardNumber = safeText(user.cardNumber);
+    const safeValidUntil = safeText(user.validUntil);
+    const currentUserCard: UserCard = {
+      id: safeCardNumber,
+      userId: safeText(user.id),
+      fullName: safeText(user.fullName),
+      fullNameAr: safeText(user.fullName),
+      userType: safeRole === 'admin' ? 'administrative' : (safeRole as UserCard['userType']),
+      userTypeAr: safeRole,
+      university: safeUniversity,
+      universityAr: safeUniversity,
+      faculty: safeFaculty,
+      facultyAr: safeFaculty,
+      phone: safePhone,
+      email: safeText(user?.email),
+      cardNumber: safeCardNumber,
+      isVerified: user.verificationStatus === 'approved' || user.verificationStatus === 'verified',
+      subscriptionType: safeText(user.subscription) as UserCard['subscriptionType'],
+      subscriptionTypeAr: safeText(user.subscription),
+      validFrom: safeText(user.createdAt),
+      validUntil: safeValidUntil,
       qrData: JSON.stringify({
-        id: user?.id || 'user-1',
-        phone: user?.phone || '+213555123456',
-        cardNumber: 'UMV-' + Date.now().toString(36).toUpperCase(),
-        validUntil: '2026-12-31',
+        id: safeText(user.id),
+        phone: safePhone,
+        cardNumber: safeCardNumber,
+        validUntil: safeValidUntil,
       }),
     };
-    setUserCard(mockUserCard);
-  }, [user]);
+    setUserCard(currentUserCard);
+  }, [isLoading, router, user]);
 
   const handleDownload = () => {
     // Implement download functionality
@@ -74,7 +96,8 @@ export default function MyCardPage() {
     <DashboardLayout role="user">
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Header */}
-        <div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
           <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4 tracking-tight">
             {language === 'ar' ? 'بطاقتي' : 'Ma carte'}
           </h1>
@@ -83,6 +106,10 @@ export default function MyCardPage() {
               ? 'بطاقتك الرقمية UNIMOVE-DZ'
               : 'Votre carte numérique UNIMOVE-DZ'}
           </p>
+          </div>
+          <Button variant="outline" onClick={() => window.history.length > 1 ? router.back() : router.push('/dashboard')}>
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
         </div>
 
         {/* WiFi Info */}

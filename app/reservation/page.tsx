@@ -6,13 +6,18 @@ import { SmartReservationForm } from '@/components/SmartReservationForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
-import { CheckCircle, AlertCircle, QrCode } from 'lucide-react';
+import { CheckCircle, AlertCircle, QrCode, ShieldAlert } from 'lucide-react';
 import { ReservationFormData, Reservation } from '@/types/reservation';
 import { locations } from '@/mock/routes';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { db } from '@/lib/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 export default function ReservationPage() {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
   const [reservationNumber, setReservationNumber] = useState('');
 
@@ -21,35 +26,80 @@ export default function ReservationPage() {
   };
 
   const handleReservationSubmit = async (data: ReservationFormData & { totalPrice: number; selectedRoute: any; selectedVehicle: any }) => {
-    // Create reservation object
-    const reservation: Reservation = {
-      id: Date.now().toString(),
-      reservationNumber: generateReservationNumber(),
-      userId: user?.id || 'user-1',
-      route: data.selectedRoute,
-      vehicle: data.selectedVehicle,
-      departurePoint: locations.find(l => l.id === data.departurePoint)!,
-      destination: locations.find(l => l.id === data.destination)!,
-      date: data.date,
-      time: data.time,
-      seats: data.seats,
-      totalPrice: data.totalPrice,
-      paymentMethod: data.paymentMethod,
-      paymentStatus: data.paymentMethod === 'subscription' ? 'paid' : 'pending',
-      status: 'confirmed',
-      createdAt: new Date().toISOString(),
-      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${generateReservationNumber()}`,
-    };
+    // Block if user is not verified or approved
+    const isVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
+    const isApproved = user?.status === 'approved' || user?.accountStatus === 'active';
+    if (!user || !isVerified || !isApproved) {
+      alert(language === 'ar' ? 'يجب التحقق من حسابك قبل الحجز' : 'Vous devez vérifier votre compte avant de réserver');
+      return;
+    }
 
-    // Save to localStorage
-    const existingReservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-    existingReservations.push(reservation);
-    localStorage.setItem('reservations', JSON.stringify(existingReservations));
+    const reservationNumber = generateReservationNumber();
+    const departure = locations.find(l => l.id === data.departurePoint);
+    const destination = locations.find(l => l.id === data.destination);
 
-    // Show success
-    setReservationNumber(reservation.reservationNumber);
+    // Persist to Firestore (collection: bookings)
+    try {
+      await addDoc(collection(db, 'bookings'), {
+        userId: user.id,
+        fullName: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        phoneNumber: user.phoneNumber || user.phone || '',
+        role: user.role || 'student',
+        fromPoint: departure?.name || data.departurePoint,
+        toDestination: destination?.name || data.destination,
+        daira: user.daira || '',
+        commune: user.commune || '',
+        date: data.date,
+        time: data.time,
+        vehicleType: data.selectedVehicle?.type || data.selectedVehicle?.name || '',
+        passengersCount: data.seats || 1,
+        price: data.totalPrice,
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        paymentMethod: data.paymentMethod || 'cash',
+        reservationNumber,
+        createdAt: serverTimestamp(),
+      });
+      console.log('[Reservation] Booking created in Firestore:', reservationNumber);
+    } catch (e) {
+      console.error('[Reservation] Failed to save booking:', e);
+      alert(language === 'ar' ? 'تعذر حفظ الحجز' : 'Impossible d\'enregistrer la réservation');
+      return;
+    }
+
+    setReservationNumber(reservationNumber);
     setShowSuccess(true);
   };
+
+  // Show verification block screen if user is not verified/approved
+  const isVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
+  const isApproved = user?.status === 'approved' || user?.accountStatus === 'active';
+  if (user && (!isVerified || !isApproved)) {
+    return (
+      <DashboardLayout role="user">
+        <div className="max-w-2xl mx-auto">
+          <Card className="p-12 border border-amber-200 bg-amber-50 rounded-3xl shadow-2xl">
+            <div className="text-center space-y-6">
+              <div className="w-20 h-20 bg-amber-100 rounded-3xl flex items-center justify-center mx-auto">
+                <ShieldAlert className="w-10 h-10 text-amber-600" />
+              </div>
+              <h1 className="text-3xl font-extrabold text-gray-900">
+                {language === 'ar' ? 'يجب التحقق من حسابك قبل الحجز' : 'Vous devez vérifier votre compte avant de réserver'}
+              </h1>
+              <p className="text-slate-600">
+                {language === 'ar'
+                  ? 'حسابك قيد المراجعة من طرف الإدارة'
+                  : 'Votre compte est en cours d\'examen par l\'administration'}
+              </p>
+              <Button onClick={() => router.push('/dashboard')}>
+                {language === 'ar' ? 'العودة إلى لوحة التحكم' : 'Retour au tableau de bord'}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   if (showSuccess) {
     return (
@@ -98,7 +148,8 @@ export default function ReservationPage() {
     <DashboardLayout role="user">
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Header */}
-        <div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
           <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4 tracking-tight">
             {language === 'ar' ? 'حجز رحلة' : 'Réserver un trajet'}
           </h1>
@@ -107,6 +158,10 @@ export default function ReservationPage() {
               ? 'اختر الرحلة المناسبة واحجز مقعدك'
               : 'Choisissez votre trajet et réservez votre siège'}
           </p>
+          </div>
+          <Button variant="outline" onClick={() => window.history.length > 1 ? router.back() : router.push('/dashboard')}>
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
         </div>
 
         {/* WiFi Info */}

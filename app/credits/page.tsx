@@ -77,7 +77,7 @@ export default function CreditsPage() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
+                {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}
               </h3>
               <p className="text-2xl font-bold text-emerald-700">
                 {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}

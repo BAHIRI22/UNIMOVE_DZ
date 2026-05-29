@@ -1,0 +1,29 @@
+{
+  "tripTypes": [
+    { "id": "university", "name": "University", "nameAr": "جامعي" },
+    { "id": "airport", "name": "Airport", "nameAr": "مطار" },
+    { "id": "port", "name": "Port", "nameAr": "ميناء" },
+    { "id": "tourism", "name": "Tourism", "nameAr": "سياحة" },
+    { "id": "competition", "name": "Competition", "nameAr": "مسابقة" },
+    { "id": "scientific_event", "name": "Scientific event", "nameAr": "حدث علمي" },
+    { "id": "sport_event", "name": "Sport event", "nameAr": "حدث رياضي" }
+  ],
+  "ports": [
+    { "id": "port-oran", "name": "Port d’Oran", "nameAr": "ميناء وهران", "type": "port" },
+    { "id": "port-mostaganem", "name": "Port de Mostaganem", "nameAr": "ميناء مستغانم", "type": "port" },
+    { "id": "port-ghazaouet", "name": "Port de Ghazaouet", "nameAr": "ميناء الغزوات", "type": "port" },
+    { "id": "port-arzew", "name": "Port d’Arzew", "nameAr": "ميناء أرزيو", "type": "port" },
+    { "id": "port-alger", "name": "Port d’Alger", "nameAr": "ميناء الجزائر", "type": "port" },
+    { "id": "port-bejaia", "name": "Port de Béjaïa", "nameAr": "ميناء بجاية", "type": "port" }
+  ],
+  "futureServices": [
+    { "id": "daily_university_transport", "name": "Transport universitaire quotidien", "nameAr": "النقل الجامعي اليومي" },
+    { "id": "university_tourism", "name": "Voyages touristiques universitaires", "nameAr": "الرحلات السياحية الجامعية" },
+    { "id": "airport_transport", "name": "Transport vers les aéroports", "nameAr": "التنقل إلى المطارات" },
+    { "id": "port_transport", "name": "Transport vers les ports", "nameAr": "التنقل إلى الموانئ" },
+    { "id": "scientific_competitions", "name": "Concours scientifiques", "nameAr": "المسابقات العلمية" },
+    { "id": "sport_competitions", "name": "Compétitions sportives", "nameAr": "المسابقات الرياضية" },
+    { "id": "short_internships", "name": "Stages courte durée", "nameAr": "التربصات قصيرة المدى" },
+    { "id": "cultural_activities", "name": "Activités culturelles", "nameAr": "الأنشطة الثقافية" }
+  ]
+}

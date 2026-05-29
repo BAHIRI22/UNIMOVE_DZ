@@ -1,12 +1,13 @@
 export type VehicleType = 'bus' | 'minibus' | 'car';
 export type PaymentMethod = 'subscription' | 'cash' | 'baridimob' | 'edahabia';
 export type ReservationStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+export type TripType = 'university' | 'airport' | 'port' | 'tourism' | 'competition' | 'scientific_event' | 'sport_event';
 
 export interface Location {
   id: string;
   name: string;
   nameAr: string;
-  type: 'university' | 'faculty' | 'institute' | 'residence' | 'station' | 'city_center';
+  type: 'university' | 'faculty' | 'institute' | 'residence' | 'station' | 'city_center' | 'airport' | 'port' | 'tourism';
   coordinates?: {
     lat: number;
     lng: number;
@@ -69,6 +70,7 @@ export interface Reservation {
 export interface ReservationFormData {
   departurePoint: string;
   destination: string;
+  tripType?: TripType;
   university: string;
   faculty?: string;
   residence?: string;

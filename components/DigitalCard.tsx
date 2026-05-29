@@ -14,17 +14,35 @@ interface DigitalCardProps {
   onPrint?: () => void;
 }
 
+const safeText = (value: any): string => {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (value?.toDate) return value.toDate().toLocaleDateString('ar-DZ');
+  if (value?.seconds) return new Date(value.seconds * 1000).toLocaleDateString('ar-DZ');
+  return '';
+};
+
 export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps) {
   const { language } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
 
   const getUserTypeLabel = (type: string) => {
-    return language === 'ar' ? userCard.userTypeAr : type;
+    return language === 'ar' ? safeText(userCard.userTypeAr) : safeText(type);
   };
 
   const getSubscriptionLabel = (type: string) => {
-    return language === 'ar' ? userCard.subscriptionTypeAr : type;
+    return language === 'ar' ? safeText(userCard.subscriptionTypeAr) : safeText(type);
   };
+
+  const displayedName = safeText(language === 'ar' ? userCard.fullNameAr : userCard.fullName);
+  const displayedUniversity = safeText(language === 'ar' ? userCard.universityAr : userCard.university);
+  const displayedFaculty = safeText(language === 'ar' ? userCard.facultyAr : userCard.faculty);
+  const displayedPhone = safeText(userCard.phone);
+  const displayedCardNumber = safeText(userCard.cardNumber);
+  const displayedValidFrom = safeText(userCard.validFrom);
+  const displayedValidUntil = safeText(userCard.validUntil);
+  const displayedQrData = safeText(userCard.qrData);
 
   return (
     <div ref={cardRef} className="w-full max-w-2xl mx-auto">
@@ -66,7 +84,7 @@ export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps)
                 <User className="w-10 h-10 md:w-12 md:h-12 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-white font-black text-xl md:text-2xl lg:text-3xl">{language === 'ar' ? userCard.fullNameAr : userCard.fullName}</h2>
+                <h2 className="text-white font-black text-xl md:text-2xl lg:text-3xl">{displayedName}</h2>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-white/80 text-sm md:text-base font-medium">{getUserTypeLabel(userCard.userType)}</span>
                   {userCard.isVerified && (
@@ -79,21 +97,21 @@ export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps)
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm md:text-base">
               <div className="flex items-center gap-2 md:gap-3 text-white/90">
                 <MapPin className="w-4 h-4 md:w-5 md:h-5" />
-                <span className="font-medium">{language === 'ar' ? userCard.universityAr : userCard.university}</span>
+                <span className="font-medium">{displayedUniversity}</span>
               </div>
-              {userCard.faculty && (
+              {displayedFaculty && (
                 <div className="flex items-center gap-2 md:gap-3 text-white/90">
                   <MapPin className="w-4 h-4 md:w-5 md:h-5" />
-                  <span className="font-medium">{language === 'ar' ? userCard.facultyAr : userCard.faculty}</span>
+                  <span className="font-medium">{displayedFaculty}</span>
                 </div>
               )}
               <div className="flex items-center gap-2 md:gap-3 text-white/90">
                 <Phone className="w-4 h-4 md:w-5 md:h-5" />
-                <span className="font-medium">{userCard.phone}</span>
+                <span className="font-medium">{displayedPhone}</span>
               </div>
               <div className="flex items-center gap-2 md:gap-3 text-white/90">
                 <User className="w-4 h-4 md:w-5 md:h-5" />
-                <span className="font-mono font-medium">#{userCard.cardNumber}</span>
+                <span className="font-mono font-medium">#{displayedCardNumber}</span>
               </div>
             </div>
           </div>
@@ -114,7 +132,7 @@ export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps)
               repeatDelay: 1,
             }}
           >
-            <QRCodeDisplay value={userCard.qrData} size={160} />
+            <QRCodeDisplay value={displayedQrData} size={160} />
           </motion.div>
 
           {/* Card Details */}
@@ -131,14 +149,14 @@ export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps)
                 <Calendar className="w-4 h-4 md:w-5 md:h-5" />
                 <span className="font-medium">{language === 'ar' ? 'صالح من:' : 'Valide du:'}</span>
               </div>
-              <span className="font-black text-base md:text-lg">{userCard.validFrom}</span>
+              <span className="font-black text-base md:text-lg">{displayedValidFrom}</span>
             </div>
             <div className="flex items-center justify-between text-white/90">
               <div className="flex items-center gap-2 md:gap-3">
                 <Calendar className="w-4 h-4 md:w-5 md:h-5" />
                 <span className="font-medium">{language === 'ar' ? 'صالح حتى:' : 'Valide jusqu\'au:'}</span>
               </div>
-              <span className="font-black text-base md:text-lg">{userCard.validUntil}</span>
+              <span className="font-black text-base md:text-lg">{displayedValidUntil}</span>
             </div>
           </div>
 

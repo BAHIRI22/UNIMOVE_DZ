@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Bell, Search, Settings, Menu, User, LogOut } from 'lucide-react';
@@ -16,6 +16,12 @@ export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
   const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  useEffect(() => {
+    console.log('[DashboardTopbar] user?.role:', user?.role);
+    console.log('[DashboardTopbar] user?.status:', (user as any)?.status);
+    console.log('[DashboardTopbar] user?.verified:', (user as any)?.verified);
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -48,6 +54,15 @@ export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
+          {user?.role === 'admin' && (
+            <Link
+              href="/admin-panel"
+              className="inline-flex h-10 items-center rounded-full bg-gradient-to-r from-amber-600 to-orange-700 px-4 text-sm font-black text-white shadow-lg shadow-amber-600/20 transition hover:-translate-y-0.5"
+              style={{ display: 'inline-flex', visibility: 'visible' }}
+            >
+              {language === 'ar' ? 'لوحة الإدارة' : 'Admin Panel'}
+            </Link>
+          )}
           <Link
             href="/demo"
             className="hidden sm:inline-flex h-10 items-center rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:-translate-y-0.5"

@@ -4,7 +4,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Clock, Bus } from 'lucide-react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Reservation {
@@ -19,35 +18,7 @@ interface Reservation {
 
 export function ReservationsList() {
   const { t, language } = useLanguage();
-  const [reservations] = useState<Reservation[]>([
-    {
-      id: '1',
-      route: 'سيدي بلعباس - وهران',
-      date: '2026-03-10',
-      time: '08:00',
-      status: 'upcoming',
-      from: 'محطة سيدي بلعباس',
-      to: 'محطة وهران',
-    },
-    {
-      id: '2',
-      route: 'سيدي بلعباس - مستغانم',
-      date: '2026-03-05',
-      time: '09:30',
-      status: 'completed',
-      from: 'محطة سيدي بلعباس',
-      to: 'محطة مستغانم',
-    },
-    {
-      id: '3',
-      route: 'سيدي بلعباس - تلمسان',
-      date: '2026-02-28',
-      time: '06:30',
-      status: 'completed',
-      from: 'محطة سيدي بلعباس',
-      to: 'محطة تلمسان',
-    },
-  ]);
+  const reservations: Reservation[] = [];
 
   const getStatusColor = (status: string) => {
     switch (status) {

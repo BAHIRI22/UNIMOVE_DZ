@@ -2,7 +2,7 @@ export const APP_NAME = 'UNIMOVE-DZ';
 export const APP_VERSION = '1.0.0';
 
 export const ATTRIBUTIONS = {
-  developer: {
+  project: {
     name: 'UNIMOVE-DZ',
     nameAr: 'مشروع UNIMOVE-DZ',
     title: 'Plateforme de transport universitaire intelligent'
@@ -71,10 +71,13 @@ export const NAVIGATION_ITEMS = {
     { id: 'profile', label: { ar: 'الملف الشخصي', fr: 'Profil' }, icon: 'User', path: '/profile' },
   ],
   admin: [
-    { id: 'admin-dashboard', label: { ar: 'لوحة التحكم', fr: 'Tableau de bord' }, icon: 'LayoutDashboard', path: '/admin' },
-    { id: 'admin-users', label: { ar: 'المستخدمين', fr: 'Utilisateurs' }, icon: 'Users', path: '/admin/users' },
+    { id: 'admin-dashboard', label: { ar: 'لوحة الإدارة', fr: 'Tableau de bord' }, icon: 'LayoutDashboard', path: '/admin' },
+    { id: 'admin-users', label: { ar: 'إدارة المستخدمين', fr: 'Utilisateurs' }, icon: 'Users', path: '/admin/users' },
+    { id: 'admin-verifications', label: { ar: 'طلبات التحقق', fr: 'Vérifications' }, icon: 'UserCheck', path: '/admin/verifications' },
+    { id: 'admin-bookings', label: { ar: 'الرحلات', fr: 'Trajets' }, icon: 'CalendarCheck', path: '/admin/bookings' },
     { id: 'admin-buses', label: { ar: 'الحافلات', fr: 'Bus' }, icon: 'Bus', path: '/admin/buses' },
-    { id: 'admin-drivers', label: { ar: 'السائقين', fr: 'Chauffeurs' }, icon: 'UserCheck', path: '/admin/drivers' },
-    { id: 'admin-bookings', label: { ar: 'الحجوزات', fr: 'Réservations' }, icon: 'CalendarCheck', path: '/admin/bookings' },
+    { id: 'admin-drivers', label: { ar: 'السائقين', fr: 'Chauffeurs' }, icon: 'User', path: '/admin/drivers' },
+    { id: 'admin-subscriptions', label: { ar: 'الاشتراكات', fr: 'Abonnements' }, icon: 'DollarSign', path: '/admin/subscriptions' },
+    { id: 'admin-settings', label: { ar: 'الإعدادات', fr: 'Paramètres' }, icon: 'Settings', path: '/admin/settings' },
   ]
 };

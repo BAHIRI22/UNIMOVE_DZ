@@ -131,7 +131,7 @@ export function AcademicInfoCard() {
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-900 mb-1">
-              {language === 'ar' ? 'الإنجاز والتطوير' : 'Réalisation et Développement'}
+              {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}
             </div>
             <div className="text-gray-700">
               {language === 'ar' ? 'مشروع UNIMOVE-DZ' : 'Projet UNIMOVE-DZ'}

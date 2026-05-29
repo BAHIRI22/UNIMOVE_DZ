@@ -1,0 +1,595 @@
+{
+  "university": {
+    "id": "udl-sba",
+    "nameFr": "Université Djillali Liabès",
+    "nameAr": "جامعة الجيلالي اليابس"
+  },
+  "faculties": [
+    {
+      "id": "droit",
+      "nameFr": "Faculté de Droit et des Sciences Politiques 19 Mars 1962",
+      "nameAr": "كلية الحقوق و العلوم السياسية 19مارس1962",
+      "departments": [
+        {
+          "id": "droit-pub",
+          "nameFr": "Département de Droit Public",
+          "nameAr": "قسم القانون العام",
+          "specialities": [
+            { "id": "droit-pub", "nameFr": "Droit Public", "nameAr": "قانون عام" },
+            { "id": "droit-admin", "nameFr": "Droit Administratif", "nameAr": "قانون إداري" },
+            { "id": "droit-constit", "nameFr": "Droit Constitutionnel", "nameAr": "قانون دستوري" }
+          ]
+        },
+        {
+          "id": "droit-priv",
+          "nameFr": "Département de Droit Privé",
+          "nameAr": "قسم القانون الخاص",
+          "specialities": [
+            { "id": "droit-priv", "nameFr": "Droit Privé", "nameAr": "قانون خاص" },
+            { "id": "droit-entreprise", "nameFr": "Droit des Affaires", "nameAr": "قانون المؤسسات" }
+          ]
+        },
+        {
+          "id": "sci-pol",
+          "nameFr": "Département des Sciences Politiques",
+          "nameAr": "قسم العلوم السياسية",
+          "specialities": [
+            { "id": "sci-pol", "nameFr": "Sciences Politiques", "nameAr": "علوم سياسية" },
+            { "id": "rel-inter", "nameFr": "Relations Internationales", "nameAr": "علاقات دولية" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medecine",
+      "nameFr": "Faculté de Médecine",
+      "nameAr": "كلية الطب",
+      "departments": [
+        {
+          "id": "med-gen",
+          "nameFr": "Médecine Générale",
+          "nameAr": "الطب العام",
+          "specialities": [
+            { "id": "med-gen", "nameFr": "Médecine Générale", "nameAr": "طب عام" },
+            { "id": "med-chir", "nameFr": "Médecine Chirurgicale", "nameAr": "طب جراحي" },
+            { "id": "med-interne", "nameFr": "Médecine Interne", "nameAr": "طب باطني" }
+          ]
+        },
+        {
+          "id": "med-dent",
+          "nameFr": "Médecine Dentaire",
+          "nameAr": "طب الأسنان",
+          "specialities": [
+            { "id": "dent-gen", "nameFr": "Médecine Dentaire", "nameAr": "طب أسنان" }
+          ]
+        },
+        {
+          "id": "pharma",
+          "nameFr": "Pharmacie",
+          "nameAr": "الصيدلة",
+          "specialities": [
+            { "id": "pharma", "nameFr": "Pharmacie", "nameAr": "صيدلة" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sci-exactes",
+      "nameFr": "Faculté des Sciences Exactes",
+      "nameAr": "كلية العلوم الدقيقة",
+      "departments": [
+        {
+          "id": "math",
+          "nameFr": "Mathématiques",
+          "nameAr": "الرياضيات",
+          "specialities": [
+            { "id": "math", "nameFr": "Mathématiques", "nameAr": "رياضيات" },
+            { "id": "stat", "nameFr": "Statistique", "nameAr": "إحصاء" }
+          ]
+        },
+        {
+          "id": "physique",
+          "nameFr": "Physique",
+          "nameAr": "الفيزياء",
+          "specialities": [
+            { "id": "physique", "nameFr": "Physique", "nameAr": "فيزياء" },
+            { "id": "energie", "nameFr": "Énergie Renouvelable", "nameAr": "طاقة متجددة" }
+          ]
+        },
+        {
+          "id": "chimie",
+          "nameFr": "Chimie",
+          "nameAr": "الكيمياء",
+          "specialities": [
+            { "id": "chimie", "nameFr": "Chimie", "nameAr": "كيمياء" },
+            { "id": "chim-ind", "nameFr": "Chimie Industrielle", "nameAr": "كيمياء صناعية" }
+          ]
+        },
+        {
+          "id": "info",
+          "nameFr": "Informatique",
+          "nameAr": "الإعلام الآلي",
+          "specialities": [
+            { "id": "info", "nameFr": "Informatique", "nameAr": "إعلام آلي" },
+            { "id": "reseaux", "nameFr": "Réseaux et Systèmes", "nameAr": "شبكات وأنظمة" },
+            { "id": "data-sci", "nameFr": "Data Science", "nameAr": "علوم البيانات" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "nameFr": "Faculté de Technologie",
+      "nameAr": "كلية التكنولوجيا",
+      "departments": [
+        {
+          "id": "g-civil",
+          "nameFr": "Génie Civil",
+          "nameAr": "الهندسة المدنية",
+          "specialities": [
+            { "id": "g-civil", "nameFr": "Génie Civil", "nameAr": "هندسة مدنية" },
+            { "id": "hydro", "nameFr": "Hydraulique", "nameAr": "هيدروليك" }
+          ]
+        },
+        {
+          "id": "g-elec",
+          "nameFr": "Génie Électrique",
+          "nameAr": "الهندسة الكهربائية",
+          "specialities": [
+            { "id": "g-elec", "nameFr": "Génie Électrique", "nameAr": "هندسة كهربائية" },
+            { "id": "elec-puissance", "nameFr": "Électrotechnique", "nameAr": "كهرباء القوى" }
+          ]
+        },
+        {
+          "id": "g-meca",
+          "nameFr": "Génie Mécanique",
+          "nameAr": "الهندسة الميكانيكية",
+          "specialities": [
+            { "id": "g-meca", "nameFr": "Génie Mécanique", "nameAr": "هندسة ميكانيكية" },
+            { "id": "maintenance", "nameFr": "Maintenance Industrielle", "nameAr": "صيانة صناعية" }
+          ]
+        },
+        {
+          "id": "g-info",
+          "nameFr": "Informatique",
+          "nameAr": "الإعلام الآلي",
+          "specialities": [
+            { "id": "info", "nameFr": "Informatique", "nameAr": "إعلام آلي" },
+            { "id": "prog-web", "nameFr": "Développement Web", "nameAr": "تطوير الويب" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eco",
+      "nameFr": "Faculté des Sciences Économiques, Commerciales et Sciences de Gestion",
+      "nameAr": "كلية العلوم الاقتصادية والتجارية وعلوم التسيير",
+      "departments": [
+        {
+          "id": "eco",
+          "nameFr": "Sciences Économiques",
+          "nameAr": "العلوم الاقتصادية",
+          "specialities": [
+            { "id": "eco", "nameFr": "Sciences Économiques", "nameAr": "علوم اقتصادية" }
+          ]
+        },
+        {
+          "id": "commerce",
+          "nameFr": "Sciences Commerciales",
+          "nameAr": "العلوم التجارية",
+          "specialities": [
+            { "id": "commerce", "nameFr": "Sciences Commerciales", "nameAr": "علوم تجارية" },
+            { "id": "marketing", "nameFr": "Marketing", "nameAr": "تسويق" }
+          ]
+        },
+        {
+          "id": "gestion",
+          "nameFr": "Sciences de Gestion",
+          "nameAr": "علوم التسيير",
+          "specialities": [
+            { "id": "gestion", "nameFr": "Sciences de Gestion", "nameAr": "علوم تسيير" },
+            { "id": "rh", "nameFr": "Ressources Humaines", "nameAr": "موارد بشرية" }
+          ]
+        },
+        {
+          "id": "compta",
+          "nameFr": "Comptabilité et Finance",
+          "nameAr": "المحاسبة والمالية",
+          "specialities": [
+            { "id": "compta", "nameFr": "Comptabilité et Finance", "nameAr": "محاسبة ومالية" },
+            { "id": "audit", "nameFr": "Audit et Contrôle", "nameAr": "تدقيق ومراقبة" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sci-vie",
+      "nameFr": "Faculté des Sciences de la Nature et de la Vie",
+      "nameAr": "كلية علوم الطبيعة والحياة",
+      "departments": [
+        {
+          "id": "bio",
+          "nameFr": "Biologie",
+          "nameAr": "علوم الحياة",
+          "specialities": [
+            { "id": "bio", "nameFr": "Biologie", "nameAr": "علوم الحياة" },
+            { "id": "biotech", "nameFr": "Biotechnologie", "nameAr": "تقنية حيوية" }
+          ]
+        },
+        {
+          "id": "geologie",
+          "nameFr": "Géologie",
+          "nameAr": "علوم الأرض",
+          "specialities": [
+            { "id": "geologie", "nameFr": "Géologie", "nameAr": "جيولوجيا" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lettres",
+      "nameFr": "Faculté des Lettres, Langues et Arts",
+      "nameAr": "كلية الآداب واللغات والفنون",
+      "departments": [
+        {
+          "id": "langue-ar",
+          "nameFr": "Langue Arabe",
+          "nameAr": "اللغة العربية",
+          "specialities": [
+            { "id": "langue-ar", "nameFr": "Langue Arabe", "nameAr": "لغة عربية" },
+            { "id": "litterature-ar", "nameFr": "Littérature Arabe", "nameAr": "أدب عربي" }
+          ]
+        },
+        {
+          "id": "langue-fr",
+          "nameFr": "Langue Française",
+          "nameAr": "اللغة الفرنسية",
+          "specialities": [
+            { "id": "langue-fr", "nameFr": "Langue Française", "nameAr": "لغة فرنسية" },
+            { "id": "fle", "nameFr": "FLE", "nameAr": "تعليم الفرنسية" }
+          ]
+        },
+        {
+          "id": "langue-en",
+          "nameFr": "Langue Anglaise",
+          "nameAr": "اللغة الإنجليزية",
+          "specialities": [
+            { "id": "langue-en", "nameFr": "Langue Anglaise", "nameAr": "لغة إنجليزية" },
+            { "id": "traduction-en", "nameFr": "Traduction", "nameAr": "ترجمة" }
+          ]
+        },
+        {
+          "id": "arts",
+          "nameFr": "Arts",
+          "nameAr": "الفنون",
+          "specialities": [
+            { "id": "arts", "nameFr": "Arts", "nameAr": "فنون" },
+            { "id": "musique", "nameFr": "Musique", "nameAr": "موسيقى" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shs",
+      "nameFr": "Faculté des Sciences Humaines et Sociales",
+      "nameAr": "كلية العلوم الإنسانية والاجتماعية",
+      "departments": [
+        {
+          "id": "socio",
+          "nameFr": "Sociologie",
+          "nameAr": "علم الاجتماع",
+          "specialities": [
+            { "id": "socio", "nameFr": "Sociologie", "nameAr": "علم اجتماع" },
+            { "id": "anthropo", "nameFr": "Anthropologie", "nameAr": "أنثروبولوجيا" }
+          ]
+        },
+        {
+          "id": "psycho",
+          "nameFr": "Psychologie",
+          "nameAr": "علم النفس",
+          "specialities": [
+            { "id": "psycho", "nameFr": "Psychologie", "nameAr": "علم نفس" },
+            { "id": "psycho-clin", "nameFr": "Psychologie Clinique", "nameAr": "علم نفس إكلينيكي" }
+          ]
+        },
+        {
+          "id": "histoire",
+          "nameFr": "Histoire",
+          "nameAr": "التاريخ",
+          "specialities": [
+            { "id": "histoire", "nameFr": "Histoire", "nameAr": "تاريخ" }
+          ]
+        },
+        {
+          "id": "sic",
+          "nameFr": "Sciences de l'Information et de la Communication",
+          "nameAr": "الإعلام والاتصال",
+          "specialities": [
+            { "id": "sic", "nameFr": "Sciences de l'Information", "nameAr": "إعلام واتصال" },
+            { "id": "journalisme", "nameFr": "Journalisme", "nameAr": "صحافة" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ista",
+      "nameFr": "Institut des Sciences et Techniques Appliquées",
+      "nameAr": "معهد العلوم والتقنيات التطبيقية",
+      "departments": [
+        {
+          "id": "ista-info",
+          "nameFr": "Informatique",
+          "nameAr": "الإعلام الآلي",
+          "specialities": [
+            { "id": "ista-info", "nameFr": "Informatique", "nameAr": "إعلام آلي" }
+          ]
+        },
+        {
+          "id": "ista-meca",
+          "nameFr": "Mécanique",
+          "nameAr": "الميكانيك",
+          "specialities": [
+            { "id": "ista-meca", "nameFr": "Mécanique", "nameAr": "ميكانيك" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ieps",
+      "nameFr": "Institut d'Éducation Physique et Sportive",
+      "nameAr": "معهد التربية البدنية والرياضية",
+      "departments": [
+        {
+          "id": "eps",
+          "nameFr": "Éducation Physique et Sportive",
+          "nameAr": "تربية بدنية ورياضية",
+          "specialities": [
+            { "id": "eps", "nameFr": "Éducation Physique", "nameAr": "تربية بدنية" },
+            { "id": "sport", "nameFr": "Sport", "nameAr": "رياضة" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "autre",
+      "nameFr": "Autre établissement universitaire",
+      "nameAr": "مؤسسة جامعية أخرى",
+      "departments": [
+        {
+          "id": "autre-dep",
+          "nameFr": "Autre département",
+          "nameAr": "قسم آخر",
+          "specialities": [
+            { "id": "autre-spec", "nameFr": "Autre spécialité", "nameAr": "تخصص آخر" }
+          ]
+        }
+      ]
+    }
+  ],
+  "academicYears": {
+    "student": [
+      { "id": "L1", "nameFr": "Licence 1", "nameAr": "سنة أولى ليسانس" },
+      { "id": "L2", "nameFr": "Licence 2", "nameAr": "سنة ثانية ليسانس" },
+      { "id": "L3", "nameFr": "Licence 3", "nameAr": "سنة ثالثة ليسانس" },
+      { "id": "M1", "nameFr": "Master 1", "nameAr": "ماستر 1" },
+      { "id": "M2", "nameFr": "Master 2", "nameAr": "ماستر 2" },
+      { "id": "D", "nameFr": "Doctorat", "nameAr": "دكتوراه" }
+    ],
+    "teacher": [
+      { "id": "MA", "nameFr": "Maître Assistant", "nameAr": "أستاذ مساعد" },
+      { "id": "MC", "nameFr": "Maître de Conférences", "nameAr": "أستاذ محاضر" },
+      { "id": "P", "nameFr": "Professeur", "nameAr": "أستاذ التعليم العالي" },
+      { "id": "V", "nameFr": "Enseignant Vacataire", "nameAr": "أستاذ مؤقت" }
+    ],
+    "administrative": [
+      { "id": "ADM", "nameFr": "Administratif", "nameAr": "إداري" },
+      { "id": "EMP", "nameFr": "Employé universitaire", "nameAr": "موظف جامعي" },
+      { "id": "CHEF", "nameFr": "Chef de service", "nameAr": "رئيس مصلحة" },
+      { "id": "VDOY", "nameFr": "Vice-doyen", "nameAr": "نائب عميد" },
+      { "id": "RES", "nameFr": "Responsable de résidence", "nameAr": "مسؤول إقامة" }
+    ],
+    "driver": [
+      { "id": "BUS", "nameFr": "Chauffeur bus", "nameAr": "سائق حافلة" },
+      { "id": "VOIT", "nameFr": "Chauffeur voiture", "nameAr": "سائق سيارة" },
+      { "id": "AGR", "nameFr": "Chauffeur agréé", "nameAr": "سائق معتمد" }
+    ]
+  },
+  "wilaya": {
+    "id": "sba",
+    "nameFr": "Sidi Bel Abbès",
+    "nameAr": "سيدي بلعباس",
+    "dairias": [
+      {
+        "id": "d-sba",
+        "nameFr": "Sidi Bel Abbès",
+        "nameAr": "دائرة سيدي بلعباس",
+        "communes": [
+          { "id": "c-sba", "nameFr": "Sidi Bel Abbès", "nameAr": "سيدي بلعباس" },
+          { "id": "c-sidi-bel", "nameFr": "Sidi Bel Abbès Ville", "nameAr": "سيدي بلعباس المدينة" }
+        ],
+        "departurePoints": [
+          { "id": "dp-centre", "nameFr": "Centre-ville", "nameAr": "وسط المدينة" },
+          { "id": "dp-gare", "nameFr": "Gare routière", "nameAr": "المحطة البرية" },
+          { "id": "dp-gare-fer", "nameFr": "Gare ferroviaire", "nameAr": "محطة القطار" },
+          { "id": "dp-res", "nameFr": "Résidence universitaire", "nameAr": "الإقامة الجامعية" },
+          { "id": "dp-pole", "nameFr": "Pôle universitaire", "nameAr": "القطب الجامعي" },
+          { "id": "dp-droit", "nameFr": "Faculté de Droit", "nameAr": "كلية الحقوق" },
+          { "id": "dp-med", "nameFr": "Faculté de Médecine", "nameAr": "كلية الطب" }
+        ]
+      },
+      {
+        "id": "d-tessala",
+        "nameFr": "Tessala",
+        "nameAr": "دائرة تسالة",
+        "communes": [
+          { "id": "c-tessala", "nameFr": "Tessala", "nameAr": "تسالة" }
+        ],
+        "departurePoints": [
+          { "id": "dp-tessala", "nameFr": "Centre Tessala", "nameAr": "وسط تسالة" }
+        ]
+      },
+      {
+        "id": "d-ras-elma",
+        "nameFr": "Ras El Ma",
+        "nameAr": "دائرة رأس الماء",
+        "communes": [
+          { "id": "c-ras-elma", "nameFr": "Ras El Ma", "nameAr": "رأس الماء" }
+        ],
+        "departurePoints": [
+          { "id": "dp-ras-elma", "nameFr": "Centre Ras El Ma", "nameAr": "وسط رأس الماء" }
+        ]
+      },
+      {
+        "id": "d-sfisef",
+        "nameFr": "Sfisef",
+        "nameAr": "دائرة سفيزف",
+        "communes": [
+          { "id": "c-sfisef", "nameFr": "Sfisef", "nameAr": "سفيزف" }
+        ],
+        "departurePoints": [
+          { "id": "dp-sfisef", "nameFr": "Centre Sfisef", "nameAr": "وسط سفيزف" }
+        ]
+      },
+      {
+        "id": "d-telagh",
+        "nameFr": "Telagh",
+        "nameAr": "دائرة تلاغ",
+        "communes": [
+          { "id": "c-telagh", "nameFr": "Telagh", "nameAr": "تلاغ" }
+        ],
+        "departurePoints": [
+          { "id": "dp-telagh", "nameFr": "Centre Telagh", "nameAr": "وسط تلاغ" }
+        ]
+      },
+      {
+        "id": "d-tenira",
+        "nameFr": "Tenira",
+        "nameAr": "دائرة تنيرة",
+        "communes": [
+          { "id": "c-tenira", "nameFr": "Tenira", "nameAr": "تنيرة" }
+        ],
+        "departurePoints": [
+          { "id": "dp-tenira", "nameFr": "Centre Tenira", "nameAr": "وسط تنيرة" }
+        ]
+      },
+      {
+        "id": "d-ben-badis",
+        "nameFr": "Ben Badis",
+        "nameAr": "دائرة بن باديس",
+        "communes": [
+          { "id": "c-ben-badis", "nameFr": "Ben Badis", "nameAr": "بن باديس" }
+        ],
+        "departurePoints": [
+          { "id": "dp-ben-badis", "nameFr": "Centre Ben Badis", "nameAr": "وسط بن باديس" }
+        ]
+      },
+      {
+        "id": "d-ain-el-berd",
+        "nameFr": "Aïn El Berd",
+        "nameAr": "دائرة عين البرد",
+        "communes": [
+          { "id": "c-ain-el-berd", "nameFr": "Aïn El Berd", "nameAr": "عين البرد" }
+        ],
+        "departurePoints": [
+          { "id": "dp-ain-el-berd", "nameFr": "Centre Aïn El Berd", "nameAr": "وسط عين البرد" }
+        ]
+      },
+      {
+        "id": "d-marahna",
+        "nameFr": "Marahna",
+        "nameAr": "دائرة مرحوم",
+        "communes": [
+          { "id": "c-marahna", "nameFr": "Marahna", "nameAr": "مرحوم" }
+        ],
+        "departurePoints": [
+          { "id": "dp-marahna", "nameFr": "Centre Marahna", "nameAr": "وسط مرحوم" }
+        ]
+      },
+      {
+        "id": "d-marine",
+        "nameFr": "Marine",
+        "nameAr": "دائرة مرين",
+        "communes": [
+          { "id": "c-marine", "nameFr": "Marine", "nameAr": "مرين" }
+        ],
+        "departurePoints": [
+          { "id": "dp-marine", "nameFr": "Centre Marine", "nameAr": "وسط مرين" }
+        ]
+      },
+      {
+        "id": "d-mb-ibrahim",
+        "nameFr": "Mostefa Ben Brahim",
+        "nameAr": "دائرة مصطفى بن إبراهيم",
+        "communes": [
+          { "id": "c-mb-ibrahim", "nameFr": "Mostefa Ben Brahim", "nameAr": "مصطفى بن إبراهيم" }
+        ],
+        "departurePoints": [
+          { "id": "dp-mb-ibrahim", "nameFr": "Centre Mostefa Ben Brahim", "nameAr": "وسط مصطفى بن إبراهيم" }
+        ]
+      },
+      {
+        "id": "d-m-silas",
+        "nameFr": "Moulay Slissène",
+        "nameAr": "دائرة مولاي سليسن",
+        "communes": [
+          { "id": "c-m-silas", "nameFr": "Moulay Slissène", "nameAr": "مولاي سليسن" }
+        ],
+        "departurePoints": [
+          { "id": "dp-m-silas", "nameFr": "Centre Moulay Slissène", "nameAr": "وسط مولاي سليسن" }
+        ]
+      },
+      {
+        "id": "d-sid-ali-y",
+        "nameFr": "Sidi Ali Ben Youb",
+        "nameAr": "دائرة سيدي علي بن يوب",
+        "communes": [
+          { "id": "c-sid-ali-y", "nameFr": "Sidi Ali Ben Youb", "nameAr": "سيدي علي بن يوب" }
+        ],
+        "departurePoints": [
+          { "id": "dp-sid-ali-y", "nameFr": "Centre Sidi Ali Ben Youb", "nameAr": "وسط سيدي علي بن يوب" }
+        ]
+      },
+      {
+        "id": "d-sid-ali-bs",
+        "nameFr": "Sidi Ali Boussidi",
+        "nameAr": "دائرة سيدي علي بوسيدي",
+        "communes": [
+          { "id": "c-sid-ali-bs", "nameFr": "Sidi Ali Boussidi", "nameAr": "سيدي علي بوسيدي" }
+        ],
+        "departurePoints": [
+          { "id": "dp-sid-ali-bs", "nameFr": "Centre Sidi Ali Boussidi", "nameAr": "وسط سيدي علي بوسيدي" }
+        ]
+      },
+      {
+        "id": "d-sid-lahcen",
+        "nameFr": "Sidi Lahcène",
+        "nameAr": "دائرة سيدي لحسن",
+        "communes": [
+          { "id": "c-sid-lahcen", "nameFr": "Sidi Lahcène", "nameAr": "سيدي لحسن" }
+        ],
+        "departurePoints": [
+          { "id": "dp-sid-lahcen", "nameFr": "Centre Sidi Lahcène", "nameAr": "وسط سيدي لحسن" }
+        ]
+      }
+    ]
+  },
+  "verificationMethods": {
+    "student": [
+      { "id": "student_card", "nameFr": "Carte étudiant", "nameAr": "بطاقة الطالب" },
+      { "id": "university_email", "nameFr": "Email universitaire", "nameAr": "البريد الجامعي" },
+      { "id": "certificate", "nameFr": "Certificat de scolarité", "nameAr": "شهادة مدرسية" }
+    ],
+    "teacher": [
+      { "id": "university_email", "nameFr": "Email universitaire", "nameAr": "البريد الجامعي" },
+      { "id": "work_badge", "nameFr": "Badge professionnel", "nameAr": "بطاقة مهنية" }
+    ],
+    "administrative": [
+      { "id": "university_email", "nameFr": "Email universitaire", "nameAr": "البريد الجامعي" },
+      { "id": "work_badge", "nameFr": "Badge professionnel", "nameAr": "بطاقة مهنية" }
+    ],
+    "driver": [
+      { "id": "driver_license", "nameFr": "Permis de conduire", "nameAr": "رخصة السياقة" },
+      { "id": "work_badge", "nameFr": "Badge professionnel", "nameAr": "بطاقة مهنية" }
+    ]
+  }
+}

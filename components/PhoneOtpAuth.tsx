@@ -1,24 +1,11 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { auth } from '@/lib/firebase';
-import { 
-  signInWithPhoneNumber, 
-  RecaptchaVerifier,
-  ConfirmationResult 
-} from 'firebase/auth';
-import { Phone, Shield, CheckCircle2, AlertCircle, Loader2, BadgeCheck } from 'lucide-react';
-
-// TypeScript global declaration for window.recaptchaVerifier
-declare global {
-  interface Window {
-    recaptchaVerifier?: RecaptchaVerifier;
-  }
-}
+import { Phone, Shield, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 interface PhoneOtpAuthProps {
   onAuthSuccess?: (user: any) => void;
@@ -26,211 +13,105 @@ interface PhoneOtpAuthProps {
   mode?: 'login' | 'register';
 }
 
+const DEMO_OTP_CODE = '123456';
+const isDev = process.env.NODE_ENV === 'development';
+
 export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: PhoneOtpAuthProps) {
   const { language } = useLanguage();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [normalizedPhone, setNormalizedPhone] = useState('');
   const [otp, setOtp] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpStep, setOtpStep] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [canResend, setCanResend] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(60);
 
-  const DEMO_OTP_CODE = '123456';
-  const ENABLE_REAL_FIREBASE_SMS = false;
-  const DEMO_USERS: Record<string, { role: 'student' | 'teacher' | 'admin' | 'driver'; fullName: string; labelFr: string; labelAr: string }> = {
-    '0600000000': { role: 'student', fullName: 'Demo Student', labelFr: 'Étudiant', labelAr: 'طالب' },
-    '660000001': { role: 'student', fullName: 'Demo Étudiant', labelFr: 'Étudiant', labelAr: 'طالب' },
-    '770000004': { role: 'teacher', fullName: 'Demo Enseignant', labelFr: 'Enseignant', labelAr: 'أستاذ' },
-    '12345678': { role: 'admin', fullName: 'Demo Administrateur', labelFr: 'Administrateur', labelAr: 'مدير' },
-    '+213770000004': { role: 'driver', fullName: 'Demo Chauffeur', labelFr: 'Chauffeur', labelAr: 'سائق' },
-  };
-  // Algerian phone number normalization
   const normalizeAlgerianPhone = (input: string): string | null => {
-    const cleaned = input.replace(/\s+/g, '').replace(/-/g, '');
-
-    // Already in international format
-    if (/^\+213[5-7][0-9]{8}$/.test(cleaned)) {
-      return cleaned;
-    }
-
-    // Local format starting with 0
+    const cleaned = input.replace(/[\s-]/g, '');
     if (/^0[5-7][0-9]{8}$/.test(cleaned)) {
       return '+213' + cleaned.substring(1);
     }
-
+    if (/^\+213[5-7][0-9]{8}$/.test(cleaned)) {
+      return cleaned;
+    }
     return null;
   };
 
-  const normalizedCurrentPhone = normalizeAlgerianPhone(phoneNumber);
-  const demoUser = normalizedCurrentPhone ? DEMO_USERS[normalizedCurrentPhone] : null;
-  const isDemoMode = Boolean(demoUser);
-
-  // Setup reCAPTCHA verifier
-  const setupRecaptcha = (): RecaptchaVerifier | null => {
-    if (typeof window === 'undefined') return null;
-
-    try {
-      // Reuse existing verifier if available
-      if (window.recaptchaVerifier) {
-        console.log('Reusing existing reCAPTCHA verifier');
-        return window.recaptchaVerifier;
-      }
-
-      const container = document.getElementById('recaptcha-container');
-      if (!container) {
-        console.error('reCAPTCHA container not found');
-        return null;
-      }
-
-      console.log('Creating new reCAPTCHA verifier');
-      const verifier = new RecaptchaVerifier(auth, container, {
-        size: 'invisible',
-        callback: (response: string) => {
-          console.log('reCAPTCHA solved:', response);
-        },
-        'expired-callback': () => {
-          console.log('reCAPTCHA expired');
-        },
-      });
-
-      window.recaptchaVerifier = verifier;
-      console.log('reCAPTCHA verifier created successfully');
-      return verifier;
-    } catch (err) {
-      console.error('Error setting up reCAPTCHA:', err);
-      return null;
-    }
-  };
-
-  // Countdown timer for resend
   useEffect(() => {
     if (resendCountdown > 0 && !canResend) {
       const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (resendCountdown === 0) {
+    }
+
+    if (resendCountdown === 0) {
       setCanResend(true);
     }
   }, [resendCountdown, canResend]);
 
   const handleSendOtp = async () => {
     if (!phoneNumber) {
-      setError(language === 'ar' ? 'يرجى إدخال رقم الهاتف' : 'Veuillez entrer votre numéro de téléphone');
+      setError(language === 'ar' ? 'يرجى إدخال رقم الهاتف' : 'Veuillez entrer votre num\u00e9ro de t\u00e9l\u00e9phone');
       return;
     }
 
-    // Normalize phone number
-    const normalizedPhone = normalizeAlgerianPhone(phoneNumber);
-    if (!normalizedPhone) {
-      setError(language === 'ar' ? 'رقم الهاتف غير صالح' : 'Numéro de téléphone invalide');
+    const phone = normalizeAlgerianPhone(phoneNumber);
+    if (!phone) {
+      setError(language === 'ar' ? 'رقم الهاتف غير صحيح' : 'Num\u00e9ro de t\u00e9l\u00e9phone invalide');
       return;
     }
 
-    // Demo mode: accept any phone number
+    setNormalizedPhone(phone);
     setLoading(true);
     setError('');
-    setSuccess(language === 'ar' ? 'تم إرسال كود التحقق التجريبي' : 'Code OTP de démonstration envoyé');
-    setConfirmationResult({ confirm: async (code: string) => {
-      if (code === DEMO_OTP_CODE) {
-        return {
-          user: {
-            phoneNumber: normalizedPhone,
-            uid: `demo-${normalizedPhone.replace(/\D/g, '')}`,
-            demoUserData: {
-              fullName: 'Demo User',
-              role: 'student',
-              institution: 'Université Djillali Liabes Sidi Bel Abbès',
-              faculty: 'Faculté de Droit et Sciences Politiques',
-              subscription: 'monthly',
-              validUntil: '2026-12-31',
-              homePoint: 'Sidi Bel Abbès',
-              preferredRoute: 'Campus Universitaire',
-              isApproved: true,
-            },
-          },
-        };
-      }
-      throw new Error('demo/invalid-otp-code');
-    } } as any);
+    setSuccess('');
+
+    console.log('DEV OTP BYPASS ACTIVE');
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('unimove_dev_phone', phone);
+      localStorage.setItem('unimove_current_phone', phone);
+    }
+
+    setOtpStep(true);
+    setSuccess(language === 'ar'
+      ? 'وضع التطوير: أدخل الرمز 123456'
+      : 'Mode d\u00e9veloppement : entrez le code 123456');
     setCanResend(false);
     setResendCountdown(60);
     setLoading(false);
-    return;
-
-    // Real Firebase OTP
-    const firebasePhone = normalizedPhone;
-    const appVerifier = setupRecaptcha();
-    if (!appVerifier) {
-      setError(language === 'ar' ? 'فشل تهيئة reCAPTCHA' : 'Erreur d\'initialisation reCAPTCHA');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const result = await signInWithPhoneNumber(auth, firebasePhone, appVerifier);
-      setConfirmationResult(result);
-      setSuccess(language === 'ar' ? 'تم إرسال كود التحقق بنجاح' : 'Code de vérification envoyé avec succès');
-      setCanResend(false);
-      setResendCountdown(60);
-    } catch (error: any) {
-      console.error('Firebase OTP error full:', error);
-      console.error('Firebase OTP error code:', error?.code);
-      console.error('Firebase OTP error message:', error?.message);
-
-      let message = language === 'ar' ? 'فشل إرسال كود التحقق' : 'Échec de l\'envoi du code de vérification';
-
-      if (error?.code === 'auth/invalid-phone-number') {
-        message = language === 'ar' ? 'رقم الهاتف غير صالح' : 'Numéro de téléphone invalide';
-      } else if (error?.code === 'auth/too-many-requests') {
-        message = language === 'ar' ? 'تم إرسال محاولات كثيرة، حاول لاحقًا' : 'Trop de tentatives. Veuillez réessayer plus tard';
-      } else if (error?.code === 'auth/quota-exceeded') {
-        message = language === 'ar' ? 'تم تجاوز حصة رسائل SMS في Firebase' : 'Quota de messages SMS Firebase dépassé';
-      } else if (error?.code === 'auth/captcha-check-failed') {
-        message = language === 'ar' ? 'فشل التحقق من reCAPTCHA' : 'Échec de la vérification reCAPTCHA';
-      } else if (error?.code === 'auth/operation-not-allowed') {
-        message = language === 'ar' ? 'تسجيل الدخول بالهاتف غير مفعل في Firebase' : 'Connexion par téléphone non activée dans Firebase';
-      } else if (error?.code === 'auth/invalid-app-credential') {
-        message = language === 'ar' ? 'خطأ في إعدادات Firebase أو النطاق غير مسموح' : 'Erreur de configuration Firebase ou domaine non autorisé';
-      }
-
-      // Display error code temporarily for debugging
-      setError(`${message} (${error?.code || 'unknown'})`);
-
-      if (onAuthError) onAuthError(error.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleVerifyOtp = async () => {
-    if (!otp || !confirmationResult) {
-      setError(language === 'ar' ? 'يرجى إدخال كود التحقق' : 'Veuillez entrer le code de vérification');
+    if (!otp || otp.length !== 6) {
+      setError(language === 'ar' ? 'يرجى إدخال رمز التحقق' : 'Veuillez entrer le code de v\u00e9rification');
       return;
     }
 
-    const activeConfirmationResult = confirmationResult;
     setLoading(true);
     setError('');
     setSuccess('');
 
     try {
-      const result = await activeConfirmationResult.confirm(otp);
-      setSuccess(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Connexion réussie');
-      if (onAuthSuccess) onAuthSuccess(result.user);
-    } catch (error: any) {
-      if (error?.code === 'auth/invalid-verification-code' || error?.message === 'demo/invalid-otp-code') {
-        setError(language === 'ar' ? 'كود التحقق غير صحيح' : 'Code OTP incorrect');
-      } else if (error?.code === 'auth/code-expired') {
-        setError(language === 'ar' ? 'كود التحقق منتهي الصلاحية' : 'Code de vérification expiré');
-      } else {
-        setError(language === 'ar' ? 'فشل التحقق من الكود' : 'Échec de la vérification du code');
+      if (otp !== DEMO_OTP_CODE) {
+        throw new Error('demo/invalid-otp-code');
       }
 
-      if (onAuthError) onAuthError(error.message);
+      setSuccess(language === 'ar' ? 'تم تأكيد الرمز بنجاح' : 'Code confirm\u00e9 avec succ\u00e8s');
+      if (onAuthSuccess) {
+        onAuthSuccess({
+          uid: `demo-${normalizedPhone.replace(/\D/g, '')}`,
+          phoneNumber: normalizedPhone,
+        });
+      }
+    } catch (err: any) {
+      if (err?.message === 'demo/invalid-otp-code') {
+        setError(language === 'ar' ? 'رمز التحقق غير صحيح (استعمل 123456)' : 'Code OTP incorrect (utilisez 123456)');
+      } else {
+        setError(language === 'ar' ? 'تعذر تأكيد الرمز' : 'Impossible de confirmer le code');
+      }
+      if (onAuthError) onAuthError(err?.message || 'OTP verification error');
     } finally {
       setLoading(false);
     }
@@ -239,77 +120,60 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
   const handleResendOtp = async () => {
     setCanResend(false);
     setResendCountdown(60);
+    setOtpStep(false);
+    setOtp('');
     await handleSendOtp();
   };
 
-  const handleResetPhone = () => {
-    setConfirmationResult(null);
+  const handleBackToPhone = () => {
+    setOtpStep(false);
     setOtp('');
     setError('');
     setSuccess('');
   };
 
   return (
-    <Card className="p-8 border border-gray-200 shadow-xl rounded-3xl bg-white">
-      <div className="space-y-6">
+    <Card className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xl">
+      <div className="space-y-5">
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700">
-            <BadgeCheck className="h-4 w-4" />
-            {language === 'ar' ? 'وضع العرض' : 'MODE DÉMO'}
-          </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-black text-teal-700">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700">
             <Shield className="h-4 w-4" />
-            OTP TEST
+            DEV OTP MODE
           </div>
-          {isDemoMode && demoUser && (
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700">
-              {language === 'ar' ? demoUser.labelAr : demoUser.labelFr}
-            </div>
-          )}
         </div>
 
-        {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Phone className="w-8 h-8 text-primary" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <Phone className="h-7 w-7 text-primary" />
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            {mode === 'login' 
-              ? (language === 'ar' ? 'تسجيل الدخول' : 'Connexion')
-              : (language === 'ar' ? 'تسجيل رقم الهاتف' : 'Enregistrement du téléphone')
-            }
+          <h3 className="mb-2 text-2xl font-bold text-gray-900">
+            {otpStep
+              ? (language === 'ar' ? 'أدخل رمز التحقق' : 'Entrez le code de vérification')
+              : mode === 'login'
+                ? (language === 'ar' ? 'تسجيل الدخول' : 'Connexion')
+                : (language === 'ar' ? 'تسجيل رقم الهاتف' : 'Enregistrement du téléphone')}
           </h3>
-          <p className="text-gray-600">
-            {language === 'ar' 
-              ? 'أدخل رقم هاتفك للحصول على كود التحقق'
-              : 'Entrez votre numéro de téléphone pour recevoir le code de vérification'
-            }
-          </p>
-          <p className="text-xs text-emerald-700 mt-2 font-black">
-            {language === 'ar' ? 'كود العرض: 123456' : 'Code demo: 123456'}
-          </p>
-          <p className="text-xs text-slate-500 mt-1">
-            {language === 'ar'
-              ? 'الأرقام غير التجريبية تتطلب تفعيل Firebase Billing للرسائل الحقيقية'
-              : 'Le SMS réel nécessite Firebase Billing pour les numéros hors démo'}
+          <p className="text-sm leading-6 text-gray-600">
+            {otpStep
+              ? (language === 'ar' ? 'أدخل الرمز الذي وصلك عبر SMS' : 'Entrez le code reçu par SMS')
+              : (language === 'ar' ? 'أدخل رقم هاتفك للدخول إلى حسابك' : 'Entrez votre numéro de téléphone pour accéder à votre compte')}
           </p>
         </div>
 
-        {/* Phone Number Input */}
-        {!confirmationResult && (
+        {!otpStep && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
                 {language === 'ar' ? 'رقم الهاتف' : 'Numéro de téléphone'}
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <Input
                   type="tel"
-                  placeholder={language === 'ar' ? 'رقم الهاتف' : 'Numéro de téléphone'}
+                  placeholder="0550000000"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="pl-10 h-12 text-lg border-gray-300 focus:border-primary focus:ring-primary"
+                  className="h-12 border-gray-300 pl-10 text-lg focus:border-primary focus:ring-primary"
                   dir="ltr"
                 />
               </div>
@@ -317,38 +181,42 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
 
             <Button
               onClick={handleSendOtp}
-              disabled={loading}
-              className="w-full h-12 bg-primary hover:bg-secondary text-white font-medium text-lg"
+              disabled={loading || !phoneNumber}
+              className="h-12 w-full rounded-xl bg-primary font-medium text-white hover:bg-secondary"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  {language === 'ar' ? 'جاري الإرسال...' : 'Envoi en cours...'}
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {language === 'ar' ? 'جارٍ إرسال الرمز...' : 'Envoi du code...'}
                 </>
               ) : (
                 <>
-                  <Shield className="w-5 h-5 mr-2" />
-                  {language === 'ar' ? 'إرسال كود التحقق' : 'Envoyer le code'}
+                  <Shield className="mr-2 h-5 w-5" />
+                  {language === 'ar' ? 'إرسال رمز التحقق' : 'Envoyer le code'}
                 </>
               )}
             </Button>
           </div>
         )}
 
-        {/* OTP Input */}
-        {confirmationResult && (
+        {otpStep && (
           <div className="space-y-4">
+            {isDev && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm font-bold text-amber-800">
+                {language === 'ar' ? 'وضع التطوير مفعل: استعمل الرمز 123456' : 'Mode d\u00e9veloppement actif : utilisez le code 123456'}
+              </div>
+            )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {language === 'ar' ? 'كود التحقق' : 'Code de vérification'}
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                {language === 'ar' ? 'رمز التحقق' : 'Code de vérification'}
               </label>
               <Input
                 type="text"
-                placeholder={language === 'ar' ? 'XXXXXX' : 'XXXXXX'}
+                placeholder="123456"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                className="h-12 text-center text-lg tracking-widest border-gray-300 focus:border-primary focus:ring-primary"
                 maxLength={6}
-                className="h-12 text-lg text-center tracking-widest border-gray-300 focus:border-primary focus:ring-primary"
                 dir="ltr"
               />
             </div>
@@ -356,68 +224,45 @@ export function PhoneOtpAuth({ onAuthSuccess, onAuthError, mode = 'login' }: Pho
             <Button
               onClick={handleVerifyOtp}
               disabled={loading || otp.length !== 6}
-              className="w-full h-12 bg-primary hover:bg-secondary text-white font-medium text-lg"
+              className="h-12 w-full rounded-xl bg-primary font-medium text-white hover:bg-secondary"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  {language === 'ar' ? 'جاري التحقق...' : 'Vérification en cours...'}
-                </>
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5 mr-2" />
-                  {language === 'ar' ? 'تأكيد الكود' : 'Confirmer le code'}
+                  <CheckCircle2 className="mr-2 h-5 w-5" />
+                  {language === 'ar' ? 'تأكيد الرمز' : 'Confirmer le code'}
                 </>
               )}
             </Button>
 
-            {/* Resend OTP */}
-            <div className="text-center">
-              {canResend ? (
-                <button
-                  onClick={handleResendOtp}
-                  className="text-primary hover:text-secondary font-medium text-sm"
-                >
-                  {language === 'ar' ? 'إعادة إرسال الكود' : 'Renvoyer le code'}
-                </button>
-              ) : (
-                <p className="text-gray-500 text-sm">
-                  {language === 'ar' 
-                    ? `إعادة الإرسال خلال ${resendCountdown} ثانية`
-                    : `Renvoyer dans ${resendCountdown} secondes`
-                  }
-                </p>
-              )}
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={handleBackToPhone} className="h-11 flex-1 rounded-xl">
+                {language === 'ar' ? 'رجوع' : 'Retour'}
+              </Button>
+              <Button variant="outline" onClick={handleResendOtp} disabled={!canResend || loading} className="h-11 flex-1 rounded-xl">
+                {canResend
+                  ? (language === 'ar' ? 'إعادة الإرسال' : 'Renvoyer')
+                  : `${resendCountdown}s`}
+              </Button>
             </div>
-
-            {/* Change Phone Number */}
-            <button
-              onClick={handleResetPhone}
-              className="w-full text-gray-600 hover:text-gray-900 font-medium text-sm"
-            >
-              {language === 'ar' ? 'تغيير رقم الهاتف' : 'Changer le numéro de téléphone'}
-            </button>
           </div>
         )}
 
-        {/* Error Message */}
         {error && (
-          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <p className="text-red-800 text-sm">{error}</p>
+          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <p className="text-sm">{error}</p>
           </div>
         )}
 
-        {/* Success Message */}
         {success && (
-          <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-xl">
-            <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-            <p className="text-green-800 text-sm">{success}</p>
+          <div className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 p-4 text-green-700">
+            <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+            <p className="text-sm">{success}</p>
           </div>
         )}
 
-        {/* Recaptcha Container */}
-        <div id="recaptcha-container" className="opacity-0 pointer-events-none" />
       </div>
     </Card>
   );

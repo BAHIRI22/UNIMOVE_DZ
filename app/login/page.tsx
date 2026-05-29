@@ -16,10 +16,54 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleAuthSuccess = async (firebaseUser: any) => {
-    // Login with Firebase user
-    await loginWithFirebase(firebaseUser, firebaseUser.demoUserData);
-    // Redirect to dashboard
-    router.push('/dashboard');
+    const rawPhone = firebaseUser.phoneNumber || '';
+    console.log('LOGIN PHONE:', rawPhone);
+
+    // Normalize for logging
+    const digits = rawPhone.replace(/\D/g, '');
+    let normalized = rawPhone;
+    if (digits.startsWith('0') && digits.length === 10) {
+      normalized = '+213' + digits.slice(1);
+    }
+    console.log('NORMALIZED PHONE:', normalized);
+
+    // loginWithFirebase now searches multiple phone formats via findUserByPhone
+    const existingUser = await loginWithFirebase(firebaseUser);
+
+    if (existingUser) {
+      const role = existingUser.role;
+      const verified = existingUser.verified;
+      const status = existingUser.status;
+      const vStatus = (existingUser as any).verificationStatus;
+      const aStatus = (existingUser as any).accountStatus;
+
+      console.log('FIRESTORE USER FOUND:', existingUser.id || existingUser.phone);
+      console.log('ROLE FOUND:', role);
+      console.log('VERIFIED:', verified, '| verificationStatus:', vStatus);
+      console.log('STATUS:', status, '| accountStatus:', aStatus);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('unimove_current_phone', rawPhone);
+        localStorage.setItem('unimove_user_role', role || '');
+        localStorage.setItem('unimove_current_user', JSON.stringify(existingUser));
+      }
+
+      const isAdminRole = role === 'admin';
+      const isVerified = verified === true || vStatus === 'verified' || aStatus === 'active';
+      const isApproved = status === 'approved' || aStatus === 'active' || vStatus === 'verified';
+
+      if (isAdminRole && isVerified && isApproved) {
+        console.log('REDIRECT TARGET: /admin-panel');
+        router.replace('/admin-panel');
+      } else {
+        console.log('REDIRECT TARGET: /dashboard', { isAdminRole, isVerified, isApproved });
+        router.replace('/dashboard');
+      }
+      return;
+    }
+
+    console.log('REDIRECT TARGET: /register (no user found)');
+    router.replace(`/register?phone=${encodeURIComponent(rawPhone)}`);
   };
 
   const handleAuthError = (_error: string) => {

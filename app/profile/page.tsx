@@ -6,23 +6,51 @@ import { ProfileCard } from '@/components/ProfileCard';
 import { EditProfileForm } from '@/components/EditProfileForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockUserProfile } from '@/mock/profile-data';
 import { UserProfile } from '@/types/profile';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 export default function ProfilePage() {
   const { language } = useLanguage();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [profile, setProfile] = useState<UserProfile>(mockUserProfile);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // Load profile from localStorage
-    const storedProfile = localStorage.getItem('userProfile');
-    if (storedProfile) {
-      setProfile(JSON.parse(storedProfile));
+    if (!isLoading && !user) {
+      router.push('/login');
+      return;
     }
-  }, []);
+    if (user) {
+      setProfile({
+        id: user.id,
+        phone: user.phoneNumber || user.phone,
+        phoneVerified: true,
+        email: user.email,
+        emailVerified: Boolean(user.email),
+        firstName: user.firstName || user.fullName.split(' ')[0] || '',
+        firstNameAr: user.firstName || user.fullName.split(' ')[0] || '',
+        lastName: user.lastName || user.fullName.split(' ').slice(1).join(' '),
+        lastNameAr: user.lastName || user.fullName.split(' ').slice(1).join(' '),
+        userType: user.role === 'admin' ? 'administrative' : user.role,
+        userTypeAr: user.role,
+        university: user.university || user.institution,
+        universityAr: user.university || user.institution,
+        faculty: user.facultyOrInstitute || user.faculty || '',
+        facultyAr: user.facultyOrInstitute || user.faculty || '',
+        level: user.academicYear || user.grade,
+        levelAr: user.academicYear || user.grade,
+        usualDeparturePoint: user.departurePoint || user.homePoint,
+        usualDeparturePointAr: user.departurePoint || user.homePoint,
+        verified: user.verificationStatus === 'approved' || user.verificationStatus === 'verified',
+        activeSubscription: user.subscription,
+        subscriptionExpiry: user.validUntil,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt || user.createdAt,
+      });
+    }
+  }, [isLoading, router, user]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -37,19 +65,28 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
 
+  if (!profile) {
+    return null;
+  }
+
   return (
     <DashboardLayout role="user">
       <div className="max-w-5xl mx-auto space-y-6 md:space-y-8 lg:space-y-10">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-3 md:mb-4 tracking-tight">
-            {language === 'ar' ? 'ملفي' : 'Mon profil'}
-          </h1>
-          <p className="text-base md:text-lg lg:text-xl text-slate-600 leading-7 md:leading-8">
-            {language === 'ar'
-              ? 'إدارة معلوماتك الشخصية والإعدادات'
-              : 'Gérez vos informations personnelles et vos paramètres'}
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-3 md:mb-4 tracking-tight">
+              {language === 'ar' ? 'ملفي' : 'Mon profil'}
+            </h1>
+            <p className="text-base md:text-lg lg:text-xl text-slate-600 leading-7 md:leading-8">
+              {language === 'ar'
+                ? 'إدارة معلوماتك الشخصية والإعدادات'
+                : 'Gérez vos informations personnelles et vos paramètres'}
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => window.history.length > 1 ? router.back() : router.push('/dashboard')}>
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
         </div>
 
         {/* Profile Card or Edit Form */}

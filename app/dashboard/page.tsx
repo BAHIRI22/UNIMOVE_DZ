@@ -3,6 +3,8 @@
 import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { MembershipCard } from '@/components/Dashboard/MembershipCard';
 import { ReservationsList } from '@/components/Dashboard/ReservationsList';
+import { UserBookings } from '@/components/Dashboard/UserBookings';
+import { VerificationUpload } from '@/components/Dashboard/VerificationUpload';
 import { BookingModal } from '@/components/Dashboard/BookingModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -12,12 +14,17 @@ import { Plus, Calendar, MapPin, CreditCard, Bell, TrendingUp, Users, Wallet, St
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { db } from '@/lib/firebase';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { language } = useLanguage();
+  const router = useRouter();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [animatedStats, setAnimatedStats] = useState({ reservations: 0, trips: 0, savings: 0 });
+  const [bookingStats, setBookingStats] = useState({ reservations: 0, trips: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading
@@ -26,38 +33,66 @@ export default function DashboardPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Animated counters
   useEffect(() => {
-    if (isLoading) return;
-    
-    const duration = 2000;
-    const steps = 60;
-    const interval = duration / steps;
+    if (authLoading) return;
 
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      setAnimatedStats({
-        reservations: Math.floor(progress * 12),
-        trips: Math.floor(progress * 45),
-        savings: Math.floor(progress * 15),
-      });
-      if (step >= steps) clearInterval(timer);
-    }, interval);
+    console.log('DASHBOARD PAGE ROLE:', user?.role || null);
 
-    return () => clearInterval(timer);
-  }, [isLoading]);
+    if (!user) {
+      router.replace('/login');
+      return;
+    }
+  }, [authLoading, router, user]);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setBookingStats({ reservations: 0, trips: 0 });
+      return;
+    }
+
+    const q = query(collection(db, 'bookings'), where('userId', '==', user.id));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        let reservations = 0;
+        let trips = 0;
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          reservations++;
+          if (data.status === 'completed') trips++;
+        });
+        setBookingStats({ reservations, trips });
+      },
+      (error) => {
+        console.error('[Dashboard] bookings stats error:', error);
+        setBookingStats({ reservations: 0, trips: 0 });
+      }
+    );
+
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   const handleBooking = (_date: string, _route: string) => {
     setIsBookingOpen(false);
   };
 
+  const isVerified = user?.verified === true || (user as any)?.verificationStatus === 'approved' || (user as any)?.verificationStatus === 'verified';
+  const isApproved = user?.status === 'approved' || (user as any)?.accountStatus === 'active';
+  const isFullyActive = isVerified && isApproved;
+
   const stats = [
     {
       icon: Calendar,
       label: language === 'ar' ? 'الحجوزات' : 'Réservations',
-      value: animatedStats.reservations.toString(),
+      value: isFullyActive ? bookingStats.reservations.toString() : '0',
       color: 'from-blue-500 to-blue-600',
       shadowColor: 'shadow-blue-500/30',
       bgColor: 'bg-gradient-to-br from-blue-50 to-blue-100',
@@ -65,7 +100,7 @@ export default function DashboardPage() {
     {
       icon: MapPin,
       label: language === 'ar' ? 'الرحلات' : 'Trajets',
-      value: animatedStats.trips.toString(),
+      value: isFullyActive ? bookingStats.trips.toString() : '0',
       color: 'from-emerald-500 to-emerald-600',
       shadowColor: 'shadow-emerald-500/30',
       bgColor: 'bg-gradient-to-br from-emerald-50 to-emerald-100',
@@ -73,7 +108,7 @@ export default function DashboardPage() {
     {
       icon: CreditCard,
       label: language === 'ar' ? 'الاشتراك' : 'Abonnement',
-      value: language === 'ar' ? 'نشط' : 'Actif',
+      value: isFullyActive ? (language === 'ar' ? 'نشط' : 'Actif') : (language === 'ar' ? 'غير مفعل' : 'Inactif'),
       color: 'from-purple-500 to-purple-600',
       shadowColor: 'shadow-purple-500/30',
       bgColor: 'bg-gradient-to-br from-purple-50 to-purple-100',
@@ -81,7 +116,7 @@ export default function DashboardPage() {
     {
       icon: TrendingUp,
       label: language === 'ar' ? 'المدخرات' : 'Économies',
-      value: `${animatedStats.savings}%`,
+      value: '0%',
       color: 'from-orange-500 to-orange-600',
       shadowColor: 'shadow-orange-500/30',
       bgColor: 'bg-gradient-to-br from-orange-50 to-orange-100',
@@ -92,43 +127,27 @@ export default function DashboardPage() {
     {
       icon: Wallet,
       label: language === 'ar' ? 'قيمة الاشتراك' : 'Valeur abonnement',
-      value: '3,500 DA',
-      detail: language === 'ar' ? 'خطة طالب شهرية' : 'Plan étudiant mensuel',
+      value: '0 DA',
+      detail: language === 'ar' ? 'لا توجد بيانات دفع حقيقية بعد' : 'Aucune donnée de paiement réelle',
       color: 'from-emerald-500 to-teal-600',
     },
     {
       icon: Users,
       label: language === 'ar' ? 'مؤشر الولاء' : 'Score fidélité',
-      value: '92%',
-      detail: language === 'ar' ? 'نشاط ممتاز' : 'Activité excellente',
+      value: '0%',
+      detail: language === 'ar' ? 'لا توجد بيانات حقيقية بعد' : 'Aucune donnée réelle',
       color: 'from-blue-500 to-cyan-600',
     },
     {
       icon: Star,
       label: language === 'ar' ? 'النقاط' : 'Points',
-      value: '740',
-      detail: language === 'ar' ? 'قابلة للاستبدال' : 'Échangeables',
+      value: '0',
+      detail: language === 'ar' ? 'لا توجد نقاط حقيقية بعد' : 'Aucun point réel',
       color: 'from-purple-500 to-fuchsia-600',
     },
   ];
 
-  const activityFeed = [
-    {
-      icon: CreditCard,
-      title: language === 'ar' ? 'اشتراك شهري نشط' : 'Abonnement mensuel actif',
-      time: language === 'ar' ? 'اليوم' : 'Aujourd’hui',
-    },
-    {
-      icon: MapPin,
-      title: language === 'ar' ? 'تم حجز رحلة جامعية' : 'Trajet universitaire réservé',
-      time: language === 'ar' ? 'منذ ساعتين' : 'Il y a 2h',
-    },
-    {
-      icon: Bell,
-      title: language === 'ar' ? 'إشعار تحديث المسار' : 'Notification de mise à jour trajet',
-      time: language === 'ar' ? 'أمس' : 'Hier',
-    },
-  ];
+  const activityFeed: { icon: typeof Bell; title: string; time: string }[] = [];
 
   return (
     <DashboardLayout role="user">
@@ -183,6 +202,86 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
+            {user?.verified === false && user?.status !== 'rejected' && (
+              <Card className="rounded-3xl border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-8 shadow-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="px-3 py-1 rounded-full bg-amber-200 text-amber-900 text-sm font-black">
+                    {language === 'ar' ? 'قيد التحقق' : 'En attente'}
+                  </div>
+                </div>
+                <h2 className="text-2xl font-black text-amber-900">
+                  {language === 'ar' ? 'حسابك قيد التحقق من طرف الإدارة' : 'Votre compte est en attente de vérification administrative'}
+                </h2>
+                <p className="mt-3 text-lg font-semibold leading-8 text-amber-800">
+                  {language === 'ar'
+                    ? 'يمكنك تصفح التطبيق، لكن الحجز والدفع الكاملين يتطلبان التحقق من الإدارة'
+                    : 'Vous pouvez parcourir l’application, mais la réservation et le paiement complets nécessitent la validation administrative'}
+                </p>
+              </Card>
+            )}
+
+            {user?.verified === true && (
+              <Card className="rounded-3xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-8 shadow-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="px-3 py-1 rounded-full bg-emerald-200 text-emerald-900 text-sm font-black">
+                    {language === 'ar' ? 'موثق' : 'Vérifié'}
+                  </div>
+                </div>
+                <h2 className="text-2xl font-black text-emerald-900">
+                  {language === 'ar' ? 'تم التحقق من حسابك' : 'Votre compte a été vérifié'}
+                </h2>
+                <p className="mt-3 text-lg font-semibold leading-8 text-emerald-800">
+                  {language === 'ar'
+                    ? 'يمكنك الآن حجز الرحلات وإجراء الدفعات الكاملة'
+                    : 'Vous pouvez maintenant réserver des trajets et effectuer des paiements complets'}
+                </p>
+              </Card>
+            )}
+
+            {user?.status === 'rejected' && (
+              <Card className="rounded-3xl border-2 border-red-200 bg-gradient-to-r from-red-50 to-rose-50 p-8 shadow-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="px-3 py-1 rounded-full bg-red-200 text-red-900 text-sm font-black">
+                    {language === 'ar' ? 'مرفوض' : 'Rejeté'}
+                  </div>
+                </div>
+                <h2 className="text-2xl font-black text-red-900">
+                  {language === 'ar' ? 'تم رفض التحقق' : 'La vérification a été rejetée'}
+                </h2>
+                <p className="mt-3 text-lg font-semibold leading-8 text-red-800">
+                  {language === 'ar'
+                    ? 'يرجى مراجعة المعلومات أو إعادة إرسال الوثائق'
+                    : 'Veuillez vérifier vos informations ou renvoyer les documents'}
+                </p>
+                {user?.adminNote && (
+                  <div className="mt-4 p-4 rounded-xl bg-white/60 border border-red-200">
+                    <p className="text-sm font-bold text-red-700">
+                      {language === 'ar' ? 'ملاحظة الإدارة:' : 'Note de l\'administration:'}
+                    </p>
+                    <p className="mt-1 text-sm text-red-600">{user.adminNote}</p>
+                  </div>
+                )}
+              </Card>
+            )}
+
+            {user?.role === 'admin' && (
+              <Link href="/admin-panel">
+                <Card className="rounded-3xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-8 shadow-xl hover:shadow-2xl hover:shadow-emerald-500/20 transition-all cursor-pointer">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="px-3 py-1 rounded-full bg-emerald-200 text-emerald-900 text-sm font-black">
+                      {language === 'ar' ? 'مدير' : 'Admin'}
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-black text-emerald-900">
+                    لوحة الإدارة
+                  </h2>
+                  <p className="mt-3 text-lg font-semibold leading-8 text-emerald-800">
+                    Admin Panel
+                  </p>
+                </Card>
+              </Link>
+            )}
+
             {/* Stats Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -218,6 +317,17 @@ export default function DashboardPage() {
               })}
             </motion.div>
 
+            {/* Verification banner for unverified users */}
+            {!isFullyActive && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+              >
+                <VerificationUpload />
+              </motion.div>
+            )}
+
             {/* Main Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -245,7 +355,8 @@ export default function DashboardPage() {
                       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <Button
                           onClick={() => setIsBookingOpen(true)}
-                          className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white h-14 md:h-16 text-base md:text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all hover:shadow-2xl hover:shadow-emerald-500/30 w-full"
+                          disabled={user?.verified !== true}
+                          className={`bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white h-14 md:h-16 text-base md:text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all hover:shadow-2xl hover:shadow-emerald-500/30 w-full ${user?.verified !== true ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                           <Plus className="w-5 h-5 md:w-6 md:h-6" />
                           {language === 'ar' ? 'حجز رحلة' : 'Réserver un trajet'}
@@ -262,6 +373,9 @@ export default function DashboardPage() {
                     </div>
                   </Card>
                 </motion.div>
+
+                {/* Real bookings from Firestore */}
+                <UserBookings />
 
                 {/* Reservations */}
                 <ReservationsList />

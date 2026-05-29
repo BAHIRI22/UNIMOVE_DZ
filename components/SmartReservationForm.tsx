@@ -27,6 +27,7 @@ import {
 import { motion } from 'framer-motion';
 import dairasData from '@/data/dairas.json';
 import universityData from '@/data/university-destinations.json';
+import additionalDestinations from '@/data/additional-destinations.json';
 import routesData from '@/data/sidi-bel-abbes-routes.json';
 import { ReservationFormData, VehicleType, PaymentMethod } from '@/types/reservation';
 
@@ -39,6 +40,7 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
   const [formData, setFormData] = useState<ReservationFormData>({
     departurePoint: '',
     destination: '',
+    tripType: 'university',
     university: '',
     faculty: '',
     residence: '',
@@ -55,7 +57,7 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
   const [selectedCommune, setSelectedCommune] = useState('');
   const [selectedDeparturePoint, setSelectedDeparturePoint] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('');
-  const [destinationType, setDestinationType] = useState<'faculty' | 'institute' | 'residence' | 'university'>('faculty');
+  const [destinationType, setDestinationType] = useState<'faculty' | 'institute' | 'residence' | 'university' | 'port'>('faculty');
 
   const bookingSteps = [
     language === 'ar' ? 'المسار' : 'Trajet',
@@ -240,6 +242,7 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
               { value: 'institute', label: language === 'ar' ? 'معهد' : 'Institut', labelAr: 'معهد' },
               { value: 'residence', label: language === 'ar' ? 'سكن' : 'Résidence', labelAr: 'سكن' },
               { value: 'university', label: language === 'ar' ? 'جامعة' : 'Université', labelAr: 'جامعة' },
+              { value: 'port', label: language === 'ar' ? 'الموانئ' : 'Ports', labelAr: 'الموانئ' },
             ].map((type) => (
               <button
                 key={type.value}
@@ -291,6 +294,11 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
                 {language === 'ar' ? universityData.university.nameAr : universityData.university.name}
               </option>
             )}
+            {destinationType === 'port' && additionalDestinations.ports.map((port: any) => (
+              <option key={port.id} value={port.id}>
+                {language === 'ar' ? port.nameAr : port.name}
+              </option>
+            ))}
           </select>
         </Card>
       )}

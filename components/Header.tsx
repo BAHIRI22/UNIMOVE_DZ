@@ -45,12 +45,12 @@ export function Header() {
           {/* Logo and Brand */}
           <Link href="/" className="flex items-center gap-3 md:gap-4 lg:gap-5 hover:opacity-90 transition-opacity">
             <motion.div 
-              className="relative w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20"
+              className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ duration: 0.3 }}
             >
               <Image
-                src="/images/logo.png?v=2026-logo-update"
+                src="/images/logo.png?v=logo-clean"
                 alt="UNIMOVE-DZ Logo"
                 fill
                 className="object-contain"

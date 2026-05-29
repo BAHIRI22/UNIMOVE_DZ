@@ -45,9 +45,9 @@ export default function InvestorsPage() {
   ];
 
   const marketProblems = [
-    { icon: CalendarClock, stat: '40%', title: language === 'ar' ? 'تأخر متكرر' : 'Retards fréquents', text: language === 'ar' ? 'د بحيري عبد القادر' : 'Les étudiants perdent du temps chaque jour à cause d’un transport peu organisé.' },
+    { icon: CalendarClock, stat: '40%', title: language === 'ar' ? 'تأخر متكرر' : 'Retards fréquents', text: language === 'ar' ? 'يعاني الطلبة يومياً بسبب نقل غير منظم.' : 'Les étudiants perdent du temps chaque jour à cause d’un transport peu organisé.' },
     { icon: Flame, stat: '65%', title: language === 'ar' ? 'توتر في التنقل' : 'Stress mobilité', text: language === 'ar' ? 'غياب المعلومة والحجز يخلق ضغطاً يومياً.' : 'L’absence d’information et de réservation crée une pression quotidienne.' },
-    { icon: Network, stat: '0', title: language === 'ar' ? 'حل رقمي موحد' : 'Solution digitale unifiée', text: language === 'ar' ? 'د بحيري عبد القادر' : 'Le marché a besoin d’une plateforme unique reliant réservation, suivi et paiement.' },
+    { icon: Network, stat: '0', title: language === 'ar' ? 'حل رقمي موحد' : 'Solution digitale unifiée', text: language === 'ar' ? 'السوق يحتاج إلى منصة واحدة تربط الحجز والتتبع والدفع.' : 'Le marché a besoin d’une plateforme unique reliant réservation, suivi et paiement.' },
   ];
 
   const solutionFeatures = [

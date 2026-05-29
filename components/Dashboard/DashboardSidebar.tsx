@@ -19,7 +19,9 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronRight
+  ChevronRight,
+  Settings,
+  DollarSign
 } from 'lucide-react';
 import { NAVIGATION_ITEMS, ATTRIBUTIONS } from '@/constants';
 import { motion } from 'framer-motion';
@@ -48,6 +50,8 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
     Bus,
     UserCheck,
     CalendarCheck,
+    Settings,
+    DollarSign,
   };
 
   const handleLogout = async () => {
@@ -168,9 +172,9 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
                 className="text-sm text-gray-500 space-y-2"
               >
                 <p className="font-semibold text-gray-700">
-                  {language === 'ar' ? 'التطوير:' : 'Développement:'}
+                  {language === 'ar' ? 'المشروع:' : 'Projet:'}
                 </p>
-                <p>{ATTRIBUTIONS.developer.nameAr}</p>
+                <p>{ATTRIBUTIONS.project.nameAr}</p>
                 <p className="font-semibold text-gray-700 mt-3">
                   {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
                 </p>

@@ -1,188 +1,458 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { Suspense, useState, useMemo, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { PhoneOtpAuth } from '@/components/PhoneOtpAuth';
-import { RoleStep } from '@/components/Register/RoleStep';
-import { InstitutionStep } from '@/components/Register/InstitutionStep';
-import { SubscriptionStep } from '@/components/Register/SubscriptionStep';
-import { PaymentStep } from '@/components/Register/PaymentStep';
-import { SuccessStep } from '@/components/Register/SuccessStep';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { generateCardNumber, generateQRCode, formatCardExpiry } from '@/lib/cardGenerator';
+import { SmartSelect } from '@/components/SmartSelect';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import subscriptions from '@/data/subscriptions.json';
-import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import academicData from '@/data/academic-data.json';
 
-type Step = 'phone' | 'role' | 'institution' | 'subscription' | 'payment' | 'success';
-
-interface RegistrationData {
-  phone: string;
-  firebaseUser: any;
-  role: 'student' | 'teacher' | 'admin' | 'driver';
-  institution: string;
-  subscription: 'daily' | 'weekly' | 'monthly';
-  fullName: string;
-  homePoint: string;
-  cardNumber: string;
-  qrCode: string;
-  validUntil: string;
+interface FormErrors {
+  facultyOrInstitute?: string;
+  department?: string;
+  speciality?: string;
+  verificationMethod?: string;
+  daira?: string;
+  commune?: string;
+  departurePoint?: string;
 }
 
-export default function RegisterPage() {
-  const { t } = useLanguage();
+function RegisterContent() {
+  const { language } = useLanguage();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { loginWithFirebase } = useAuth();
-  const [currentStep, setCurrentStep] = useState<Step>('phone');
-  const [data, setData] = useState<Partial<RegistrationData>>({});
+  const [firebaseUser, setFirebaseUser] = useState<any>(null);
+  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const phoneFromQuery = searchParams.get('phone') || '';
+  const verifiedPhone = firebaseUser?.phoneNumber || phoneFromQuery;
 
-  const steps: Step[] = ['phone', 'role', 'institution', 'subscription', 'payment', 'success'];
-  const currentStepIndex = steps.indexOf(currentStep);
-  const progress = ((currentStepIndex + 1) / steps.length) * 100;
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    role: 'student' as UserRole,
+    university: 'Université Djillali Liabès Sidi Bel Abbès',
+    facultyOrInstitute: '',
+    department: '',
+    speciality: '',
+    academicYear: '',
+    grade: '',
+    email: '',
+    wilaya: 'Sidi Bel Abbès',
+    daira: '',
+    commune: '',
+    departurePoint: '',
+    verificationMethod: '',
+  });
 
-  const handlePhoneAuthSuccess = async (firebaseUser: any) => {
-    setData((prev) => ({ ...prev, firebaseUser, phone: firebaseUser.phoneNumber }));
-    setCurrentStep('role');
+  const isAR = language === 'ar';
+
+  const label = (fr: string, ar: string) => isAR ? ar : fr;
+
+  const handlePhoneAuthSuccess = (user: any) => {
+    setFirebaseUser(user);
   };
 
-  const handleRoleNext = (role: 'student' | 'teacher' | 'admin') => {
-    setData((prev) => ({ ...prev, role }));
-    setCurrentStep('institution');
-  };
-
-  const handleInstitutionNext = (institution: string) => {
-    setData((prev) => ({ ...prev, institution }));
-    setCurrentStep('subscription');
-  };
-
-  const handleSubscriptionNext = (subData: {
-    subscription: 'daily' | 'weekly' | 'monthly';
-    fullName: string;
-    homePoint: string;
-  }) => {
-    setData((prev) => ({ ...prev, ...subData }));
-    setCurrentStep('payment');
-  };
-
-  const handlePaymentNext = async () => {
-    if (!data.phone || !data.fullName || !data.subscription || !data.firebaseUser) return;
-
-    const cardNumber = generateCardNumber();
-    const qrCode = generateQRCode(cardNumber);
-    const subType = data.subscription;
-    const subData = subscriptions.find((s) => s.id === `sub-${subType}`);
-    const validUntil = formatCardExpiry(subData ? parseInt(subData.validity) : 30);
-
-    const finalData: RegistrationData = {
-      phone: data.phone,
-      firebaseUser: data.firebaseUser,
-      role: data.role || 'student',
-      institution: data.institution || '',
-      subscription: data.subscription,
-      fullName: data.fullName,
-      homePoint: data.homePoint || '',
-      cardNumber,
-      qrCode,
-      validUntil,
-    };
-
-    setData(finalData);
-
-    // Register user with Firebase
-    await loginWithFirebase(data.firebaseUser, {
-      phone: finalData.phone,
-      fullName: finalData.fullName,
-      role: finalData.role,
-      institution: finalData.institution,
-      faculty: finalData.institution,
-      cardNumber: finalData.cardNumber,
-      qrCode: finalData.qrCode,
-      subscription: finalData.subscription,
-      validUntil: finalData.validUntil,
-      homePoint: finalData.homePoint,
+  const handleChange = (key: string, value: string) => {
+    setForm((prev) => {
+      const next: any = { ...prev, [key]: value };
+      if (key === 'facultyOrInstitute') { next.department = ''; next.speciality = ''; }
+      if (key === 'department') { next.speciality = ''; }
+      if (key === 'daira') { next.commune = ''; next.departurePoint = ''; }
+      if (key === 'commune') { next.departurePoint = ''; }
+      if (key === 'role') { next.academicYear = ''; next.grade = ''; next.verificationMethod = ''; }
+      return next;
     });
-
-    setCurrentStep('success');
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
-  const handlePrevious = () => {
-    const currentIndex = steps.indexOf(currentStep);
-    if (currentIndex > 0) {
-      setCurrentStep(steps[currentIndex - 1]);
+  const facultyOptions = useMemo(() => {
+    return academicData.faculties.map((f: any) => ({
+      value: f.id,
+      label: isAR ? f.nameAr : f.nameFr,
+    }));
+  }, [isAR]);
+
+  const selectedFaculty = useMemo(() => {
+    return academicData.faculties.find((f: any) => f.id === form.facultyOrInstitute);
+  }, [form.facultyOrInstitute]);
+
+  const departmentOptions = useMemo(() => {
+    if (!selectedFaculty) return [];
+    return selectedFaculty.departments.map((d: any) => ({
+      value: d.id,
+      label: isAR ? d.nameAr : d.nameFr,
+    }));
+  }, [selectedFaculty, isAR]);
+
+  const selectedDepartment = useMemo(() => {
+    if (!selectedFaculty) return undefined;
+    return selectedFaculty.departments.find((d: any) => d.id === form.department);
+  }, [selectedFaculty, form.department]);
+
+  const specialityOptions = useMemo(() => {
+    if (!selectedDepartment) return [];
+    return selectedDepartment.specialities.map((s: any) => ({
+      value: s.id,
+      label: isAR ? s.nameAr : s.nameFr,
+    }));
+  }, [selectedDepartment, isAR]);
+
+  const academicYearOptions = useMemo(() => {
+    const key = form.role === 'student' ? 'student' : form.role;
+    const list = (academicData.academicYears as any)[key] || [];
+    return list.map((item: any) => ({
+      value: item.id,
+      label: isAR ? item.nameAr : item.nameFr,
+    }));
+  }, [form.role, isAR]);
+
+  const dairaOptions = useMemo(() => {
+    return academicData.wilaya.dairias.map((d: any) => ({
+      value: d.id,
+      label: isAR ? d.nameAr : d.nameFr,
+    }));
+  }, [isAR]);
+
+  const selectedDaira = useMemo(() => {
+    return academicData.wilaya.dairias.find((d: any) => d.id === form.daira);
+  }, [form.daira]);
+
+  const communeOptions = useMemo(() => {
+    if (!selectedDaira) return [];
+    return selectedDaira.communes.map((c: any) => ({
+      value: c.id,
+      label: isAR ? c.nameAr : c.nameFr,
+    }));
+  }, [selectedDaira, isAR]);
+
+  const departurePointOptions = useMemo(() => {
+    if (!selectedDaira) return [];
+    return selectedDaira.departurePoints.map((p: any) => ({
+      value: p.id,
+      label: isAR ? p.nameAr : p.nameFr,
+    }));
+  }, [selectedDaira, isAR]);
+
+  const verificationMethodOptions = useMemo(() => {
+    const key = form.role === 'student' ? 'student' : form.role;
+    const list = (academicData.verificationMethods as any)[key] || [];
+    return list.map((item: any) => ({
+      value: item.id,
+      label: isAR ? item.nameAr : item.nameFr,
+    }));
+  }, [form.role, isAR]);
+
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
+    if (!form.facultyOrInstitute) newErrors.facultyOrInstitute = isAR ? 'يرجى اختيار الكلية أو المعهد' : 'Veuillez choisir la faculté ou l institut';
+    if (!form.department) newErrors.department = isAR ? 'يرجى اختيار القسم' : 'Veuillez choisir le département';
+    if (!form.speciality) newErrors.speciality = isAR ? 'يرجى اختيار التخصص' : 'Veuillez choisir la spécialité';
+    if (!form.verificationMethod) newErrors.verificationMethod = isAR ? 'يرجى اختيار طريقة التحقق' : 'Veuillez choisir la méthode de vérification';
+    if (!form.daira) newErrors.daira = isAR ? 'يرجى اختيار الدائرة' : 'Veuillez choisir la daïra';
+    if (!form.commune) newErrors.commune = isAR ? 'يرجى اختيار البلدية' : 'Veuillez choisir la commune';
+    if (!form.departurePoint) newErrors.departurePoint = isAR ? 'يرجى اختيار نقطة الانطلاق' : 'Veuillez choisir le point de départ';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const getLabelPair = (value: string, options: { value: string; label: string }[]) => {
+    const opt = options.find((o) => o.value === value);
+    return opt ? opt.label : value;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    if (!verifiedPhone) return;
+
+    setSubmitLoading(true);
+    setSubmitError('');
+
+    try {
+      const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
+      const cardNumber = generateCardNumber();
+
+      const facultyLabelAr = getLabelPair(form.facultyOrInstitute, facultyOptions);
+      const facultyLabelFr = getLabelPair(form.facultyOrInstitute, academicData.faculties.map((f: any) => ({ value: f.id, label: f.nameFr })));
+      const deptLabelAr = getLabelPair(form.department, departmentOptions);
+      const deptLabelFr = getLabelPair(form.department, selectedFaculty?.departments.map((d: any) => ({ value: d.id, label: d.nameFr })) || []);
+      const specLabelAr = getLabelPair(form.speciality, specialityOptions);
+      const specLabelFr = getLabelPair(form.speciality, selectedDepartment?.specialities.map((s: any) => ({ value: s.id, label: s.nameFr })) || []);
+      const vmLabelAr = getLabelPair(form.verificationMethod, verificationMethodOptions);
+      const vmLabelFr = getLabelPair(form.verificationMethod, ((academicData.verificationMethods as any)[form.role === 'student' ? 'student' : form.role] || []).map((v: any) => ({ value: v.id, label: v.nameFr })));
+
+      const userDoc = {
+        fullName,
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        phone: verifiedPhone,
+        phoneNumber: verifiedPhone,
+        role: form.role,
+        university: form.university,
+        facultyOrInstitute: form.facultyOrInstitute,
+        facultyLabelAr,
+        facultyLabelFr,
+        department: form.department,
+        departmentLabelAr: deptLabelAr,
+        departmentLabelFr: deptLabelFr,
+        speciality: form.speciality,
+        specialityLabelAr: specLabelAr,
+        specialityLabelFr: specLabelFr,
+        academicYear: form.academicYear || '',
+        grade: form.grade || '',
+        email: form.email || '',
+        wilaya: form.wilaya,
+        daira: form.daira,
+        commune: form.commune,
+        departurePoint: form.departurePoint,
+        verificationMethod: form.verificationMethod,
+        verificationMethodLabelAr: vmLabelAr,
+        verificationMethodLabelFr: vmLabelFr,
+        verificationStatus: 'pending',
+        accountStatus: 'pending',
+        verified: false,
+        status: 'pending',
+        subscriptionStatus: 'inactive',
+        adminNote: '',
+        cardNumber,
+        qrCode: generateQRCode(cardNumber),
+        subscription: 'monthly',
+        validUntil: formatCardExpiry(30),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      const userId = firebaseUser?.uid || `phone-${verifiedPhone.replace(/\D/g, '')}`;
+      await setDoc(doc(db, 'users', userId), userDoc, { merge: true });
+      console.log('User created in Firestore with ID:', userId);
+
+      const authUser = firebaseUser || { uid: userId, phoneNumber: verifiedPhone };
+      await loginWithFirebase(authUser, {
+        id: userId,
+        ...userDoc,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      setSuccess(true);
+      setTimeout(() => router.push('/dashboard'), 1800);
+    } catch (error: any) {
+      console.error('Firestore save error:', error);
+      setSubmitError(
+        isAR
+          ? 'حدث خطأ أثناء حفظ الحساب، يرجى التحقق من الاتصال والمحاولة مرة أخرى'
+          : 'Une erreur est survenue lors de la sauvegarde du compte, veuillez vérifier la connexion et réessayer'
+      );
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-emerald-50/30 to-slate-100">
       <Header />
-
-      <main className="flex-1 py-16 md:py-20 relative overflow-hidden">
-        {/* Floating blurred shapes */}
-        <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Progress Indicator */}
-          <div className="mb-10">
-            <div className="flex justify-between items-center mb-5">
+      <main className="flex-1 py-16 md:py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <div>
               <h1 className="text-4xl md:text-5xl font-black text-gray-900">
-                {t('register.title')}
+                {isAR ? 'إنشاء حساب' : 'Créer un compte'}
               </h1>
-              <span className="text-xl font-bold text-gray-600">
-                {currentStepIndex + 1} / {steps.length}
-              </span>
+              <p className="mt-3 text-slate-600 font-medium">
+                {isAR ? 'حسابك سيبقى في انتظار التحقق الإداري' : 'Votre compte restera en attente de vérification administrative'}
+              </p>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Button variant="outline" onClick={() => window.history.length > 1 ? router.back() : router.push('/dashboard')}>
+              {isAR ? 'رجوع' : 'Retour'}
+            </Button>
           </div>
 
-          {/* Step Content */}
-          <Card className="p-10 md:p-12 border-0 shadow-lg rounded-3xl bg-white/80 backdrop-blur-sm">
-            {currentStep === 'phone' && (
-              <PhoneOtpAuth
-                mode="register"
-                onAuthSuccess={handlePhoneAuthSuccess}
-              />
-            )}
-            {currentStep === 'role' && (
-              <RoleStep
-                onNext={handleRoleNext}
-                onPrevious={handlePrevious}
-              />
-            )}
-            {currentStep === 'institution' && (
-              <InstitutionStep
-                onNext={handleInstitutionNext}
-                onPrevious={handlePrevious}
-              />
-            )}
-            {currentStep === 'subscription' && (
-              <SubscriptionStep
-                onNext={handleSubscriptionNext}
-                onPrevious={handlePrevious}
-              />
-            )}
-            {currentStep === 'payment' && (
-              <PaymentStep
-                amount={
-                  subscriptions.find((s) => s.id === `sub-${data.subscription}`)?.price || 0
-                }
-                onNext={handlePaymentNext}
-                onPrevious={handlePrevious}
-              />
-            )}
-            {currentStep === 'success' && (
-              <SuccessStep
-                cardNumber={data.cardNumber || ''}
-                qrCode={data.qrCode || ''}
-                validUntil={data.validUntil || ''}
-              />
-            )}
-          </Card>
+          {!verifiedPhone && (
+            <PhoneOtpAuth mode="register" onAuthSuccess={handlePhoneAuthSuccess} />
+          )}
+
+          {verifiedPhone && !success && (
+            <Card className="p-8 md:p-10 border-0 shadow-lg rounded-3xl bg-white/90 backdrop-blur-sm">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label>{isAR ? 'رقم الهاتف' : 'Téléphone'}</Label>
+                  <Input value={verifiedPhone} readOnly dir="ltr" className="h-12 bg-slate-100" />
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{label('Prénom', 'الاسم')}</Label>
+                    <Input value={form.firstName} onChange={(e) => handleChange('firstName', e.target.value)} required className="h-12 rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{label('Nom', 'اللقب')}</Label>
+                    <Input value={form.lastName} onChange={(e) => handleChange('lastName', e.target.value)} required className="h-12 rounded-xl" />
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{label('Rôle', 'الدور')}</Label>
+                    <select value={form.role} onChange={(e) => handleChange('role', e.target.value)} className="h-12 w-full rounded-xl border border-slate-300 px-3 bg-white">
+                      <option value="student">{isAR ? 'طالب' : 'Étudiant'}</option>
+                      <option value="teacher">{isAR ? 'أستاذ' : 'Enseignant'}</option>
+                      <option value="administrative">{isAR ? 'إداري' : 'Administratif'}</option>
+                      <option value="driver">{isAR ? 'سائق' : 'Chauffeur'}</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{label('Email', 'البريد الإلكتروني')}</Label>
+                    <Input type="email" value={form.email} onChange={(e) => handleChange('email', e.target.value)} className="h-12 rounded-xl" />
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Faculté ou institut', 'الكلية أو المعهد')}
+                      options={facultyOptions}
+                      value={form.facultyOrInstitute}
+                      onChange={(v) => handleChange('facultyOrInstitute', v)}
+                      placeholder={label('Choisir une faculté...', 'اختر الكلية...')}
+                    />
+                    {errors.facultyOrInstitute && <p className="text-sm text-red-600">{errors.facultyOrInstitute}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Département', 'القسم')}
+                      options={departmentOptions}
+                      value={form.department}
+                      onChange={(v) => handleChange('department', v)}
+                      placeholder={label('Choisir un département...', 'اختر القسم...')}
+                      disabled={!form.facultyOrInstitute}
+                    />
+                    {errors.department && <p className="text-sm text-red-600">{errors.department}</p>}
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Spécialité', 'التخصص')}
+                      options={specialityOptions}
+                      value={form.speciality}
+                      onChange={(v) => handleChange('speciality', v)}
+                      placeholder={label('Choisir une spécialité...', 'اختر التخصص...')}
+                      disabled={!form.department}
+                    />
+                    {errors.speciality && <p className="text-sm text-red-600">{errors.speciality}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label(form.role === 'student' ? 'Année universitaire' : 'Grade', form.role === 'student' ? 'السنة الجامعية' : 'الرتبة')}
+                      options={academicYearOptions}
+                      value={form.role === 'student' ? form.academicYear : form.grade}
+                      onChange={(v) => handleChange(form.role === 'student' ? 'academicYear' : 'grade', v)}
+                      placeholder={label('Choisir...', 'اختر...')}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{label('Wilaya', 'الولاية')}</Label>
+                    <Input value={isAR ? 'سيدي بلعباس' : 'Sidi Bel Abbès'} readOnly className="h-12 bg-slate-100 rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Daïra', 'الدائرة')}
+                      options={dairaOptions}
+                      value={form.daira}
+                      onChange={(v) => handleChange('daira', v)}
+                      placeholder={label('Choisir une daïra...', 'اختر الدائرة...')}
+                    />
+                    {errors.daira && <p className="text-sm text-red-600">{errors.daira}</p>}
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Commune', 'البلدية')}
+                      options={communeOptions}
+                      value={form.commune}
+                      onChange={(v) => handleChange('commune', v)}
+                      placeholder={label('Choisir une commune...', 'اختر البلدية...')}
+                      disabled={!form.daira}
+                    />
+                    {errors.commune && <p className="text-sm text-red-600">{errors.commune}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <SmartSelect
+                      label={label('Point de départ', 'نقطة الانطلاق')}
+                      options={departurePointOptions}
+                      value={form.departurePoint}
+                      onChange={(v) => handleChange('departurePoint', v)}
+                      placeholder={label('Choisir un point...', 'اختر نقطة الانطلاق...')}
+                      disabled={!form.daira}
+                    />
+                    {errors.departurePoint && <p className="text-sm text-red-600">{errors.departurePoint}</p>}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <SmartSelect
+                    label={label('Méthode de vérification', 'طريقة التحقق')}
+                    options={verificationMethodOptions}
+                    value={form.verificationMethod}
+                    onChange={(v) => handleChange('verificationMethod', v)}
+                    placeholder={label('Choisir une méthode...', 'اختر طريقة التحقق...')}
+                  />
+                  {errors.verificationMethod && <p className="text-sm text-red-600">{errors.verificationMethod}</p>}
+                </div>
+
+                {submitError && (
+                  <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm font-bold">
+                    {submitError}
+                  </div>
+                )}
+
+                <Button type="submit" disabled={submitLoading} className="h-14 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-lg font-black text-white disabled:opacity-50">
+                  {submitLoading ? (isAR ? 'جاري الإنشاء...' : 'Création en cours...') : (isAR ? 'إنشاء الحساب' : 'Créer le compte')}
+                </Button>
+              </form>
+            </Card>
+          )}
+
+          {success && (
+            <Card className="p-10 text-center border-emerald-200 bg-emerald-50 rounded-3xl shadow-xl">
+              <h2 className="text-2xl font-black text-emerald-800">
+                {isAR
+                  ? 'تم إنشاء حسابك بنجاح حسابك في انتظار التحقق الإداري'
+                  : 'Compte créé avec succès, votre compte est en attente de vérification administrative'}
+              </h2>
+            </Card>
+          )}
         </div>
       </main>
-
       <Footer />
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterContent />
+    </Suspense>
   );
 }

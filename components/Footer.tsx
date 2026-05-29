@@ -19,7 +19,7 @@ export function Footer() {
             <div className="flex items-center gap-6 mb-8">
               <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl">
                 <Image
-                  src="/images/logo.png?v=2026-logo-update"
+                  src="/images/logo.png?v=logo-clean"
                   alt="UNIMOVE-DZ Logo"
                   fill
                   className="object-contain"

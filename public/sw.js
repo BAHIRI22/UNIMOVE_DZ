@@ -21,11 +21,22 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  // Do not cache video/stream/range requests
+  const isRangeRequest = event.request.headers.get('range');
+  const isVideo = event.request.destination === 'video' || event.request.destination === 'audio' || event.request.url.endsWith('.mp4');
+
+  if (isRangeRequest || isVideo) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        if (response.ok && response.status !== 206) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
         return response;
       })
       .catch(async () => {
