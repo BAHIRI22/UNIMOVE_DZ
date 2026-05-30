@@ -157,6 +157,8 @@ export default function SubscriptionsPage() {
       setPendingPaymentId(paymentRef.id);
       setSelectedPlan(plan);
       console.log('[Subscriptions] Created pending subscription:', docRef.id, 'payment:', paymentRef.id);
+      // Redirect to professional checkout page
+      router.push(`/payments/${paymentRef.id}`);
     } catch (e) {
       console.error('[Subscriptions] Error creating pending subscription:', e);
     } finally {

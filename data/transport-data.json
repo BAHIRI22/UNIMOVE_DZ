@@ -49,9 +49,9 @@
     {
       "id": "sfisef",
       "nameFr": "Sfisef",
-      "nameAr": "سفيسف",
+      "nameAr": "سفيزف",
       "communes": [
-        { "id": "sfisef-ville", "nameFr": "Sfisef", "nameAr": "سفيسف" },
+        { "id": "sfisef-ville", "nameFr": "Sfisef", "nameAr": "سفيزف" },
         { "id": "mcid", "nameFr": "M'Cid", "nameAr": "مسيد" },
         { "id": "ain-adden", "nameFr": "Ain Adden", "nameAr": "عين عدان" }
       ]

@@ -158,7 +158,7 @@ export default function ReservationPage() {
   const isApproved = user?.status === 'approved' || user?.accountStatus === 'active';
   if (user && (!isVerified || !isApproved)) {
     return (
-      <DashboardLayout role="user">
+      <DashboardLayout role="user" videoOverlay>
         <div className="max-w-2xl mx-auto">
           <Card className="p-12 border border-amber-200 bg-amber-50 rounded-3xl shadow-2xl">
             <div className="text-center space-y-6">
@@ -185,7 +185,7 @@ export default function ReservationPage() {
 
   if (showSuccess) {
     return (
-      <DashboardLayout role="user">
+      <DashboardLayout role="user" videoOverlay>
         <div className="max-w-3xl mx-auto">
           <Card className="p-12 border border-slate-200 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-3xl shadow-2xl">
             <div className="text-center space-y-8">
@@ -227,7 +227,7 @@ export default function ReservationPage() {
   }
 
   return (
-    <DashboardLayout role="user">
+    <DashboardLayout role="user" videoOverlay>
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">

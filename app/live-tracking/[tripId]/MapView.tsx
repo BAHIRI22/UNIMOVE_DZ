@@ -22,10 +22,12 @@ interface MapViewProps {
   center: [number, number];
   vehiclePos?: { lat: number; lng: number } | null;
   fromPoint?: string;
+  fromCoords?: { lat: number; lng: number } | null;
   toDestination?: string;
+  toCoords?: { lat: number; lng: number } | null;
 }
 
-export default function MapView({ center, vehiclePos, fromPoint, toDestination }: MapViewProps) {
+export default function MapView({ center, vehiclePos, fromPoint, fromCoords, toDestination, toCoords }: MapViewProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,6 +38,11 @@ export default function MapView({ center, vehiclePos, fromPoint, toDestination }
 
   const vehicleIcon = createSvgIcon('#10b981');
   const destIcon = createSvgIcon('#6366f1');
+  const pickupIcon = createSvgIcon('#f59e0b');
+
+  // Build marker positions
+  const destPos = toCoords ? [toCoords.lat, toCoords.lng] as [number, number] : center;
+  const pickupPos = fromCoords ? [fromCoords.lat, fromCoords.lng] as [number, number] : null;
 
   return (
     <MapContainer
@@ -48,6 +55,7 @@ export default function MapView({ center, vehiclePos, fromPoint, toDestination }
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {/* Vehicle marker */}
       {vehiclePos && (
         <Marker position={[vehiclePos.lat, vehiclePos.lng]} icon={vehicleIcon}>
           <Popup>
@@ -57,7 +65,18 @@ export default function MapView({ center, vehiclePos, fromPoint, toDestination }
           </Popup>
         </Marker>
       )}
-      <Marker position={center} icon={destIcon}>
+      {/* Pickup/Departure marker */}
+      {pickupPos && (
+        <Marker position={pickupPos} icon={pickupIcon}>
+          <Popup>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700 }}>
+              🟠 {fromPoint || 'Point de départ'}
+            </div>
+          </Popup>
+        </Marker>
+      )}
+      {/* Destination marker */}
+      <Marker position={destPos} icon={destIcon}>
         <Popup>
           <div style={{ fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700 }}>
             📍 {toDestination || 'Destination'}

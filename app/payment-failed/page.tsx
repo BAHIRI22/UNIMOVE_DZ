@@ -20,7 +20,7 @@ export default function PaymentFailedPage() {
   }, []);
 
   const handleRetry = () => {
-    router.push('/payments');
+    router.push('/subscriptions');
   };
 
   const handleGoToSubscriptions = () => {

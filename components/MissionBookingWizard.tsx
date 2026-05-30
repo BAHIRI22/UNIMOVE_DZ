@@ -594,7 +594,7 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem]">
+          <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-lg rounded-[2rem]">
             {renderStep()}
           </Card>
         </motion.div>

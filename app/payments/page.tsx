@@ -261,16 +261,11 @@ export default function PaymentsPage() {
                   <div className="flex items-center gap-2">
                     {isPending && (
                       <Button
-                        onClick={() => handleMockPay(p)}
-                        disabled={processingId === p.id}
+                        onClick={() => router.push(`/payments/${p.id}`)}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-10 rounded-xl text-xs px-4"
                       >
-                        {processingId === p.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin mr-1" />
-                        ) : (
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                        )}
-                        {isAr ? 'تأكيد الدفع التجريبي' : 'Confirmer le paiement test'}
+                        <CreditCard className="w-4 h-4 mr-1" />
+                        {isAr ? 'دفع الآن' : 'Payer maintenant'}
                       </Button>
                     )}
                     {p.paymentStatus === 'paid' && (

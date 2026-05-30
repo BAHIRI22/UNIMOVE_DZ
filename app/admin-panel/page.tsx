@@ -6,6 +6,9 @@ import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, where, 
 import { useRouter } from 'next/navigation';
 import { createNotification } from '@/lib/notifications';
 import { useLanguage } from '@/contexts/LanguageContext';
+import dynamic from 'next/dynamic';
+
+const AdminTripMap = dynamic(() => import('@/components/AdminTripMap'), { ssr: false });
 
 interface User {
   id: string;
@@ -1443,7 +1446,7 @@ export default function AdminPanelPage() {
             transition: 'all 0.3s'
           }}
         >
-          متابعة الرحلات
+          مراقبة الرحلات
         </button>
         <button
           onClick={() => setActiveTab('payments')}
@@ -2513,7 +2516,29 @@ export default function AdminPanelPage() {
 
       {activeTab === 'tracking' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <h2 style={{ fontSize: 32, fontWeight: 900 }}>متابعة الرحلات اللحظية</h2>
+          <h2 style={{ fontSize: 32, fontWeight: 900 }}>مراقبة الرحلات</h2>
+
+          {/* Active Trips Map */}
+          <div style={{ marginBottom: 10 }}>
+            <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, opacity: 0.8 }}>خريطة الرحلات النشطة</p>
+            <AdminTripMap
+              trips={bookings
+                .filter((b) => ['pending', 'approved', 'assigned', 'started'].includes(b.status))
+                .map((b) => {
+                  const loc = tripLocations.find((tl: any) => tl.bookingId === b.id);
+                  return ({
+                    id: b.id,
+                    fullName: b.fullName,
+                    fromPoint: b.fromPoint,
+                    toDestination: b.toDestination,
+                    status: b.status,
+                    lat: loc?.latitude,
+                    lng: loc?.longitude,
+                  });
+                })}
+              language={language as 'ar' | 'fr'}
+            />
+          </div>
 
           {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 20 }}>

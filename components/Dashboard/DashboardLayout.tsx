@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth, normalizePhone } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter, usePathname } from 'next/navigation';
@@ -11,13 +11,23 @@ import { MobileBottomNavigation } from './MobileBottomNavigation';
 interface DashboardLayoutProps {
   children: React.ReactNode;
   role: 'user' | 'admin';
+  videoOverlay?: boolean;
 }
 
-export function DashboardLayout({ children, role }: DashboardLayoutProps) {
+export function DashboardLayout({ children, role, videoOverlay }: DashboardLayoutProps) {
   const { isLoading, user } = useAuth();
   const { isRTL } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      v.play().catch((err) => console.warn('[Dashboard] Video autoplay failed:', err));
+    }
+  }, []);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -84,20 +94,26 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
         <main className="fixed inset-y-0 left-0 right-0 z-0 overflow-hidden lg:left-0 lg:right-64">
           {/* VIDEO BACKGROUND */}
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 h-full w-full object-cover"
-          >
-            <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
-          </video>
+            preload="auto"
+            src="/videos/UNIMOVEDZ.mp4"
+            className="absolute inset-0 h-full w-full object-cover z-10"
+            onLoadedData={(e) => console.log('[Dashboard] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
+            onError={(e) => console.error('[Dashboard] Video error', e)}
+          />
         </main>
 
         <div className="relative z-20">
           <DashboardTopbar onMobileMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         </div>
         <main className="relative z-10 flex-1 overflow-hidden min-h-screen">
+          {videoOverlay && (
+            <div className="absolute inset-0 z-[5] pointer-events-none bg-black/[0.12]" />
+          )}
           {/* DASHBOARD CONTENT */}
           <div className="relative z-20">
             <div className="p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8">

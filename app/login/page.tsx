@@ -10,11 +10,21 @@ import { Card } from '@/components/ui/card';
 import { Bus, Shield, CheckCircle2, Zap, Clock, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const { language, isRTL } = useLanguage();
   const { loginWithFirebase } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    const videos = document.querySelectorAll('video');
+    videos.forEach((v) => {
+      if (v.paused) {
+        v.play().catch((err) => console.warn('[Login] Video autoplay failed:', err));
+      }
+    });
+  }, []);
 
   const handleAuthSuccess = async (firebaseUser: any) => {
     const rawPhone = firebaseUser.phoneNumber || '';
@@ -163,10 +173,11 @@ export default function LoginPage() {
                     loop
                     playsInline
                     preload="auto"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  >
-                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
-                  </video>
+                    src="/videos/UNIMOVEDZ.mp4"
+                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    onLoadedData={(e) => console.log('[Login] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
+                    onError={(e) => console.error('[Login] Video error', e)}
+                  />
                   
                   {/* Cinematic Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
@@ -299,10 +310,11 @@ export default function LoginPage() {
                     loop
                     playsInline
                     preload="auto"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  >
-                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
-                  </video>
+                    src="/videos/UNIMOVEDZ.mp4"
+                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    onLoadedData={(e) => console.log('[Login2] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
+                    onError={(e) => console.error('[Login2] Video error', e)}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
                   <div className="absolute inset-0 flex flex-col justify-end p-6">
                     <div className="flex items-center gap-3 mb-2">
@@ -425,10 +437,11 @@ export default function LoginPage() {
                     loop
                     playsInline
                     preload="auto"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  >
-                    <source src="/videos/UNIMOVEDZ.mp4" type="video/mp4" />
-                  </video>
+                    src="/videos/UNIMOVEDZ.mp4"
+                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    onLoadedData={(e) => console.log('[Login3] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
+                    onError={(e) => console.error('[Login3] Video error', e)}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
                   <div className="absolute inset-0 flex flex-col justify-end p-5">
                     <div className="flex items-center gap-2 mb-1">
