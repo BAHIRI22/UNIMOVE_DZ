@@ -14,13 +14,11 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { db } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDocs, query, where, collection } from 'firebase/firestore';
 import academicData from '@/data/academic-data.json';
 
 interface FormErrors {
   facultyOrInstitute?: string;
-  department?: string;
-  speciality?: string;
   verificationMethod?: string;
   daira?: string;
   commune?: string;
@@ -46,8 +44,6 @@ function RegisterContent() {
     role: 'student' as UserRole,
     university: 'Université Djillali Liabès Sidi Bel Abbès',
     facultyOrInstitute: '',
-    department: '',
-    speciality: '',
     academicYear: '',
     grade: '',
     email: '',
@@ -62,6 +58,25 @@ function RegisterContent() {
 
   const label = (fr: string, ar: string) => isAR ? ar : fr;
 
+  // Check if phone already exists on mount
+  useEffect(() => {
+    if (!phoneFromQuery) return;
+    const checkExisting = async () => {
+      const q = query(collection(db, 'users'), where('phoneNumber', '==', phoneFromQuery));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        router.replace('/login');
+        return;
+      }
+      const altQ = query(collection(db, 'users'), where('phone', '==', phoneFromQuery));
+      const altSnap = await getDocs(altQ);
+      if (!altSnap.empty) {
+        router.replace('/login');
+      }
+    };
+    checkExisting();
+  }, [phoneFromQuery, router]);
+
   const handlePhoneAuthSuccess = (user: any) => {
     setFirebaseUser(user);
   };
@@ -69,8 +84,6 @@ function RegisterContent() {
   const handleChange = (key: string, value: string) => {
     setForm((prev) => {
       const next: any = { ...prev, [key]: value };
-      if (key === 'facultyOrInstitute') { next.department = ''; next.speciality = ''; }
-      if (key === 'department') { next.speciality = ''; }
       if (key === 'daira') { next.commune = ''; next.departurePoint = ''; }
       if (key === 'commune') { next.departurePoint = ''; }
       if (key === 'role') { next.academicYear = ''; next.grade = ''; next.verificationMethod = ''; }
@@ -85,31 +98,6 @@ function RegisterContent() {
       label: isAR ? f.nameAr : f.nameFr,
     }));
   }, [isAR]);
-
-  const selectedFaculty = useMemo(() => {
-    return academicData.faculties.find((f: any) => f.id === form.facultyOrInstitute);
-  }, [form.facultyOrInstitute]);
-
-  const departmentOptions = useMemo(() => {
-    if (!selectedFaculty) return [];
-    return selectedFaculty.departments.map((d: any) => ({
-      value: d.id,
-      label: isAR ? d.nameAr : d.nameFr,
-    }));
-  }, [selectedFaculty, isAR]);
-
-  const selectedDepartment = useMemo(() => {
-    if (!selectedFaculty) return undefined;
-    return selectedFaculty.departments.find((d: any) => d.id === form.department);
-  }, [selectedFaculty, form.department]);
-
-  const specialityOptions = useMemo(() => {
-    if (!selectedDepartment) return [];
-    return selectedDepartment.specialities.map((s: any) => ({
-      value: s.id,
-      label: isAR ? s.nameAr : s.nameFr,
-    }));
-  }, [selectedDepartment, isAR]);
 
   const academicYearOptions = useMemo(() => {
     const key = form.role === 'student' ? 'student' : form.role;
@@ -159,8 +147,6 @@ function RegisterContent() {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     if (!form.facultyOrInstitute) newErrors.facultyOrInstitute = isAR ? 'يرجى اختيار الكلية أو المعهد' : 'Veuillez choisir la faculté ou l institut';
-    if (!form.department) newErrors.department = isAR ? 'يرجى اختيار القسم' : 'Veuillez choisir le département';
-    if (!form.speciality) newErrors.speciality = isAR ? 'يرجى اختيار التخصص' : 'Veuillez choisir la spécialité';
     if (!form.verificationMethod) newErrors.verificationMethod = isAR ? 'يرجى اختيار طريقة التحقق' : 'Veuillez choisir la méthode de vérification';
     if (!form.daira) newErrors.daira = isAR ? 'يرجى اختيار الدائرة' : 'Veuillez choisir la daïra';
     if (!form.commune) newErrors.commune = isAR ? 'يرجى اختيار البلدية' : 'Veuillez choisir la commune';
@@ -183,15 +169,39 @@ function RegisterContent() {
     setSubmitError('');
 
     try {
+      // Check if phone number already exists
+      const phoneQuery = query(collection(db, 'users'), where('phoneNumber', '==', verifiedPhone));
+      const phoneSnap = await getDocs(phoneQuery);
+      if (!phoneSnap.empty) {
+        setSubmitError(
+          isAR
+            ? 'هذا الرقم مسجل مسبقاً'
+            : 'Ce numéro existe déjà'
+        );
+        setSubmitLoading(false);
+        return;
+      }
+
+      // Also check with normalized phone formats
+      const digitsOnly = verifiedPhone.replace(/\D/g, '');
+      if (digitsOnly) {
+        const altQuery = query(collection(db, 'users'), where('phone', '==', verifiedPhone));
+        const altSnap = await getDocs(altQuery);
+        if (!altSnap.empty) {
+          setSubmitError(
+            isAR
+              ? 'هذا الرقم مسجل مسبقاً'
+              : 'Ce numéro existe déjà'
+          );
+          setSubmitLoading(false);
+          return;
+        }
+      }
       const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
       const cardNumber = generateCardNumber();
 
       const facultyLabelAr = getLabelPair(form.facultyOrInstitute, facultyOptions);
       const facultyLabelFr = getLabelPair(form.facultyOrInstitute, academicData.faculties.map((f: any) => ({ value: f.id, label: f.nameFr })));
-      const deptLabelAr = getLabelPair(form.department, departmentOptions);
-      const deptLabelFr = getLabelPair(form.department, selectedFaculty?.departments.map((d: any) => ({ value: d.id, label: d.nameFr })) || []);
-      const specLabelAr = getLabelPair(form.speciality, specialityOptions);
-      const specLabelFr = getLabelPair(form.speciality, selectedDepartment?.specialities.map((s: any) => ({ value: s.id, label: s.nameFr })) || []);
       const vmLabelAr = getLabelPair(form.verificationMethod, verificationMethodOptions);
       const vmLabelFr = getLabelPair(form.verificationMethod, ((academicData.verificationMethods as any)[form.role === 'student' ? 'student' : form.role] || []).map((v: any) => ({ value: v.id, label: v.nameFr })));
 
@@ -206,12 +216,6 @@ function RegisterContent() {
         facultyOrInstitute: form.facultyOrInstitute,
         facultyLabelAr,
         facultyLabelFr,
-        department: form.department,
-        departmentLabelAr: deptLabelAr,
-        departmentLabelFr: deptLabelFr,
-        speciality: form.speciality,
-        specialityLabelAr: specLabelAr,
-        specialityLabelFr: specLabelFr,
         academicYear: form.academicYear || '',
         grade: form.grade || '',
         email: form.email || '',
@@ -330,31 +334,6 @@ function RegisterContent() {
                       placeholder={label('Choisir une faculté...', 'اختر الكلية...')}
                     />
                     {errors.facultyOrInstitute && <p className="text-sm text-red-600">{errors.facultyOrInstitute}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <SmartSelect
-                      label={label('Département', 'القسم')}
-                      options={departmentOptions}
-                      value={form.department}
-                      onChange={(v) => handleChange('department', v)}
-                      placeholder={label('Choisir un département...', 'اختر القسم...')}
-                      disabled={!form.facultyOrInstitute}
-                    />
-                    {errors.department && <p className="text-sm text-red-600">{errors.department}</p>}
-                  </div>
-                </div>
-
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <SmartSelect
-                      label={label('Spécialité', 'التخصص')}
-                      options={specialityOptions}
-                      value={form.speciality}
-                      onChange={(v) => handleChange('speciality', v)}
-                      placeholder={label('Choisir une spécialité...', 'اختر التخصص...')}
-                      disabled={!form.department}
-                    />
-                    {errors.speciality && <p className="text-sm text-red-600">{errors.speciality}</p>}
                   </div>
                   <div className="space-y-2">
                     <SmartSelect

@@ -34,6 +34,9 @@ interface Booking {
   assignedDriverPhone?: string;
   assignedVehicleNumber?: string;
   passengersCount?: number;
+  transportNatureLabelAr?: string;
+  transportNatureLabelFr?: string;
+  trackingEnabled?: boolean;
 }
 
 const STATUS_LABELS_AR: Record<string, string> = {
@@ -177,19 +180,37 @@ export function UserBookings() {
                     )}
                   </div>
 
+                  {/* Transport Nature */}
+                  {(b.transportNatureLabelAr || b.transportNatureLabelFr) && (
+                    <div className="mt-2 text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-1 rounded-full inline-block">
+                      {isAr ? b.transportNatureLabelAr : b.transportNatureLabelFr}
+                    </div>
+                  )}
+
                   {/* Driver Assignment display */}
                   {b.assignedDriverName && (
                     <div className="mt-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs space-y-1">
                       <p className="font-bold text-emerald-700">
-                        {isAr ? '👤 سائق الرحلة المعين' : '👤 Sapeur / Chauffeur Assigné'}
+                        {isAr ? '✅ تم تأكيد رحلتك — تفاصيل التعيين' : '✅ Votre trajet est confirmé — Détails'}
                       </p>
                       <p className="text-slate-800 font-semibold">
-                        {isAr ? `الكابتن: ${b.assignedDriverName}` : `Capitaine : ${b.assignedDriverName}`}
+                        {isAr ? `السائق: ${b.assignedDriverName}` : `Chauffeur : ${b.assignedDriverName}`}
                         {b.assignedDriverPhone && ` (${b.assignedDriverPhone})`}
                       </p>
                       {b.assignedVehicleNumber && (
                         <p className="text-slate-600">
-                          {isAr ? `الحافلة رقم: H-${b.assignedVehicleNumber}` : `Autobus N° : H-${b.assignedVehicleNumber}`}
+                          {isAr ? `المركبة: ${b.vehicleType === 'car' ? 'سيارة' : b.vehicleType === 'minibus' ? 'حافلة صغيرة' : 'حافلة كبيرة'} — رقم H-${b.assignedVehicleNumber}` : `Véhicule : ${b.vehicleType === 'car' ? 'Voiture' : b.vehicleType === 'minibus' ? 'Mini Bus' : 'Bus'} — N° H-${b.assignedVehicleNumber}`}
+                        </p>
+                      )}
+                      <p className="text-slate-600">
+                        {isAr ? `نقطة الانطلاق: ${b.fromPoint}` : `Départ : ${b.fromPoint}`} · {isAr ? `الوجهة: ${b.toDestination}` : `Destination : ${b.toDestination}`}
+                      </p>
+                      <p className="text-slate-600">
+                        {isAr ? `السعر النهائي: ${b.finalPrice || b.estimatedPrice || b.price} DZD` : `Tarif final : ${b.finalPrice || b.estimatedPrice || b.price} DZD`}
+                      </p>
+                      {b.trackingEnabled && (
+                        <p className="text-sky-700 font-bold">
+                          {isAr ? '📍 يمكنك تتبع الرحلة عند انطلاقها' : '📍 Suivi disponible dès le départ'}
                         </p>
                       )}
                     </div>

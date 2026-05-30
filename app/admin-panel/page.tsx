@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, where, addDoc, orderBy } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, where, addDoc, orderBy, deleteDoc, getDocs } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { createNotification } from '@/lib/notifications';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -22,6 +22,7 @@ interface User {
   verificationDocumentType?: string;
   verificationDocumentName?: string;
   adminNote?: string;
+  isDeleted?: boolean;
   createdAt?: any;
 }
 
@@ -67,6 +68,9 @@ export default function AdminPanelPage() {
   });
   const [adminNotifications, setAdminNotifications] = useState<any[]>([]);
   const [adminSubscriptions, setAdminSubscriptions] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [deleteConfirmUserId, setDeleteConfirmUserId] = useState<string | null>(null);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingStats, setBookingStats] = useState({
     total: 0,
@@ -208,10 +212,14 @@ export default function AdminPanelPage() {
 
       snapshot.forEach((doc) => {
         const data = doc.data();
-        total++;
-        if (data.status === 'pending') pending++;
-        else if (data.status === 'approved') approved++;
-        else if (data.status === 'rejected') rejected++;
+        const isDeleted = data.isDeleted === true;
+
+        if (!isDeleted) {
+          total++;
+          if (data.status === 'pending') pending++;
+          else if (data.status === 'approved') approved++;
+          else if (data.status === 'rejected') rejected++;
+        }
 
         // Check if this is the current admin user
         const userPhone = data.phone || data.phoneNumber || '';
@@ -237,6 +245,7 @@ export default function AdminPanelPage() {
           verificationDocumentType: data.verificationDocumentType || '',
           verificationDocumentName: data.verificationDocumentName || '',
           adminNote: data.adminNote || '',
+          isDeleted: data.isDeleted || false,
           createdAt: data.createdAt,
         });
       });
@@ -391,10 +400,36 @@ export default function AdminPanelPage() {
       if (newStatus === 'approved') updates.approvedAt = serverTimestamp();
       if (newStatus === 'assigned') updates.assignedAt = serverTimestamp();
       if (newStatus === 'started') updates.startedAt = serverTimestamp();
-      if (newStatus === 'completed') updates.completedAt = serverTimestamp();
-      if (newStatus === 'cancelled') updates.cancelledAt = serverTimestamp();
+      if (newStatus === 'completed') {
+        updates.completedAt = serverTimestamp();
+        updates.trackingEnabled = false;
+      }
+      if (newStatus === 'cancelled') {
+        updates.cancelledAt = serverTimestamp();
+        updates.trackingEnabled = false;
+      }
       if (newStatus === 'rejected') updates.rejectedAt = serverTimestamp();
       await updateDoc(ref, updates);
+
+      // Free driver and vehicle if completed or cancelled (Phase 16/20)
+      if (newStatus === 'completed' || newStatus === 'cancelled') {
+        const booking = bookings.find(b => b.id === bookingId);
+        if (booking?.assignedDriverId) {
+          await updateDoc(doc(db, 'drivers', booking.assignedDriverId), {
+            currentStatus: 'available',
+            availabilityStatus: 'available',
+            currentBookingId: null,
+          });
+        }
+        if (booking?.assignedVehicleId) {
+          await updateDoc(doc(db, 'vehicles', booking.assignedVehicleId), {
+            currentStatus: 'available',
+            availabilityStatus: 'available',
+            currentBookingId: null,
+          });
+        }
+      }
+
       // [Admin Panel] booking action processed
     } catch (e) {
       console.error('[Admin Panel] Booking action error:', e);
@@ -418,8 +453,29 @@ export default function AdminPanelPage() {
       alert(isAr ? 'السائق غير نشط. يرجى اختيار سائق نشط.' : 'Le chauffeur est inactif. Veuillez choisir un chauffeur actif.');
       return false;
     }
+    // Phase 16/20: availability checks
+    if (selectedDriver.availabilityStatus === 'suspended' || selectedDriver.availabilityStatus === 'offline') {
+      alert(isAr ? 'السائق معلّق أو غير متصل. يرجى اختيار سائق متاح.' : 'Le chauffeur est suspendu ou hors ligne. Veuillez en choisir un disponible.');
+      return false;
+    }
+    if (selectedDriver.availabilityStatus === 'busy' || selectedDriver.currentStatus === 'busy') {
+      alert(isAr ? 'السائق مشغول برحلة أخرى. يرجى اختيار سائق متاح.' : 'Le chauffeur est occupé par un autre trajet. Veuillez en choisir un disponible.');
+      return false;
+    }
+    if (!selectedDriver.assignedVehicleId) {
+      alert(isAr ? 'السائق ليس لديه مركبة مخصصة. يرجى اختيار سائق لديه مركبة.' : 'Le chauffeur n\'a pas de véhicule assigné. Veuillez en choisir un autre.');
+      return false;
+    }
     if (selectedVehicle.status === 'maintenance') {
       alert(isAr ? 'المركبة في الصيانة. يرجى اختيار مركبة أخرى.' : 'Le véhicule est en maintenance. Veuillez en choisir un autre.');
+      return false;
+    }
+    if (selectedVehicle.availabilityStatus === 'busy' || selectedVehicle.currentStatus === 'busy') {
+      alert(isAr ? 'المركبة مشغولة برحلة أخرى. يرجى اختيار مركبة متاحة.' : 'Le véhicule est occupé par un autre trajet. Veuillez en choisir un autre.');
+      return false;
+    }
+    if (selectedVehicle.availabilityStatus === 'inactive') {
+      alert(isAr ? 'المركبة غير نشطة. يرجى اختيار مركبة متاحة.' : 'Le véhicule est inactif. Veuillez en choisir un autre.');
       return false;
     }
     if (selectedVehicle.status !== 'active') {
@@ -455,6 +511,20 @@ export default function AdminPanelPage() {
         assignedDriverPhone: selectedDriver.phoneNumber,
         assignedVehicleNumber: selectedVehicle.vehicleNumber,
         paymentStatus: 'unpaid',
+      });
+
+      // Set driver and vehicle to busy (Phase 16/20)
+      await updateDoc(doc(db, 'drivers', selectedDriver.id), {
+        currentStatus: 'busy',
+        availabilityStatus: 'busy',
+        currentBookingId: bookingId,
+        assignedVehicleId: selectedVehicle.id,
+      });
+      await updateDoc(doc(db, 'vehicles', selectedVehicle.id), {
+        currentStatus: 'busy',
+        availabilityStatus: 'busy',
+        currentBookingId: bookingId,
+        assignedDriverId: selectedDriver.id,
       });
 
       // Create pending payment record (Phase 14)
@@ -528,19 +598,71 @@ export default function AdminPanelPage() {
         assignedVehicleNumber: selectedVehicle.vehicleNumber,
       });
 
-      // Notify user about updated assignment
-      if (booking.userId) {
-        await createNotification({
-          userId: booking.userId,
-          titleAr: 'تم تحديث تعيين الرحلة 🔄',
-          titleFr: 'Mise à jour de l\'assignation 🔄',
-          messageAr: `تم تحديث تعيين رحلتك. السائق: ${selectedDriver.fullName}, المركبة: ${selectedVehicle.vehicleNumber}, السعر النهائي: ${finalPriceVal} DZD.`,
-          messageFr: `L\'assignation de votre trajet a été mise à jour. Chauffeur : ${selectedDriver.fullName}, Véhicule : ${selectedVehicle.vehicleNumber}, Tarif final : ${finalPriceVal} DZD.`,
-          type: 'system',
+      // Free previous driver/vehicle if changed (Phase 16/20)
+      if (booking.assignedDriverId && booking.assignedDriverId !== selectedDriver.id) {
+        await updateDoc(doc(db, 'drivers', booking.assignedDriverId), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
+        });
+      }
+      if (booking.assignedVehicleId && booking.assignedVehicleId !== selectedVehicle.id) {
+        await updateDoc(doc(db, 'vehicles', booking.assignedVehicleId), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
         });
       }
 
-      // Notify driver if changed
+      // Set new driver/vehicle to busy
+      await updateDoc(doc(db, 'drivers', selectedDriver.id), {
+        currentStatus: 'busy',
+        availabilityStatus: 'busy',
+        currentBookingId: bookingId,
+        assignedVehicleId: selectedVehicle.id,
+      });
+      await updateDoc(doc(db, 'vehicles', selectedVehicle.id), {
+        currentStatus: 'busy',
+        availabilityStatus: 'busy',
+        currentBookingId: bookingId,
+        assignedDriverId: selectedDriver.id,
+      });
+
+      // Notify user about driver/vehicle changes (Phase 22)
+      if (booking.userId) {
+        const driverChanged = booking.assignedDriverId && booking.assignedDriverId !== selectedDriver.id;
+        const vehicleChanged = booking.assignedVehicleId && booking.assignedVehicleId !== selectedVehicle.id;
+        if (driverChanged && vehicleChanged) {
+          await createNotification({
+            userId: booking.userId,
+            titleAr: 'تم تغيير السائق والمركبة 🔄',
+            titleFr: 'Chauffeur et véhicule modifiés 🔄',
+            messageAr: `تم تغيير السائق والمركبة لرحلتك. السائق الجديد: ${selectedDriver.fullName}, المركبة الجديدة: ${selectedVehicle.vehicleNumber}.`,
+            messageFr: `Le chauffeur et le véhicule de votre trajet ont été modifiés. Nouveau chauffeur : ${selectedDriver.fullName}, Nouveau véhicule : ${selectedVehicle.vehicleNumber}.`,
+            type: 'system',
+          });
+        } else if (driverChanged) {
+          await createNotification({
+            userId: booking.userId,
+            titleAr: 'تم تغيير السائق 🔄',
+            titleFr: 'Chauffeur modifié 🔄',
+            messageAr: `تم تغيير سائق رحلتك. السائق الجديد: ${selectedDriver.fullName}.`,
+            messageFr: `Le chauffeur de votre trajet a été modifié. Nouveau chauffeur : ${selectedDriver.fullName}.`,
+            type: 'system',
+          });
+        } else if (vehicleChanged) {
+          await createNotification({
+            userId: booking.userId,
+            titleAr: 'تم تغيير المركبة 🔄',
+            titleFr: 'Véhicule modifié 🔄',
+            messageAr: `تم تغيير مركبة رحلتك. المركبة الجديدة: ${selectedVehicle.vehicleNumber}.`,
+            messageFr: `Le véhicule de votre trajet a été modifié. Nouveau véhicule : ${selectedVehicle.vehicleNumber}.`,
+            type: 'system',
+          });
+        }
+      }
+
+      // Notify new driver if changed
       const matchedUser = users.find(u => u.phone === selectedDriver.phoneNumber || u.phone.includes(selectedDriver.phoneNumber || ''));
       if (matchedUser && matchedUser.id !== booking.assignedDriverId) {
         await createNotification({
@@ -551,6 +673,24 @@ export default function AdminPanelPage() {
           messageFr: `Vous avez été assigné à une nouvelle course : ${booking.fromPoint} vers ${booking.toDestination} le ${booking.date}.`,
           type: 'system',
         });
+      }
+
+      // Notify previous driver if removed
+      if (booking.assignedDriverId) {
+        const prevDriver = users.find(u => {
+          const drv = drivers.find(d => d.id === booking.assignedDriverId);
+          return drv && (u.phone === drv.phoneNumber || u.phone.includes(drv.phoneNumber || ''));
+        });
+        if (prevDriver && prevDriver.id !== matchedUser?.id) {
+          await createNotification({
+            userId: prevDriver.id,
+            titleAr: 'تم إلغاء تعيينك من الرحلة ❌',
+            titleFr: 'Assignation annulée ❌',
+            messageAr: 'تم تغيير السائق لهذه الرحلة.',
+            messageFr: 'Le chauffeur de cette course a été changé.',
+            type: 'system',
+          });
+        }
       }
 
       setEditingBookingId(null);
@@ -1033,6 +1173,83 @@ export default function AdminPanelPage() {
     }
   };
 
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const user = users.find((u) => u.id === userId);
+      if (!user) return;
+      if (user.role === 'admin') {
+        alert('لا يمكن حذف حساب Admin');
+        return;
+      }
+
+      // Soft delete: mark user as deleted
+      await updateDoc(doc(db, 'users', userId), {
+        isDeleted: true,
+        deletedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // Delete related notifications
+      const notifQuery = query(collection(db, 'notifications'), where('userId', '==', userId));
+      const notifSnap = await getDocs(notifQuery);
+      const deletePromises: Promise<void>[] = [];
+      notifSnap.forEach((n) => {
+        deletePromises.push(deleteDoc(doc(db, 'notifications', n.id)));
+      });
+      await Promise.all(deletePromises);
+
+      setDeleteConfirmUserId(null);
+      alert('تم حذف المستخدم بنجاح');
+    } catch (error) {
+      console.error('[Admin Panel] Error deleting user:', error);
+      alert('حدث خطأ أثناء الحذف');
+    }
+  };
+
+  const handleRestoreUser = async (userId: string) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        isDeleted: false,
+        restoredAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      alert('تم استرجاع المستخدم بنجاح');
+    } catch (error) {
+      console.error('[Admin Panel] Error restoring user:', error);
+      alert('حدث خطأ أثناء الاسترجاع');
+    }
+  };
+
+  const handleDeactivateUser = async (userId: string) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        accountStatus: 'suspended',
+        status: 'rejected',
+        deactivatedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      alert('تم تعطيل المستخدم بنجاح');
+    } catch (error) {
+      console.error('[Admin Panel] Error deactivating user:', error);
+      alert('حدث خطأ أثناء التعطيل');
+    }
+  };
+
+  const handleReactivateUser = async (userId: string) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        accountStatus: 'active',
+        status: 'approved',
+        reactivatedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      alert('تم إعادة تفعيل المستخدم بنجاح');
+    } catch (error) {
+      console.error('[Admin Panel] Error reactivating user:', error);
+      alert('حدث خطأ أثناء إعادة التفعيل');
+    }
+  };
+
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('unimove_current_phone');
@@ -1080,16 +1297,41 @@ export default function AdminPanelPage() {
         @media (max-width: 640px) {
           .admin-container { padding: 16px !important; }
           .admin-title { font-size: 28px !important; }
+          .admin-logo { width: 85px !important; height: 85px !important; }
         }
       `}</style>
 
       {/* Header */}
-      <div style={{ marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 className="admin-title" style={{ fontSize: 48, fontWeight: 900, marginBottom: 10 }}>لوحة الإدارة</h1>
-          <p style={{ fontSize: 24, opacity: 0.7 }}>Admin Panel</p>
+      <div style={{ marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div className="admin-logo" style={{ position: 'relative', width: 105, height: 105, flexShrink: 0 }}>
+              <img src="/images/udl-logo.jpeg" alt="UDL" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+            </div>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#10b981', textAlign: 'center', lineHeight: 1.3, maxWidth: 100 }}>
+              {language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djillali Liabès'}
+            </p>
+          </div>
+          <div>
+            <h1 className="admin-title" style={{ fontSize: 48, fontWeight: 900, marginBottom: 10 }}>لوحة الإدارة</h1>
+            <p style={{ fontSize: 24, opacity: 0.7 }}>Admin Panel</p>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => router.push('/admin/data-management')}
+            style={{
+              padding: '12px 24px',
+              background: 'rgba(59, 130, 246, 0.2)',
+              color: '#3b82f6',
+              border: '1px solid rgba(59, 130, 246, 0.5)',
+              borderRadius: 8,
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            إدارة البيانات
+          </button>
           <button
             onClick={handleRefresh}
             style={{
@@ -1221,17 +1463,6 @@ export default function AdminPanelPage() {
         </button>
       </div>
 
-      {/* Development Mode Warning (Phase 15) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{ background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.3)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-          <span style={{ fontSize: 20 }}>⚠️</span>
-          <div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#fbbf24' }}>وضع التطوير مفعل / Mode développement actif</p>
-            <p style={{ fontSize: 12, opacity: 0.7 }}>تذكر: في الإنتاج يجب نشر قواعد Firestore وتفعيل التحميل الموقّع لـ Cloudinary.</p>
-          </div>
-        </div>
-      )}
-
       {activeTab === 'overview' && (
         <>
           {/* Statistics Grid */}
@@ -1276,7 +1507,35 @@ export default function AdminPanelPage() {
           </div>
 
           {/* Verification Documents */}
-          <h2 style={{ fontSize: 32, fontWeight: 900, marginTop: 20, marginBottom: 20 }}>وثائق التحقق</h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>وثائق التحقق</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="بحث بالاسم أو الهاتف أو الجامعة أو الدور..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: 'white',
+                  fontSize: 14,
+                  minWidth: 260,
+                }}
+              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={showDeleted}
+                  onChange={(e) => setShowDeleted(e.target.checked)}
+                  style={{ width: 18, height: 18, cursor: 'pointer' }}
+                />
+                عرض المحذوفين
+              </label>
+            </div>
+          </div>
           <div style={{ background: 'rgba(0, 0, 0, 0.3)', borderRadius: 16, overflow: 'auto', marginBottom: 40 }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
               <thead>
@@ -1284,63 +1543,161 @@ export default function AdminPanelPage() {
                   <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الاسم</th>
                   <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الهاتف</th>
                   <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الجامعة</th>
-                  <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>نوع الوثيقة</th>
+                  <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الحالة</th>
                   <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الوثيقة</th>
-                  <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>تاريخ الرفع</th>
+                  <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>تاريخ التسجيل</th>
                   <th style={{ padding: 16, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>إجراءات</th>
                 </tr>
               </thead>
               <tbody>
-                {users.filter((u) => Boolean(u.verificationDocumentUrl)).length === 0 && (
-                  <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', opacity: 0.6 }}>لا توجد وثائق تحقق</td></tr>
-                )}
-                {users.filter((u) => Boolean(u.verificationDocumentUrl)).map((u) => (
-                  <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: 16 }}>{u.fullName}</td>
-                    <td style={{ padding: 16 }}>{u.phone}</td>
-                    <td style={{ padding: 16 }}>{u.university || '-'}</td>
-                    <td style={{ padding: 16 }}>{u.verificationDocumentType || '-'}</td>
-                    <td style={{ padding: 16 }}>
-                      <a href={u.verificationDocumentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-                        {u.verificationDocumentUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                          <img src={u.verificationDocumentUrl} alt="document" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }} />
+                {(() => {
+                  const filtered = users.filter((u) => {
+                    const matchesDeleted = showDeleted ? u.isDeleted === true : u.isDeleted !== true;
+                    if (!matchesDeleted) return false;
+                    if (searchQuery.trim()) {
+                      const q = searchQuery.toLowerCase();
+                      return (
+                        u.fullName?.toLowerCase().includes(q) ||
+                        u.phone?.toLowerCase().includes(q) ||
+                        u.university?.toLowerCase().includes(q) ||
+                        u.role?.toLowerCase().includes(q)
+                      );
+                    }
+                    return (u.verificationStatus || 'pending') !== 'approved';
+                  });
+                  if (filtered.length === 0) {
+                    return <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', opacity: 0.6 }}>لا يوجد مستخدمون</td></tr>;
+                  }
+                  return filtered.map((u) => (
+                    <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', opacity: u.isDeleted ? 0.5 : 1 }}>
+                      <td style={{ padding: 16 }}>{u.fullName}</td>
+                      <td style={{ padding: 16 }}>{u.phone}</td>
+                      <td style={{ padding: 16 }}>{u.university || '-'}</td>
+                      <td style={{ padding: 16 }}>
+                        <span style={{
+                          padding: '4px 10px',
+                          borderRadius: 6,
+                          fontSize: 12,
+                          fontWeight: 700,
+                          background: u.verificationStatus === 'rejected' ? 'rgba(239,68,68,0.2)' : u.verificationStatus === 'approved' ? 'rgba(16,185,129,0.2)' : 'rgba(249,115,22,0.2)',
+                          color: u.verificationStatus === 'rejected' ? '#ef4444' : u.verificationStatus === 'approved' ? '#10b981' : '#f97316',
+                        }}>
+                          {u.verificationStatus === 'rejected' ? 'مرفوض' : u.verificationStatus === 'approved' ? 'مقبول' : 'قيد الانتظار'}
+                        </span>
+                      </td>
+                      <td style={{ padding: 16 }}>
+                        {u.verificationDocumentUrl ? (
+                          <a href={u.verificationDocumentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+                            {u.verificationDocumentUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                              <img src={u.verificationDocumentUrl} alt="document" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }} />
+                            ) : (
+                              <span style={{ padding: '6px 12px', background: '#3b82f6', color: 'white', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>عرض الوثيقة</span>
+                            )}
+                          </a>
                         ) : (
-                          <span style={{ padding: '6px 12px', background: '#3b82f6', color: 'white', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>عرض الوثيقة</span>
+                          <span style={{ opacity: 0.5, fontSize: 12 }}>لم يرفع</span>
                         )}
-                      </a>
-                    </td>
-                    <td style={{ padding: 16, fontSize: 13, opacity: 0.8 }}>
-                      {u.createdAt?.seconds ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('ar-DZ') : '-'}
-                    </td>
-                    <td style={{ padding: 16 }}>
-                      {u.id === adminUserId ? (
-                        <span style={{ opacity: 0.5, fontSize: 12 }}>(أنت)</span>
-                      ) : (
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                          {u.status !== 'approved' && (
+                      </td>
+                      <td style={{ padding: 16, fontSize: 13, opacity: 0.8 }}>
+                        {u.createdAt?.seconds ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('ar-DZ') : '-'}
+                      </td>
+                      <td style={{ padding: 16 }}>
+                        {u.id === adminUserId ? (
+                          <span style={{ opacity: 0.5, fontSize: 12 }}>(أنت)</span>
+                        ) : u.isDeleted ? (
+                          <button
+                            onClick={() => handleRestoreUser(u.id)}
+                            style={{ padding: '8px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                          >
+                            استرجاع
+                          </button>
+                        ) : (
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            {u.status !== 'approved' && (
+                              <button
+                                onClick={() => handleApprove(u.id)}
+                                style={{ padding: '8px 16px', background: '#10b981', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                قبول
+                              </button>
+                            )}
+                            {u.status !== 'rejected' && (
+                              <button
+                                onClick={() => handleReject(u.id)}
+                                style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                رفض
+                              </button>
+                            )}
                             <button
-                              onClick={() => handleApprove(u.id)}
-                              style={{ padding: '8px 16px', background: '#10b981', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                              onClick={() => setDeleteConfirmUserId(u.id)}
+                              style={{ padding: '8px 16px', background: '#64748b', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
                             >
-                              قبول
+                              حذف
                             </button>
-                          )}
-                          {u.status !== 'rejected' && (
-                            <button
-                              onClick={() => handleReject(u.id)}
-                              style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
-                            >
-                              رفض
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                            {u.accountStatus !== 'suspended' && u.status !== 'rejected' ? (
+                              <button
+                                onClick={() => handleDeactivateUser(u.id)}
+                                style={{ padding: '8px 16px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                تعطيل
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleReactivateUser(u.id)}
+                                style={{ padding: '8px 16px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                تفعيل
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ));
+                })()}
               </tbody>
             </table>
           </div>
+
+          {/* Delete Confirmation Modal */}
+          {deleteConfirmUserId && (
+            <div style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+            }}>
+              <div style={{
+                background: '#1f2937',
+                borderRadius: 16,
+                padding: 32,
+                maxWidth: 420,
+                width: '90%',
+                textAlign: 'center',
+              }}>
+                <p style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>هل أنت متأكد من حذف هذا المستخدم؟</p>
+                <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 24 }}>This action cannot be undone.</p>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                  <button
+                    onClick={() => setDeleteConfirmUserId(null)}
+                    style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: 'white', cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(deleteConfirmUserId)}
+                    style={{ padding: '10px 20px', borderRadius: 8, border: 'none', background: '#ef4444', color: 'white', cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    تأكيد الحذف
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Admin Notifications */}
           <h2 style={{ fontSize: 32, fontWeight: 900, marginTop: 20, marginBottom: 20 }}>آخر الإشعارات الإدارية</h2>
@@ -2226,22 +2583,32 @@ export default function AdminPanelPage() {
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                           {booking.status === 'started' && (
                             <button onClick={() => router.push(`/live-tracking/${booking.id}`)} style={{ padding: '6px 12px', background: 'rgba(14, 165, 233, 0.2)', color: '#0ea5e9', border: '1px solid rgba(14,165,233,0.3)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
-                              تتبع
+                              فتح الخريطة
+                            </button>
+                          )}
+                          {assignedDrv?.phoneNumber && (
+                            <button onClick={() => window.open(`tel:${assignedDrv.phoneNumber}`)} style={{ padding: '6px 12px', background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
+                              اتصال بالسائق
                             </button>
                           )}
                           {(booking.status === 'assigned' || booking.status === 'approved') && (
                             <button onClick={() => handleBookingAction(booking.id, 'completed')} style={{ padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
-                              إكمال
+                              إكمال يدوي
                             </button>
                           )}
                           {booking.status === 'started' && (
                             <button onClick={() => handleBookingAction(booking.id, 'completed')} style={{ padding: '6px 12px', background: '#6366f1', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
-                              إكمال
+                              إكمال يدوي
                             </button>
                           )}
                           {(booking.status === 'assigned' || booking.status === 'approved' || booking.status === 'started') && (
                             <button onClick={() => handleBookingAction(booking.id, 'cancelled')} style={{ padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
                               إلغاء
+                            </button>
+                          )}
+                          {(booking.status === 'assigned' || booking.status === 'approved') && (
+                            <button onClick={() => { setEditingBookingId(booking.id); setEditBookingVehicle(booking.assignedVehicleId || ''); setEditBookingDriver(booking.assignedDriverId || ''); setEditBookingFinalPrice(String(booking.finalPrice || booking.price || '')); }} style={{ padding: '6px 12px', background: 'rgba(245, 158, 11, 0.2)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
+                              تغيير تعيين
                             </button>
                           )}
                         </div>

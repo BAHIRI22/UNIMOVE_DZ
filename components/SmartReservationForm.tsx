@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { calculateDynamicPricing, recommendVehicle, PricingResult } from '@/lib/pricing';
+import { calculateDynamicPricing, recommendVehicle, PricingResult, TransportNature, TRANSPORT_NATURE_OPTIONS } from '@/lib/pricing';
 import {
   MapPin,
   Calendar,
@@ -27,6 +27,7 @@ import {
   Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface SmartReservationFormProps {
   onReservationSubmit: (data: {
@@ -47,6 +48,7 @@ interface SmartReservationFormProps {
     vehicleRecommended: string;
     comfortLevel: string;
     groupBooking: boolean;
+    transportNature: TransportNature;
   }) => void;
 }
 
@@ -68,6 +70,7 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
   const [seats, setSeats] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [roundTrip, setRoundTrip] = useState(false);
+  const [transportNature, setTransportNature] = useState<TransportNature>('daily_university');
 
   // Smart states
   const [pricing, setPricing] = useState<PricingResult | null>(null);
@@ -86,9 +89,10 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
       isStudentVerified,
       isSubscriptionActive,
       isRoundTrip: roundTrip,
+      transportNature,
     });
     setPricing(res);
-  }, [vehicleType, tripCategory, seats, isStudentVerified, isSubscriptionActive, roundTrip]);
+  }, [vehicleType, tripCategory, seats, isStudentVerified, isSubscriptionActive, roundTrip, transportNature]);
 
   // 2. Auto Recommendation Trigger
   const recommended = recommendVehicle(seats);
@@ -150,6 +154,7 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
       vehicleRecommended: recommended.type,
       comfortLevel: vehicleType === 'car' ? 'high' : vehicleType === 'minibus' ? 'medium' : 'standard',
       groupBooking: seats > 1,
+      transportNature,
     });
   };
 
@@ -241,6 +246,21 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 text-slate-100" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* UDL Header Logo */}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="relative w-10 h-10 flex-shrink-0">
+          <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-sm" />
+        </div>
+        <div className="flex flex-col">
+          <span className="text-xs font-bold text-emerald-400/80">
+            {isAr ? 'بالتعاون مع جامعة الجيلالي اليابس سيدي بلعباس' : 'En partenariat avec'}
+          </span>
+          <span className="text-[10px] font-bold text-emerald-300/70">
+            {isAr ? '' : 'Université Djillali Liabès'}
+          </span>
+        </div>
+      </div>
+
       {/* 1. Category Selector */}
       <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem]">
         <h3 className="text-lg font-black text-emerald-400 mb-4 flex items-center gap-2">
@@ -264,6 +284,38 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
             </button>
           ))}
         </div>
+      </Card>
+
+      {/* 1b. Transport Nature */}
+      <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-[2rem]">
+        <h3 className="text-lg font-black text-emerald-400 mb-4 flex items-center gap-2">
+          <Bus className="w-5 h-5 text-emerald-400" />
+          {isAr ? 'طبيعة وسيلة النقل' : 'Nature du transport'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {TRANSPORT_NATURE_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setTransportNature(opt.value)}
+              className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${
+                transportNature === opt.value
+                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                  : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
+              }`}
+            >
+              <span className="text-sm">{isAr ? opt.labelAr : opt.labelFr}</span>
+              {transportNature === opt.value && <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />}
+            </button>
+          ))}
+        </div>
+        {pricing && pricing.transportNatureMultiplier !== 1.0 && (
+          <p className="text-xs text-amber-300 mt-3 font-bold">
+            {isAr
+              ? `مضاعف السعر: ×${pricing.transportNatureMultiplier}`
+              : `Multiplicateur tarif : ×${pricing.transportNatureMultiplier}`}
+          </p>
+        )}
       </Card>
 
       {/* 2. Departure & Destination */}

@@ -127,11 +127,6 @@ export default function ProductionStatusCard() {
         ))}
       </div>
 
-      {mode === 'development' && (
-        <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)', fontSize: 13 }}>
-          <strong style={{ color: '#fbbf24' }}>⚠️ وضع التطوير:</strong> تأكد من تعيين كل متغيرات البيئة في Vercel قبل النشر.
-        </div>
-      )}
     </div>
   );
 }

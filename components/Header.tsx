@@ -58,7 +58,17 @@ export function Header() {
               />
             </motion.div>
             <div className="flex flex-col">
-              <span className="font-black text-xl md:text-2xl lg:text-3xl text-primary tracking-tight">UNIMOVE-DZ</span>
+              <div className="flex items-center gap-2">
+                <div className="relative w-10 h-10 lg:w-12 lg:h-12 flex-shrink-0">
+                  <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-sm" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-black text-xl md:text-2xl lg:text-3xl text-primary tracking-tight">UNIMOVE-DZ</span>
+                  <span className="hidden lg:block text-xs font-bold text-emerald-600 leading-tight">
+                    {language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djillali Liabès'}
+                  </span>
+                </div>
+              </div>
               <span className="text-sm md:text-base lg:text-lg text-emerald-600 leading-tight font-bold hidden sm:block">
                 {language === 'ar' ? 'الجامعة أقرب، أسهل، و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
               </span>

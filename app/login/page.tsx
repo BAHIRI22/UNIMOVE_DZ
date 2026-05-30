@@ -9,6 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Bus, Shield, CheckCircle2, Zap, Clock, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const { language, isRTL } = useLanguage();
@@ -54,6 +55,11 @@ export default function LoginPage() {
         router.replace('/driver-dashboard');
       } else {
         // Redirecting to user dashboard
+        if (status === 'pending' || vStatus === 'pending') {
+          alert(language === 'ar' ? 'حسابك موجود بالفعل وقيد التحقق' : 'Votre compte existe déjà et est en cours de vérification');
+        } else if (status === 'rejected' || vStatus === 'rejected') {
+          alert(language === 'ar' ? 'تم رفض التحقق سابقاً، يرجى التواصل مع الإدارة أو إعادة رفع الوثائق' : 'Votre vérification a été refusée, veuillez contacter l\'administration ou soumettre à nouveau les documents');
+        }
         router.replace('/dashboard');
       }
       return;
@@ -172,9 +178,19 @@ export default function LoginPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                      <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
-                        UNIMOVE_DZ
-                      </h1>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="relative w-[105px] h-[105px] flex-shrink-0">
+                          <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
+                        </div>
+                        <div>
+                          <h1 className="text-3xl font-black text-white tracking-tight">
+                            UNIMOVE_DZ
+                          </h1>
+                          <p className="text-emerald-300 text-xs font-bold mt-1">
+                            {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djillali Liabès'}
+                          </p>
+                        </div>
+                      </div>
                       <p className="text-emerald-100 text-sm font-medium mb-4">
                         {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
                       </p>
@@ -289,7 +305,17 @@ export default function LoginPage() {
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
                   <div className="absolute inset-0 flex flex-col justify-end p-6">
-                    <h1 className="text-3xl font-black text-white mb-2">UNIMOVE_DZ</h1>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="relative w-[92px] h-[92px] flex-shrink-0">
+                        <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
+                      </div>
+                      <div>
+                        <h1 className="text-3xl font-black text-white">UNIMOVE_DZ</h1>
+                        <p className="text-emerald-300 text-xs font-bold mt-1">
+                          {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djillali Liabès'}
+                        </p>
+                      </div>
+                    </div>
                     <p className="text-emerald-100 text-sm font-medium">
                       {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
                     </p>
@@ -405,7 +431,17 @@ export default function LoginPage() {
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
                   <div className="absolute inset-0 flex flex-col justify-end p-5">
-                    <h1 className="text-2xl font-black text-white mb-1">UNIMOVE_DZ</h1>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="relative w-[73px] h-[73px] flex-shrink-0">
+                        <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
+                      </div>
+                      <div>
+                        <h1 className="text-2xl font-black text-white">UNIMOVE_DZ</h1>
+                        <p className="text-emerald-300 text-[10px] font-bold mt-0.5">
+                          {language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djillali Liabès'}
+                        </p>
+                      </div>
+                    </div>
                     <p className="text-emerald-100 text-xs font-medium">
                       {language === 'ar' ? 'الجامعة أقرب أسهل و أأمن' : 'L\'université plus proche, plus facile et plus sûre'}
                     </p>

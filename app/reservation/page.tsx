@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
-import { SmartReservationForm } from '@/components/SmartReservationForm';
+import { MissionBookingWizard } from '@/components/MissionBookingWizard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
@@ -42,6 +42,13 @@ export default function ReservationPage() {
     vehicleRecommended: string;
     comfortLevel: string;
     groupBooking: boolean;
+    transportNature: string;
+    missionType?: string;
+    departureDaira?: string;
+    departureCommune?: string;
+    meetingPoint?: string;
+    destinationType?: string;
+    destinationName?: string;
   }) => {
     // Block if user is not verified or approved
     const isVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
@@ -84,6 +91,45 @@ export default function ReservationPage() {
         estimatedPrice: data.totalPrice,
         finalPrice: data.totalPrice,
         roundTrip: data.roundTrip,
+        // Phase 17 — Transport Nature
+        transportNature: data.transportNature,
+        transportNatureLabelAr: data.transportNature === 'individual' ? 'نقل فردي'
+          : data.transportNature === 'shared' ? 'نقل مشترك'
+          : data.transportNature === 'group' ? 'نقل جماعي'
+          : data.transportNature === 'daily_university' ? 'نقل جامعي يومي'
+          : data.transportNature === 'private' ? 'نقل خاص'
+          : data.transportNature === 'vip' ? 'نقل VIP'
+          : data.transportNature === 'night' ? 'نقل ليلي'
+          : data.transportNature === 'accessible' ? 'نقل مهيأ لذوي الاحتياجات الخاصة'
+          : data.transportNature === 'teacher' ? 'نقل للأساتذة'
+          : data.transportNature === 'scientific_event' ? 'نقل للمناسبات العلمية'
+          : data.transportNature === 'airport_transfer' ? 'نقل للمطارات'
+          : data.transportNature === 'port_transfer' ? 'نقل للموانئ'
+          : 'نقل جامعي يومي',
+        transportNatureLabelFr: data.transportNature === 'individual' ? 'Individual transport'
+          : data.transportNature === 'shared' ? 'Shared transport'
+          : data.transportNature === 'group' ? 'Group transport'
+          : data.transportNature === 'daily_university' ? 'Daily university shuttle'
+          : data.transportNature === 'private' ? 'Private transport'
+          : data.transportNature === 'vip' ? 'VIP transport'
+          : data.transportNature === 'night' ? 'Night transport'
+          : data.transportNature === 'accessible' ? 'Accessible transport'
+          : data.transportNature === 'teacher' ? 'Teacher transport'
+          : data.transportNature === 'scientific_event' ? 'Scientific event transport'
+          : data.transportNature === 'airport_transfer' ? 'Airport transfer'
+          : data.transportNature === 'port_transfer' ? 'Port transfer'
+          : 'Daily university shuttle',
+        // Phase 11 — Smart Mobility Network
+        tripType: data.missionType || data.tripCategory,
+        missionType: data.missionType || '',
+        departureDaira: data.departureDaira || '',
+        departureCommune: data.departureCommune || '',
+        meetingPoint: data.meetingPoint || '',
+        destinationType: data.destinationType || '',
+        destinationName: data.destinationName || '',
+        driverId: '',
+        bookingStatus: 'pending',
+        updatedAt: serverTimestamp(),
       });
       console.log('[Reservation] Phase 10 Booking created in Firestore:', reservationNumber);
 
@@ -218,7 +264,7 @@ export default function ReservationPage() {
         </Card>
 
         {/* Reservation Form */}
-        <SmartReservationForm onReservationSubmit={handleReservationSubmit} />
+        <MissionBookingWizard onReservationSubmit={handleReservationSubmit} />
       </div>
     </DashboardLayout>
   );

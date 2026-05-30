@@ -4,6 +4,7 @@ export interface PricingResult {
   basePrice: number;
   distancePrice: number;
   subtotal: number;
+  transportNatureMultiplier: number;
   discounts: {
     studentVerified: boolean;
     activeSubscription: boolean;
@@ -16,6 +17,40 @@ export interface PricingResult {
   pricingDetailsFr: string;
   discountDetailsAr: string;
   discountDetailsFr: string;
+}
+
+export type TransportNature =
+  | 'individual'
+  | 'shared'
+  | 'group'
+  | 'daily_university'
+  | 'private'
+  | 'vip'
+  | 'night'
+  | 'accessible'
+  | 'teacher'
+  | 'scientific_event'
+  | 'airport_transfer'
+  | 'port_transfer';
+
+export const TRANSPORT_NATURE_OPTIONS: { value: TransportNature; labelAr: string; labelFr: string; multiplier: number }[] = [
+  { value: 'individual', labelAr: 'نقل فردي', labelFr: 'Individual transport', multiplier: 1.25 },
+  { value: 'shared', labelAr: 'نقل مشترك', labelFr: 'Shared transport', multiplier: 0.9 },
+  { value: 'group', labelAr: 'نقل جماعي', labelFr: 'Group transport', multiplier: 0.85 },
+  { value: 'daily_university', labelAr: 'نقل جامعي يومي', labelFr: 'Daily university shuttle', multiplier: 1.0 },
+  { value: 'private', labelAr: 'نقل خاص', labelFr: 'Private transport', multiplier: 1.3 },
+  { value: 'vip', labelAr: 'نقل VIP', labelFr: 'VIP transport', multiplier: 1.5 },
+  { value: 'night', labelAr: 'نقل ليلي', labelFr: 'Night transport', multiplier: 1.2 },
+  { value: 'accessible', labelAr: 'نقل مهيأ لذوي الاحتياجات الخاصة', labelFr: 'Accessible transport', multiplier: 1.2 },
+  { value: 'teacher', labelAr: 'نقل للأساتذة', labelFr: 'Teacher transport', multiplier: 1.15 },
+  { value: 'scientific_event', labelAr: 'نقل للمناسبات العلمية', labelFr: 'Scientific event transport', multiplier: 1.2 },
+  { value: 'airport_transfer', labelAr: 'نقل للمطارات', labelFr: 'Airport transfer', multiplier: 1.2 },
+  { value: 'port_transfer', labelAr: 'نقل للموانئ', labelFr: 'Port transfer', multiplier: 1.2 },
+];
+
+export function getTransportNatureMultiplier(nature: TransportNature): number {
+  const found = TRANSPORT_NATURE_OPTIONS.find((o) => o.value === nature);
+  return found ? found.multiplier : 1.0;
 }
 
 export function recommendVehicle(passengersCount: number): {
@@ -95,6 +130,7 @@ export function calculateDynamicPricing(params: {
   isStudentVerified: boolean;
   isSubscriptionActive: boolean;
   isRoundTrip: boolean;
+  transportNature?: TransportNature;
 }): PricingResult {
   const {
     vehicleType,
@@ -103,6 +139,7 @@ export function calculateDynamicPricing(params: {
     isStudentVerified = false,
     isSubscriptionActive = false,
     isRoundTrip = false,
+    transportNature = 'daily_university',
   } = params;
 
   // 1. Get Distance and Travel Time
@@ -194,6 +231,10 @@ export function calculateDynamicPricing(params: {
     discountDetailsListFr.push('Groupe ≥ 5 (-10%)');
   }
 
+  // Apply transport nature multiplier
+  const transportNatureMultiplier = getTransportNatureMultiplier(transportNature);
+  subtotal = subtotal * transportNatureMultiplier;
+
   // Calculate final price with discounts
   const discountAmount = subtotal * (totalDiscountsPercent / 100);
   let estimatedPrice = subtotal - discountAmount;
@@ -226,6 +267,7 @@ export function calculateDynamicPricing(params: {
     basePrice,
     distancePrice,
     subtotal,
+    transportNatureMultiplier,
     discounts: {
       studentVerified: isStudentVerified,
       activeSubscription: isSubscriptionActive,

@@ -8,11 +8,12 @@ import { VerificationUpload } from '@/components/Dashboard/VerificationUpload';
 import { BookingModal } from '@/components/Dashboard/BookingModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import { Plus, Calendar, MapPin, CreditCard, Bell, TrendingUp, Users, Wallet, Star, Activity } from 'lucide-react';
+import { Calendar, MapPin, CreditCard, Bell, TrendingUp, Users, Wallet, Star, Activity, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -25,6 +26,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingStats, setBookingStats] = useState({ reservations: 0, trips: 0 });
+  const [upcomingTrip, setUpcomingTrip] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading
@@ -56,16 +58,30 @@ export default function DashboardPage() {
       (snapshot) => {
         let reservations = 0;
         let trips = 0;
+        const allBookings: any[] = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
           reservations++;
           if (data.status === 'completed') trips++;
+          allBookings.push({ id: doc.id, ...data });
         });
         setBookingStats({ reservations, trips });
+
+        // Find upcoming trip (pending/approved/assigned/started, future date)
+        const upcomingStatuses = ['pending', 'approved', 'assigned', 'started'];
+        const upcoming = allBookings
+          .filter((b) => upcomingStatuses.includes(b.status))
+          .sort((a, b) => {
+            const dateA = new Date(a.date + 'T' + (a.time || '00:00'));
+            const dateB = new Date(b.date + 'T' + (b.time || '00:00'));
+            return dateA.getTime() - dateB.getTime();
+          })[0] || null;
+        setUpcomingTrip(upcoming);
       },
       (error) => {
         console.error('[Dashboard] bookings stats error:', error);
         setBookingStats({ reservations: 0, trips: 0 });
+        setUpcomingTrip(null);
       }
     );
 
@@ -179,7 +195,14 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout role="user">
-      <div className="space-y-6 md:space-y-8 lg:space-y-10">
+      <div className="relative">
+        {/* Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06] z-0">
+          <div className="relative w-64 h-64 md:w-96 md:h-96">
+            <Image src="/images/udl-logo.jpeg" alt="" fill className="object-contain" />
+          </div>
+        </div>
+        <div className="space-y-6 md:space-y-8 lg:space-y-10 relative z-10">
         {isLoading ? (
           // Loading Skeleton
           <>
@@ -380,35 +403,72 @@ export default function DashboardPage() {
 
               {/* Right Column - Reservations & Actions */}
               <div className="md:col-span-2 space-y-6 md:space-y-8">
-                {/* Quick Actions */}
+                {/* Upcoming Trip */}
                 <motion.div
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.3 }}
                 >
                   <Card className="p-6 md:p-8 border border-slate-200 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 bg-gradient-to-br from-white to-slate-50">
                     <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
-                      {language === 'ar' ? 'إجراءات سريعة' : 'Actions rapides'}
+                      {language === 'ar' ? 'رحلتي القادمة' : 'Mon prochain trajet'}
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
-                          onClick={() => setIsBookingOpen(true)}
-                          disabled={user?.verified !== true}
-                          className={`bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white h-14 md:h-16 text-base md:text-xl font-bold rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all hover:shadow-2xl hover:shadow-emerald-500/30 w-full ${user?.verified !== true ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                          <Plus className="w-5 h-5 md:w-6 md:h-6" />
-                          {language === 'ar' ? 'حجز رحلة' : 'Réserver un trajet'}
-                        </Button>
-                      </motion.div>
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
-                          variant="outline"
-                          className="h-14 md:h-16 text-base md:text-xl font-bold rounded-2xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all w-full"
-                        >
-                          {language === 'ar' ? 'بطاقتي' : 'Ma carte'}
-                        </Button>
-                      </motion.div>
-                    </div>
+                    {upcomingTrip ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-slate-800 font-bold text-lg">
+                          <MapPin className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                          <span className="truncate">{upcomingTrip.fromPoint}</span>
+                          <span className="text-slate-400">→</span>
+                          <MapPin className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                          <span className="truncate">{upcomingTrip.toDestination}</span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600 font-semibold">
+                          <span className="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full">
+                            <Calendar className="w-4 h-4 text-emerald-600" />
+                            {upcomingTrip.date}
+                          </span>
+                          <span className="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full">
+                            <Clock className="w-4 h-4 text-emerald-600" />
+                            {upcomingTrip.time}
+                          </span>
+                        </div>
+                        {upcomingTrip.assignedDriverName && (
+                          <div className="flex items-center gap-2 text-sm text-slate-700">
+                            <span className="font-bold">{language === 'ar' ? 'السائق:' : 'Chauffeur :'}</span>
+                            <span>{upcomingTrip.assignedDriverName}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-full text-sm font-bold border border-emerald-200">
+                            {upcomingTrip.vehicleType === 'car' ? '🚗' : upcomingTrip.vehicleType === 'minibus' ? '🚐' : '🚌'}
+                            {upcomingTrip.vehicleType === 'car'
+                              ? (language === 'ar' ? 'سيارة' : 'Voiture')
+                              : upcomingTrip.vehicleType === 'minibus'
+                                ? (language === 'ar' ? 'حافلة صغيرة' : 'Mini Bus')
+                                : (language === 'ar' ? 'حافلة كبيرة' : 'Bus')}
+                          </span>
+                          <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${
+                            upcomingTrip.status === 'started'
+                              ? 'bg-sky-100 text-sky-700 border-sky-200'
+                              : upcomingTrip.status === 'assigned'
+                                ? 'bg-indigo-100 text-indigo-700 border-indigo-200'
+                                : upcomingTrip.status === 'approved'
+                                  ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                                  : 'bg-amber-100 text-amber-700 border-amber-200'
+                          }`}>
+                            {language === 'ar'
+                              ? (upcomingTrip.status === 'pending' ? 'قيد الانتظار' : upcomingTrip.status === 'approved' ? 'مقبول' : upcomingTrip.status === 'assigned' ? 'تم تعيين السائق' : upcomingTrip.status === 'started' ? 'جارية' : upcomingTrip.status)
+                              : (upcomingTrip.status === 'pending' ? 'En attente' : upcomingTrip.status === 'approved' ? 'Accepté' : upcomingTrip.status === 'assigned' ? 'Chauffeur assigné' : upcomingTrip.status === 'started' ? 'En cours' : upcomingTrip.status)}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 text-slate-500">
+                        <Calendar className="w-5 h-5 text-slate-400" />
+                        <span className="font-medium">
+                          {language === 'ar' ? 'لا توجد رحلة قادمة' : 'Aucun trajet à venir'}
+                        </span>
+                      </div>
+                    )}
                   </Card>
                 </motion.div>
 
@@ -475,6 +535,7 @@ export default function DashboardPage() {
             </motion.div>
           </>
         )}
+        </div>
       </div>
 
       {/* Booking Modal */}

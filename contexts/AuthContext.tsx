@@ -43,7 +43,7 @@ export const normalizePhone = (phone: string): string => {
   return '+213' + digits;
 };
 
-export type UserRole = 'student' | 'teacher' | 'administrative' | 'driver' | 'admin';
+export type UserRole = 'student' | 'teacher' | 'administrative' | 'driver' | 'admin' | 'superadmin';
 export type VerificationStatus = 'pending' | 'approved' | 'verified' | 'rejected';
 export type AccountStatus = 'pending' | 'active' | 'suspended';
 

@@ -1,0 +1,172 @@
+{
+  "missionTypes": [
+    { "id": "transport_universitaire_quotidien", "nameFr": "Transport universitaire quotidien", "nameAr": "النقل الجامعي اليومي" },
+    { "id": "transport_entre_universites", "nameFr": "Transport entre universités", "nameAr": "النقل بين الجامعات" },
+    { "id": "transport_stage", "nameFr": "Transport vers stages", "nameAr": "النقل نحو التربصات" },
+    { "id": "transport_hospitalier", "nameFr": "Transport hospitalier", "nameAr": "النقل نحو المستشفيات" },
+    { "id": "transport_aeroport", "nameFr": "Transport vers aéroport", "nameAr": "النقل نحو المطارات" },
+    { "id": "transport_port", "nameFr": "Transport vers port", "nameAr": "النقل نحو الموانئ" },
+    { "id": "transport_gare_ferroviaire", "nameFr": "Transport vers gare ferroviaire", "nameAr": "النقل نحو محطات القطار" },
+    { "id": "transport_colloque", "nameFr": "Transport vers colloque", "nameAr": "النقل نحو الملتقيات" },
+    { "id": "transport_conference", "nameFr": "Transport vers conférence", "nameAr": "النقل نحو المؤتمرات" },
+    { "id": "transport_competition", "nameFr": "Transport vers compétition", "nameAr": "النقل نحو المسابقات" },
+    { "id": "transport_scientifique", "nameFr": "Transport scientifique", "nameAr": "النقل العلمي" },
+    { "id": "transport_sportif", "nameFr": "Transport sportif", "nameAr": "النقل الرياضي" },
+    { "id": "transport_culturel", "nameFr": "Transport culturel", "nameAr": "النقل الثقافي" },
+    { "id": "transport_touristique", "nameFr": "Transport touristique", "nameAr": "الرحلات السياحية" },
+    { "id": "transport_doctorants", "nameFr": "Transport doctorants", "nameAr": "نقل طلبة الدكتوراه" },
+    { "id": "transport_professeurs", "nameFr": "Transport professeurs", "nameAr": "نقل الأساتذة" },
+    { "id": "transport_personnel", "nameFr": "Transport personnel", "nameAr": "نقل الموظفين" },
+    { "id": "transport_recherche", "nameFr": "Transport recherche", "nameAr": "نقل البحث العلمي" },
+    { "id": "transport_personnalise", "nameFr": "Transport personnalisé", "nameAr": "رحلة مخصصة" }
+  ],
+  "transportNatures": [
+    { "id": "bus_universitaire", "nameFr": "Bus Universitaire", "nameAr": "حافلة جامعية", "capacity": 45, "comfort": "standard", "priceFactor": 1.0 },
+    { "id": "minibus", "nameFr": "Mini Bus", "nameAr": "حافلة صغيرة", "capacity": 15, "comfort": "confort", "priceFactor": 1.2 },
+    { "id": "voiture", "nameFr": "Voiture", "nameAr": "سيارة", "capacity": 4, "comfort": "premium", "priceFactor": 1.5 },
+    { "id": "transport_partage", "nameFr": "Transport partagé", "nameAr": "نقل مشترك", "capacity": 4, "comfort": "standard", "priceFactor": 0.6 },
+    { "id": "transport_vip", "nameFr": "Transport VIP", "nameAr": "نقل VIP", "capacity": 6, "comfort": "luxe", "priceFactor": 2.5 },
+    { "id": "transport_enseignants", "nameFr": "Transport enseignants", "nameAr": "نقل للأساتذة", "capacity": 20, "comfort": "confort", "priceFactor": 1.1 },
+    { "id": "transport_pmr", "nameFr": "Transport PMR", "nameAr": "نقل مهيأ لذوي الاحتياجات الخاصة", "capacity": 8, "comfort": "accessible", "priceFactor": 1.3 },
+    { "id": "transport_medical", "nameFr": "Transport médical", "nameAr": "نقل طبي", "capacity": 4, "comfort": "medical", "priceFactor": 1.8 },
+    { "id": "transport_collectif", "nameFr": "Transport collectif", "nameAr": "نقل جماعي", "capacity": 30, "comfort": "standard", "priceFactor": 0.8 },
+    { "id": "transport_touristique", "nameFr": "Transport touristique", "nameAr": "نقل سياحي", "capacity": 25, "comfort": "confort", "priceFactor": 1.4 },
+    { "id": "transport_longue_distance", "nameFr": "Transport longue distance", "nameAr": "نقل مسافات طويلة", "capacity": 45, "comfort": "standard", "priceFactor": 1.3 }
+  ],
+  "dairas": [
+    {
+      "id": "sidi-bel-abbes",
+      "nameFr": "Sidi Bel Abbès",
+      "nameAr": "سيدي بلعباس",
+      "communes": [
+        { "id": "sidi-bel-abbes-ville", "nameFr": "Sidi Bel Abbès", "nameAr": "سيدي بلعباس" },
+        { "id": "tessala", "nameFr": "Tessala", "nameAr": "تسالة" },
+        { "id": "ain-trid", "nameFr": "Ain Trid", "nameAr": "عين تريد" },
+        { "id": "sidi-lahcene", "nameFr": "Sidi Lahcene", "nameAr": "سيدي لحسن" },
+        { "id": "hassi-dahou", "nameFr": "Hassi Dahou", "nameAr": "حاسي دحو" }
+      ]
+    },
+    {
+      "id": "sfisef",
+      "nameFr": "Sfisef",
+      "nameAr": "سفيسف",
+      "communes": [
+        { "id": "sfisef-ville", "nameFr": "Sfisef", "nameAr": "سفيسف" },
+        { "id": "mcid", "nameFr": "M'Cid", "nameAr": "مسيد" },
+        { "id": "ain-adden", "nameFr": "Ain Adden", "nameAr": "عين عدان" }
+      ]
+    },
+    { "id": "telagh", "nameFr": "Télagh", "nameAr": "تلاغ", "communes": [{ "id": "telagh-ville", "nameFr": "Télagh", "nameAr": "تلاغ" }, { "id": "autre-commune-telagh", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "merine", "nameFr": "Merine", "nameAr": "مرين", "communes": [{ "id": "merine-ville", "nameFr": "Merine", "nameAr": "مرين" }, { "id": "autre-commune-merine", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "ras-el-ma", "nameFr": "Ras El Ma", "nameAr": "رأس الماء", "communes": [{ "id": "ras-el-ma-ville", "nameFr": "Ras El Ma", "nameAr": "رأس الماء" }, { "id": "autre-commune-ras-el-ma", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "marhoum", "nameFr": "Marhoum", "nameAr": "مرحوم", "communes": [{ "id": "marhoum-ville", "nameFr": "Marhoum", "nameAr": "مرحوم" }, { "id": "autre-commune-marhoum", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "ben-badis", "nameFr": "Ben Badis", "nameAr": "بن باديس", "communes": [{ "id": "ben-badis-ville", "nameFr": "Ben Badis", "nameAr": "بن باديس" }, { "id": "autre-commune-ben-badis", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "ain-el-berd", "nameFr": "Ain El Berd", "nameAr": "عين البرد", "communes": [{ "id": "ain-el-berd-ville", "nameFr": "Ain El Berd", "nameAr": "عين البرد" }, { "id": "autre-commune-ain-el-berd", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "mostefa-ben-brahim", "nameFr": "Mostefa Ben Brahim", "nameAr": "مصطفى بن إبراهيم", "communes": [{ "id": "mostefa-ville", "nameFr": "Mostefa Ben Brahim", "nameAr": "مصطفى بن إبراهيم" }, { "id": "autre-commune-mostefa", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "moulay-slissen", "nameFr": "Moulay Slissen", "nameAr": "مولاي سليسن", "communes": [{ "id": "moulay-slissen-ville", "nameFr": "Moulay Slissen", "nameAr": "مولاي سليسن" }, { "id": "autre-commune-moulay", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "tenira", "nameFr": "Tenira", "nameAr": "تنيرة", "communes": [{ "id": "tenira-ville", "nameFr": "Tenira", "nameAr": "تنيرة" }, { "id": "autre-commune-tenira", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] },
+    { "id": "oued-taourira", "nameFr": "Oued Taourira", "nameAr": "وادي تاوريرة", "communes": [{ "id": "oued-taourira-ville", "nameFr": "Oued Taourira", "nameAr": "وادي تاوريرة" }, { "id": "autre-commune-oued", "nameFr": "Autre commune", "nameAr": "بلدية أخرى" }] }
+  ],
+  "meetingPoints": [
+    { "id": "centre_ville", "nameFr": "Centre ville", "nameAr": "وسط المدينة" },
+    { "id": "gare_routiere", "nameFr": "Gare routière", "nameAr": "محطة الحافلات" },
+    { "id": "gare_ferroviaire", "nameFr": "Gare ferroviaire", "nameAr": "محطة القطار" },
+    { "id": "arret_unimove", "nameFr": "Arrêt UNIMOVE-DZ", "nameAr": "محطة يونيموف" },
+    { "id": "campus_universitaire", "nameFr": "Campus universitaire", "nameAr": "الحرم الجامعي" },
+    { "id": "residence_universitaire", "nameFr": "Résidence universitaire", "nameAr": "الإقامة الجامعية" },
+    { "id": "hopital_universitaire", "nameFr": "Hôpital universitaire", "nameAr": "المستشفى الجامعي" },
+    { "id": "faculte", "nameFr": "Faculté", "nameAr": "الكلية" },
+    { "id": "institut", "nameFr": "Institut", "nameAr": "المعهد" },
+    { "id": "point_personnalise", "nameFr": "Point personnalisé", "nameAr": "نقطة مخصصة" },
+    { "id": "position_gps", "nameFr": "Position GPS actuelle", "nameAr": "الموقع الجغرافي الحالي" }
+  ],
+  "udlStructures": [
+    { "id": "rectorat", "nameFr": "Rectorat", "nameAr": "الرئاسة" },
+    { "id": "fac-medecine", "nameFr": "Faculté de Médecine", "nameAr": "كلية الطب" },
+    { "id": "fac-sciences-exactes", "nameFr": "Faculté des Sciences Exactes", "nameAr": "كلية العلوم الدقيقة" },
+    { "id": "fac-sciences-economiques", "nameFr": "Faculté des Sciences Économiques, Commerciales et Sciences de Gestion", "nameAr": "كلية العلوم الاقتصادية والتجارية وعلوم التسيير" },
+    { "id": "fac-lettres", "nameFr": "Faculté des Lettres, Langues et Arts", "nameAr": "كلية الآداب واللغات والفنون" },
+    { "id": "fac-sciences-humaines", "nameFr": "Faculté des Sciences Humaines et Sociales", "nameAr": "كلية العلوم الإنسانية والاجتماعية" },
+    { "id": "fac-droit", "nameFr": "Faculté de Droit et Sciences Politiques", "nameAr": "كلية الحقوق والعلوم السياسية" },
+    { "id": "fac-sciences-nature", "nameFr": "Faculté des Sciences de la Nature et de la Vie", "nameAr": "كلية علوم الطبيعة والحياة" },
+    { "id": "fac-technologie", "nameFr": "Faculté de Technologie", "nameAr": "كلية التكنولوجيا" },
+    { "id": "fac-genie-electrique", "nameFr": "Faculté de Génie Électrique", "nameAr": "كلية هندسة كهربائية" },
+    { "id": "institut-sciences-agro", "nameFr": "Institut des Sciences Agronomiques", "nameAr": "معهد العلوم الفلاحية" },
+    { "id": "autre-etablissement", "nameFr": "Autre établissement universitaire", "nameAr": "مؤسسة جامعية أخرى" }
+  ],
+  "residences": [
+    { "id": "residence-uni", "nameFr": "Résidence universitaire", "nameAr": "الإقامة الجامعية" },
+    { "id": "residence-garcons", "nameFr": "Résidence universitaire garçons", "nameAr": "إقامة جامعية للذكور" },
+    { "id": "residence-filles", "nameFr": "Résidence universitaire filles", "nameAr": "إقامة جامعية للإناث" },
+    { "id": "autre-residence", "nameFr": "Autre résidence universitaire", "nameAr": "إقامة جامعية أخرى" }
+  ],
+  "hospitals": [
+    { "id": "chu-abdelkader-hassani", "nameFr": "CHU Abdelkader Hassani", "nameAr": "مركز الاستشفائي الجامعي عبد القادر حساني" },
+    { "id": "eph-sidi-bel-abbes", "nameFr": "EPH Sidi Bel Abbès", "nameAr": "المستشفى العمومي سيدي بلعباس" },
+    { "id": "maternite", "nameFr": "Maternité", "nameAr": "مصلحة الولادة" },
+    { "id": "structure-stage", "nameFr": "Structure de stage personnalisée", "nameAr": "هيكل تربص مخصص" },
+    { "id": "autre-hopital", "nameFr": "Autre hôpital", "nameAr": "مستشفى آخر" }
+  ],
+  "airports": [
+    { "id": "oran-ahmed-ben-bella", "nameFr": "Oran Ahmed Ben Bella", "nameAr": "وهران أحمد بن بلة" },
+    { "id": "alger-houari-boumediene", "nameFr": "Alger Houari Boumediene", "nameAr": "الجزائر هواري بومدين" },
+    { "id": "tlemcen-zenata", "nameFr": "Tlemcen Zenata", "nameAr": "تلمسان زناتة" },
+    { "id": "constantine-mohamed-boudiaf", "nameFr": "Constantine Mohamed Boudiaf", "nameAr": "قسنطينة محمد بوضياف" },
+    { "id": "annaba-rabah-bitat", "nameFr": "Annaba Rabah Bitat", "nameAr": "عنابة رابح بيطاط" },
+    { "id": "bechar", "nameFr": "Béchar", "nameAr": "بشار" },
+    { "id": "adrar", "nameFr": "Adrar", "nameAr": "أدرار" },
+    { "id": "tindouf", "nameFr": "Tindouf", "nameAr": "تندوف" },
+    { "id": "ghardaia", "nameFr": "Ghardaïa", "nameAr": "غرداية" },
+    { "id": "ouargla", "nameFr": "Ouargla", "nameAr": "ورقلة" },
+    { "id": "tamanrasset", "nameFr": "Tamanrasset", "nameAr": "تمنراست" },
+    { "id": "illizi", "nameFr": "Illizi", "nameAr": "إليزي" },
+    { "id": "biskra", "nameFr": "Biskra", "nameAr": "بسكرة" },
+    { "id": "jijel", "nameFr": "Jijel", "nameAr": "جيجل" },
+    { "id": "batna", "nameFr": "Batna", "nameAr": "باتنة" },
+    { "id": "setif", "nameFr": "Sétif", "nameAr": "سطيف" },
+    { "id": "autre-aeroport", "nameFr": "Autre aéroport", "nameAr": "مطار آخر" }
+  ],
+  "ports": [
+    { "id": "port-oran", "nameFr": "Port Oran", "nameAr": "ميناء وهران" },
+    { "id": "port-arzew", "nameFr": "Port Arzew", "nameAr": "ميناء أرزيو" },
+    { "id": "port-mostaganem", "nameFr": "Port Mostaganem", "nameAr": "ميناء مستغانم" },
+    { "id": "port-ghazaouet", "nameFr": "Port Ghazaouet", "nameAr": "ميناء الغزوات" },
+    { "id": "port-alger", "nameFr": "Port Alger", "nameAr": "ميناء الجزائر" },
+    { "id": "port-bejaia", "nameFr": "Port Béjaïa", "nameAr": "ميناء بجاية" },
+    { "id": "port-skikda", "nameFr": "Port Skikda", "nameAr": "ميناء سكيكدة" },
+    { "id": "port-annaba", "nameFr": "Port Annaba", "nameAr": "ميناء عنابة" },
+    { "id": "port-jijel", "nameFr": "Port Jijel", "nameAr": "ميناء جيجل" },
+    { "id": "autre-port", "nameFr": "Autre port", "nameAr": "ميناء آخر" }
+  ],
+  "trainStations": [
+    { "id": "gare-sidi-bel-abbes", "nameFr": "Gare Sidi Bel Abbès", "nameAr": "محطة سيدي بلعباس" },
+    { "id": "gare-oran", "nameFr": "Gare Oran", "nameAr": "محطة وهران" },
+    { "id": "gare-alger", "nameFr": "Gare Alger", "nameAr": "محطة الجزائر" },
+    { "id": "gare-tlemcen", "nameFr": "Gare Tlemcen", "nameAr": "محطة تلمسان" },
+    { "id": "gare-mostaganem", "nameFr": "Gare Mostaganem", "nameAr": "محطة مستغانم" },
+    { "id": "gare-constantine", "nameFr": "Gare Constantine", "nameAr": "محطة قسنطينة" },
+    { "id": "gare-annaba", "nameFr": "Gare Annaba", "nameAr": "محطة عنابة" },
+    { "id": "gare-setif", "nameFr": "Gare Sétif", "nameAr": "محطة سطيف" },
+    { "id": "autre-gare", "nameFr": "Autre gare", "nameAr": "محطة أخرى" }
+  ],
+  "wilayas": [
+    { "id": "sidi-bel-abbes", "nameFr": "Sidi Bel Abbès", "nameAr": "سيدي بلعباس" },
+    { "id": "autre-wilaya", "nameFr": "Autre wilaya", "nameAr": "ولاية أخرى" }
+  ],
+  "universities": [
+    { "id": "udl", "nameFr": "Université Djillali Liabès Sidi Bel Abbès", "nameAr": "جامعة جيلالي ليابس سيدي بلعباس" },
+    { "id": "autre-universite", "nameFr": "Autre université", "nameAr": "جامعة أخرى" }
+  ],
+  "pricingRules": {
+    "basePricePerKm": 15,
+    "studentDiscount": 0.30,
+    "teacherDiscount": 0.20,
+    "phdDiscount": 0.25,
+    "sharedDiscount": 0.40,
+    "roundTripDiscount": 0.10,
+    "vipMultiplier": 2.5,
+    "medicalMultiplier": 1.8,
+    "nightMultiplier": 1.3,
+    "subscriptionDiscount": 0.15
+  }
+}

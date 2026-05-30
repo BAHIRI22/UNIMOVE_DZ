@@ -32,6 +32,7 @@ interface VerificationUser {
   verificationStatus: string;
   accountStatus: string;
   adminNote?: string;
+  isDeleted?: boolean;
   createdAt: string;
 }
 
@@ -46,13 +47,14 @@ export default function AdminVerificationsPage() {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    const q = query(collection(db, 'users'), where('status', '==', 'pending'));
+    const q = query(collection(db, 'users'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const usersData: VerificationUser[] = [];
       snapshot.forEach((doc) => {
         usersData.push({ id: doc.id, ...doc.data() } as VerificationUser);
       });
-      setUsers(usersData);
+      const filtered = usersData.filter((u) => u.isDeleted !== true && (u.verificationStatus || 'pending') !== 'approved');
+      setUsers(filtered);
       setLoading(false);
     }, (error) => {
       console.error('Error fetching pending users:', error);
@@ -112,7 +114,7 @@ export default function AdminVerificationsPage() {
     setProcessing(true);
     try {
       await updateDoc(doc(db, 'users', user.id), {
-        verificationStatus: 'verified',
+        verificationStatus: 'approved',
         accountStatus: 'active',
         verified: true,
         status: 'approved',
@@ -186,7 +188,7 @@ export default function AdminVerificationsPage() {
             <Clock className="w-5 h-5" />
             <span className="font-bold">{users.length}</span>
             <span className="text-sm">
-              {language === 'ar' ? 'قيد الانتظار' : 'En attente'}
+              {language === 'ar' ? 'غير مقبول' : 'Non approuvé'}
             </span>
           </div>
         </div>
@@ -213,7 +215,7 @@ export default function AdminVerificationsPage() {
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              {language === 'ar' ? 'لا توجد طلبات معلقة' : 'Aucune demande en attente'}
+              {language === 'ar' ? 'لا يوجد مستخدمون بانتظار التحقق' : 'Aucun utilisateur en attente de vérification'}
             </div>
           ) : (
             <Table>
@@ -267,8 +269,14 @@ export default function AdminVerificationsPage() {
                     </TableCell>
                     <TableCell>{formatDate(user.createdAt)}</TableCell>
                     <TableCell>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                        {language === 'ar' ? 'قيد التحقق' : 'En attente'}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        user.verificationStatus === 'rejected'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {user.verificationStatus === 'rejected'
+                          ? (language === 'ar' ? 'مرفوض' : 'Rejeté')
+                          : (language === 'ar' ? 'قيد التحقق' : 'En attente')}
                       </span>
                     </TableCell>
                     <TableCell>

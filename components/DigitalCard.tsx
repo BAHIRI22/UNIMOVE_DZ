@@ -7,6 +7,7 @@ import { Shield, CheckCircle, Calendar, CreditCard, User, MapPin, Phone, Downloa
 import { Button } from '@/components/ui/button';
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface DigitalCardProps {
   userCard: UserCard;
@@ -51,9 +52,24 @@ export function DigitalCard({ userCard, onDownload, onPrint }: DigitalCardProps)
         {/* Glassmorphism Overlay */}
         <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
 
+        {/* Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
+          <div className="relative w-48 h-48 md:w-64 md:h-64">
+            <Image src="/images/udl-logo.jpeg" alt="" fill className="object-contain" />
+          </div>
+        </div>
+
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-64 h-64 md:w-80 md:h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+
+        {/* UDL Corner Logo */}
+        <div className="absolute top-3 right-3 md:top-5 md:right-5 z-20 flex flex-col items-center gap-1">
+          <div className="relative w-12 h-12 md:w-14 md:h-14">
+            <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
+          </div>
+          <span className="text-white/50 text-[9px] font-bold hidden md:block">Université Djillali Liabès</span>
+        </div>
 
         {/* Card Content */}
         <div className="relative z-10 space-y-6 md:space-y-8">

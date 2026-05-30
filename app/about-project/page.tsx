@@ -3,6 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import {
   AlertTriangle,
   BarChart3,
@@ -77,7 +78,13 @@ export default function AboutProjectPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-cyan-50/40">
+    <main className="relative min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-cyan-50/40">
+      {/* Watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
+        <div className="relative w-80 h-80 md:w-[28rem] md:h-[28rem]">
+          <Image src="/images/udl-logo.jpeg" alt="" fill className="object-contain" />
+        </div>
+      </div>
       <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.14),transparent_40%)]" />
         <div className="relative mx-auto max-w-7xl text-center">
@@ -94,6 +101,32 @@ export default function AboutProjectPage() {
                 ? 'منصة ذكية لتحسين النقل الجامعي عبر التكنولوجيا، التنظيم، الأمان، ونموذج اقتصادي واضح.'
                 : 'Une plateforme intelligente pour améliorer le transport universitaire grâce à la technologie, l’organisation, la sécurité et un modèle économique clair.'}
             </p>
+
+            {/* UDL University Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-10 inline-flex flex-col sm:flex-row items-center gap-5 sm:gap-8 rounded-3xl border-2 border-emerald-300 bg-white/80 px-8 py-6 shadow-2xl backdrop-blur-xl"
+            >
+              <div className="relative w-32 h-32 lg:w-40 lg:h-40 flex-shrink-0">
+                <Image src="/images/udl-logo.jpeg" alt="UDL Logo" fill className="object-contain rounded-2xl" />
+              </div>
+              <div className="text-center sm:text-left">
+                <p className="text-xl md:text-2xl font-black text-slate-900">
+                  {language === 'ar' ? 'جامعة الجيلالي اليابس سيدي بلعباس' : 'Université Djillali Liabès'}
+                </p>
+                <p className="text-base md:text-lg font-bold text-slate-600">
+                  {language === 'ar' ? 'Sidi Bel Abbès' : 'Sidi Bel Abbès'}
+                </p>
+                <div className="inline-flex items-center gap-2 mt-3 px-4 py-1.5 rounded-full bg-emerald-100 border border-emerald-300">
+                  <Sparkles className="w-4 h-4 text-emerald-700" />
+                  <p className="text-sm font-black text-emerald-800">
+                    {language === 'ar' ? 'شريك أكاديمي رسمي' : 'Partenaire Académique Officiel'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>

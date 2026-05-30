@@ -32,11 +32,32 @@ export function Footer() {
                 </span>
               </div>
             </div>
-            <p className="text-slate-300 text-xl leading-[2.2] mb-8 font-medium">
+            <p className="text-slate-300 text-xl leading-[2.2] mb-6 font-medium">
               {language === 'ar'
                 ? 'نظام نقل جامعي ذكي للطلاب والأساتذة والموظفين'
                 : 'Système de transport universitaire intelligent pour étudiants, enseignants et personnel'}
             </p>
+            {/* UDL Partnership */}
+            <div className="flex items-center gap-4 mb-8 p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="relative w-14 h-14 flex-shrink-0">
+                <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-lg" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-base">
+                  UNIMOVE-DZ
+                </p>
+                <p className="text-emerald-300 text-sm font-medium">
+                  {language === 'ar'
+                    ? 'مشروع جامعي تم تطويره بالتعاون مع'
+                    : 'Projet universitaire développé en partenariat avec'}
+                </p>
+                <p className="text-slate-300 text-sm font-bold">
+                  {language === 'ar'
+                    ? 'جامعة الجيلالي اليابس — سيدي بلعباس'
+                    : 'Université Djillali Liabès — Sidi Bel Abbès'}
+                </p>
+              </div>
+            </div>
             <div className="flex items-center gap-4 text-xl text-emerald-300 mb-8">
               <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
                 <Mail className="w-6 h-6" />

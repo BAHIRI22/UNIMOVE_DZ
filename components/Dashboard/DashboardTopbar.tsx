@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Bell, Search, Settings, Menu, User, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import Image from 'next/image';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
@@ -95,6 +96,19 @@ export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
           >
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
+
+          {/* UDL Logo */}
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="relative w-[45px] h-[45px] md:w-[60px] md:h-[60px] flex-shrink-0">
+              <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-sm" />
+            </div>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-black text-sm md:text-base text-gray-900">UNIMOVE</span>
+              <span className="text-[10px] font-bold text-emerald-600 leading-tight">
+                {language === 'ar' ? 'الشريك الأكاديمي الرسمي' : 'Partenaire Académique Officiel'}
+              </span>
+            </div>
+          </Link>
 
           {/* Search */}
           <div className="hidden md:flex items-center gap-2">

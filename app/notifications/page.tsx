@@ -51,9 +51,12 @@ export default function NotificationsPage() {
       return;
     }
 
+    const isAdminUser = user.role === 'admin' || user.role === 'superadmin';
+    const userIdsToQuery = isAdminUser ? [user.id, 'admin'] : [user.id];
+
     const q = query(
       collection(db, 'notifications'),
-      where('userId', '==', user.id),
+      where('userId', 'in', userIdsToQuery),
       orderBy('createdAt', 'desc')
     );
 

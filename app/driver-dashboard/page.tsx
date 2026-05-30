@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, doc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { createNotification } from '@/lib/notifications';
+import { createNotification, createAdminNotification } from '@/lib/notifications';
 import {
   Bus,
   User,
@@ -333,13 +333,20 @@ export default function DriverDashboardPage() {
 
         trackingIntervalRef.current = interval;
       },
-      (err) => {
+      async (err) => {
         console.error('[Driver Dashboard] GPS permission denied:', err);
-        setGpsError(
-          isAr
-            ? 'تعذر تفعيل GPS، يرجى السماح بالموقع.'
-            : 'Impossible d\'activer le GPS. Veuillez autoriser la localisation.'
-        );
+        const errMsg = isAr
+          ? 'تعذر تفعيل GPS، يرجى السماح بالموقع.'
+          : 'Impossible d\'activer le GPS. Veuillez autoriser la localisation.';
+        setGpsError(errMsg);
+        // Notify admin (Phase 22)
+        await createAdminNotification({
+          titleAr: 'GPS غير مفعل ⚠️',
+          titleFr: 'GPS désactivé ⚠️',
+          messageAr: `تعذر تفعيل GPS للسائق ${driverProfile?.fullName || ''}. ${errMsg}`,
+          messageFr: `Impossible d\'activer le GPS pour le chauffeur ${driverProfile?.fullName || ''}. ${errMsg}`,
+          type: 'system',
+        });
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
@@ -360,6 +367,7 @@ export default function DriverDashboardPage() {
       await updateDoc(doc(db, 'bookings', bookingId), {
         status: 'started',
         startedAt: serverTimestamp(),
+        trackingEnabled: true,
       });
 
       const booking = todayBookings.find((b) => b.id === bookingId);
@@ -377,6 +385,15 @@ export default function DriverDashboardPage() {
       // Start GPS tracking
       startGpsTracking(bookingId);
 
+      // Notify admin (Phase 22)
+      await createAdminNotification({
+        titleAr: 'السائق بدأ الرحلة 🚌',
+        titleFr: 'Le chauffeur a démarré le trajet 🚌',
+        messageAr: `بدأ السائق ${driverProfile?.fullName || ''} الرحلة رقم ${bookingId}.`,
+        messageFr: `Le chauffeur ${driverProfile?.fullName || ''} a démarré le trajet ${bookingId}.`,
+        type: 'system',
+      });
+
       alert(language === 'ar' ? 'تم بدء الرحلة وتفعيل GPS!' : 'Le trajet a démarré et le GPS est actif !');
     } catch (e) {
       console.error('[Driver Dashboard] Start booking error:', e);
@@ -388,19 +405,46 @@ export default function DriverDashboardPage() {
       await updateDoc(doc(db, 'bookings', bookingId), {
         status: 'completed',
         completedAt: serverTimestamp(),
+        trackingEnabled: false,
       });
 
       const booking = todayBookings.find((b) => b.id === bookingId);
+
+      // Free driver and vehicle (Phase 16/20)
+      if (driverProfile?.id) {
+        await updateDoc(doc(db, 'drivers', driverProfile.id), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
+        });
+      }
+      if (assignedVehicle?.id) {
+        await updateDoc(doc(db, 'vehicles', assignedVehicle.id), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
+        });
+      }
+
       if (booking?.userId) {
         await createNotification({
           userId: booking.userId,
-          titleAr: 'تم إنهاء رحلتك بنجاح ✅',
-          titleFr: 'Votre trajet est terminé avec succès ✅',
-          messageAr: `تم إنهاء رحلتك من ${booking.fromPoint} إلى ${booking.toDestination}. شكراً لاختيارك UNIMOVE!`,
-          messageFr: `Votre trajet de ${booking.fromPoint} vers ${booking.toDestination} est terminé. Merci d'avoir choisi UNIMOVE !`,
+          titleAr: 'وصلت الرحلة إلى الوجهة ✅',
+          titleFr: 'Votre trajet est arrivé à destination ✅',
+          messageAr: `وصلت رحلتك من ${booking.fromPoint} إلى ${booking.toDestination}. شكراً لاختيارك UNIMOVE!`,
+          messageFr: `Votre trajet de ${booking.fromPoint} vers ${booking.toDestination} est arrivé. Merci d'avoir choisi UNIMOVE !`,
           type: 'system',
         });
       }
+
+      // Notify admin (Phase 22)
+      await createAdminNotification({
+        titleAr: 'السائق أنهى الرحلة ✅',
+        titleFr: 'Le chauffeur a terminé le trajet ✅',
+        messageAr: `أنهى السائق ${driverProfile?.fullName || ''} الرحلة رقم ${bookingId}.`,
+        messageFr: `Le chauffeur ${driverProfile?.fullName || ''} a terminé le trajet ${bookingId}.`,
+        type: 'system',
+      });
 
       // Stop GPS tracking if active for this booking
       if (activeTrackingBookingId === bookingId) {
@@ -429,9 +473,27 @@ export default function DriverDashboardPage() {
         status: 'cancelled',
         cancelledAt: serverTimestamp(),
         cancelReason,
+        trackingEnabled: false,
       });
 
       const booking = todayBookings.find((b) => b.id === cancelBookingId);
+
+      // Free driver and vehicle (Phase 16/20)
+      if (driverProfile?.id) {
+        await updateDoc(doc(db, 'drivers', driverProfile.id), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
+        });
+      }
+      if (assignedVehicle?.id) {
+        await updateDoc(doc(db, 'vehicles', assignedVehicle.id), {
+          currentStatus: 'available',
+          availabilityStatus: 'available',
+          currentBookingId: null,
+        });
+      }
+
       if (booking?.userId) {
         await createNotification({
           userId: booking.userId,
@@ -442,6 +504,15 @@ export default function DriverDashboardPage() {
           type: 'system',
         });
       }
+
+      // Notify admin (Phase 22)
+      await createAdminNotification({
+        titleAr: 'تم إلغاء رحلة ❌',
+        titleFr: 'Trajet annulé ❌',
+        messageAr: `ألغى السائق ${driverProfile?.fullName || ''} الرحلة رقم ${cancelBookingId}. السبب: ${cancelReason}`,
+        messageFr: `Le chauffeur ${driverProfile?.fullName || ''} a annulé le trajet ${cancelBookingId}. Motif : ${cancelReason}`,
+        type: 'system',
+      });
 
       // Stop GPS tracking if active for this booking
       if (activeTrackingBookingId === cancelBookingId) {
