@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { NAVIGATION_ITEMS, ATTRIBUTIONS } from '@/constants';
 import { motion } from 'framer-motion';
+import { PWAInstallQR } from '@/components/PWAInstallQR';
 
 interface DashboardSidebarProps {
   role: 'user' | 'admin';
@@ -166,20 +167,23 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
           {/* Footer */}
           <div className="p-5 border-t border-slate-200 space-y-3">
             {!isCollapsed && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-sm text-gray-500 space-y-2"
-              >
-                <p className="font-semibold text-gray-700">
-                  {language === 'ar' ? 'المشروع:' : 'Projet:'}
-                </p>
-                <p>{ATTRIBUTIONS.project.nameAr}</p>
-                <p className="font-semibold text-gray-700 mt-3">
-                  {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
-                </p>
-                <p>د:رمدوم نورة</p>
-              </motion.div>
+              <>
+                <PWAInstallQR />
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm text-gray-500 space-y-2 pt-2"
+                >
+                  <p className="font-semibold text-gray-700">
+                    {language === 'ar' ? 'المشروع:' : 'Projet:'}
+                  </p>
+                  <p>{ATTRIBUTIONS.project.nameAr}</p>
+                  <p className="font-semibold text-gray-700 mt-3">
+                    {language === 'ar' ? 'الإشراف الأكاديمي:' : 'Supervision académique:'}
+                  </p>
+                  <p>د:رمدوم نورة</p>
+                </motion.div>
+              </>
             )}
             <motion.button
               whileHover={{ scale: 1.02 }}

@@ -1,13 +1,20 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ATTRIBUTIONS } from '@/constants';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Smartphone, Download } from 'lucide-react';
+import { QRCodeDisplay } from './QRCodeDisplay';
 
 export function Footer() {
   const { language } = useLanguage();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <footer className="bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 text-white py-20 md:py-28">
@@ -69,6 +76,45 @@ export function Footer() {
                 <Phone className="w-6 h-6" />
               </div>
               <span className="font-medium">+213 (0) 55 70 77 069</span>
+            </div>
+
+            {/* PWA QR Install */}
+            <div className="mt-8 p-5 rounded-2xl bg-white/5 border border-white/10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-emerald-300" />
+                </div>
+                <div>
+                  <h5 className="font-bold text-white text-base">
+                    {language === 'ar' ? 'ثبّت التطبيق على هاتفك' : 'Installer sur votre téléphone'}
+                  </h5>
+                  <p className="text-emerald-300 text-sm">
+                    {language === 'ar' ? 'امسح الكود للتثبيت الفوري' : 'Scannez pour installer'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-5 flex-wrap">
+                <div className="bg-white p-3 rounded-xl shadow-lg">
+                  <QRCodeDisplay
+                    value={mounted && typeof window !== 'undefined' ? window.location.origin : 'https://unimove-dz.vercel.app'}
+                    size={120}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-emerald-300 text-sm">
+                    <Download className="w-4 h-4 shrink-0" />
+                    <span>{language === 'ar' ? '1. افتح الكاميرا' : '1. Ouvrez la caméra'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-300 text-sm">
+                    <Smartphone className="w-4 h-4 shrink-0" />
+                    <span>{language === 'ar' ? '2. امسح الكود QR' : '2. Scannez le QR'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-emerald-300 text-sm">
+                    <Download className="w-4 h-4 shrink-0" />
+                    <span>{language === 'ar' ? '3. اضغط "تثبيت"' : '3. Appuyez "Installer"'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -107,6 +107,7 @@ export default function AdminPanelPage() {
   const [driverLicense, setDriverLicense] = useState('');
   const [driverStatus, setDriverStatus] = useState('active');
   const [driverAssignedVehicle, setDriverAssignedVehicle] = useState('');
+  const [driverPhotoUrl, setDriverPhotoUrl] = useState('');
 
   // Vehicle Form fields
   const [vehicleId, setVehicleId] = useState<string | null>(null);
@@ -820,6 +821,7 @@ export default function AdminPanelPage() {
           licenseNumber: driverLicense,
           status: driverStatus,
           assignedVehicleId: driverAssignedVehicle,
+          photoUrl: driverPhotoUrl || '',
           updatedAt: serverTimestamp(),
         });
 
@@ -851,6 +853,7 @@ export default function AdminPanelPage() {
           role: 'driver',
           status: driverStatus,
           assignedVehicleId: driverAssignedVehicle,
+          photoUrl: driverPhotoUrl || '',
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
@@ -886,6 +889,7 @@ export default function AdminPanelPage() {
       setDriverLicense('');
       setDriverStatus('active');
       setDriverAssignedVehicle('');
+      setDriverPhotoUrl('');
       setShowDriverForm(false);
     } catch (e) {
       console.error('Error saving driver:', e);
@@ -1114,6 +1118,50 @@ export default function AdminPanelPage() {
       setShowRouteForm(false);
     } catch (e) {
       console.error('Error saving route:', e);
+    }
+  };
+
+  const handleDeleteDriver = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا السائق؟' : 'Confirmer la suppression du chauffeur ?')) return;
+    try {
+      await deleteDoc(doc(db, 'drivers', id));
+      alert(language === 'ar' ? 'تم حذف السائق بنجاح' : 'Chauffeur supprimé avec succès');
+    } catch (e) {
+      console.error('Error deleting driver:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDeleteVehicle = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه المركبة؟' : 'Confirmer la suppression du véhicule ?')) return;
+    try {
+      await deleteDoc(doc(db, 'vehicles', id));
+      alert(language === 'ar' ? 'تم حذف المركبة بنجاح' : 'Véhicule supprimé avec succès');
+    } catch (e) {
+      console.error('Error deleting vehicle:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDeleteRoute = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا المسار؟' : 'Confirmer la suppression du trajet ?')) return;
+    try {
+      await deleteDoc(doc(db, 'routes', id));
+      alert(language === 'ar' ? 'تم حذف المسار بنجاح' : 'Trajet supprimé avec succès');
+    } catch (e) {
+      console.error('Error deleting route:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDeletePayment = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الدفع؟' : 'Confirmer la suppression du paiement ?')) return;
+    try {
+      await deleteDoc(doc(db, 'payments', id));
+      alert(language === 'ar' ? 'تم حذف الدفع بنجاح' : 'Paiement supprimé avec succès');
+    } catch (e) {
+      console.error('Error deleting payment:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
     }
   };
 
@@ -1566,7 +1614,7 @@ export default function AdminPanelPage() {
                         u.role?.toLowerCase().includes(q)
                       );
                     }
-                    return (u.verificationStatus || 'pending') !== 'approved';
+                    return true;
                   });
                   if (filtered.length === 0) {
                     return <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', opacity: 0.6 }}>لا يوجد مستخدمون</td></tr>;
@@ -2082,6 +2130,26 @@ export default function AdminPanelPage() {
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>رقم رخصة السياقة</label>
                 <input value={driverLicense} onChange={e => setDriverLicense(e.target.value)} type="text" placeholder="DZ-12345-67" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
               </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>صورة السائق (اختياري — رابط URL)</label>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <input
+                    value={driverPhotoUrl}
+                    onChange={e => setDriverPhotoUrl(e.target.value)}
+                    type="text"
+                    placeholder="https://example.com/photo.jpg"
+                    style={{ flex: 1, padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}
+                  />
+                  {driverPhotoUrl && (
+                    <img
+                      src={driverPhotoUrl}
+                      alt="Driver preview"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)' }}
+                    />
+                  )}
+                </div>
+              </div>
               <div>
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>حالة السائق</label>
                 <select value={driverStatus} onChange={e => setDriverStatus(e.target.value)} style={{ width: '100%', padding: 12, background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}>
@@ -2151,6 +2219,7 @@ export default function AdminPanelPage() {
                               setDriverLicense(drv.licenseNumber || '');
                               setDriverStatus(drv.status || 'active');
                               setDriverAssignedVehicle(drv.assignedVehicleId || '');
+                              setDriverPhotoUrl(drv.photoUrl || '');
                               setShowDriverForm(true);
                             }}
                             style={{ padding: '6px 12px', background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
@@ -2167,6 +2236,12 @@ export default function AdminPanelPage() {
                               تعطيل
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDeleteDriver(drv.id)}
+                            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
+                          >
+                            حذف
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -2322,6 +2397,12 @@ export default function AdminPanelPage() {
                               صيانة
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDeleteVehicle(v.id)}
+                            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
+                          >
+                            حذف
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -2500,6 +2581,12 @@ export default function AdminPanelPage() {
                                 style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
                               >
                                 إلغاء
+                              </button>
+                              <button
+                                onClick={() => handleDeleteRoute(r.id)}
+                                style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
+                              >
+                                حذف
                               </button>
                             </>
                           )}
@@ -2738,6 +2825,9 @@ export default function AdminPanelPage() {
                               استرجاع
                             </button>
                           )}
+                          <button onClick={() => handleDeletePayment(p.id)} style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
+                            حذف
+                          </button>
                         </div>
                       </td>
                     </tr>

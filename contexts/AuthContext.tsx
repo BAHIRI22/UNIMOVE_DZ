@@ -173,8 +173,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const searchFormats = Array.from(formats);
 
-    // Detect demo admin phone (0550000000 or +213550000000)
-    const isDemoAdmin = digits === '0550000000' || digits === '213550000000' || digits === '550000000';
+    // Detect demo admin phones (0550000000 or 0658513876)
+    const isDemoAdmin =
+      digits === '0550000000' || digits === '213550000000' || digits === '550000000' ||
+      digits === '0658513876' || digits === '213658513876' || digits === '658513876';
     const isDemoDriver = digits === '0550000001' || digits === '213550000001' || digits === '550000001';
 
     let foundDoc: { id: string; data: any } | null = null;
@@ -202,7 +204,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // If demo admin phone, force-promote to admin role with verified+approved
     if (isDemoAdmin) {
-      const adminPhone = '+213550000000';
+      const isSecondAdmin = digits === '0658513876' || digits === '213658513876' || digits === '658513876';
+      const adminPhone = isSecondAdmin ? '+213658513876' : '+213550000000';
+      const adminName = isSecondAdmin
+        ? { firstName: 'Admin', lastName: 'Second', fullName: 'Admin Second' }
+        : { firstName: 'UNIMOVEDZ', lastName: '', fullName: 'UNIMOVEDZ' };
+      const adminCard = isSecondAdmin ? 'UNIMOVE-ADMIN-0002' : 'UNIMOVE-ADMIN-0001';
       try {
         if (foundDoc) {
           const needsUpdate =
@@ -234,9 +241,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const adminData = {
             phone: adminPhone,
             phoneNumber: adminPhone,
-            firstName: 'BEHIRI',
-            lastName: 'ABDELKADER',
-            fullName: 'BEHIRI ABDELKADER',
+            firstName: adminName.firstName,
+            lastName: adminName.lastName,
+            fullName: adminName.fullName,
             role: 'admin',
             university: 'UNIMOVE-DZ',
             institution: 'UNIMOVE-DZ',
@@ -247,7 +254,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             status: 'approved',
             isApproved: true,
             adminNote: 'Demo admin user',
-            cardNumber: 'UNIMOVE-ADMIN-0001',
+            cardNumber: adminCard,
             qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${adminPhone}`,
             subscription: 'monthly',
             validUntil: '',

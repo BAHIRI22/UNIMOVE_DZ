@@ -403,4 +403,11 @@
   .gpu-accelerated {
     transform: translateZ(0);
   }
+
+  /* Style native date & time picker indicators to be bright green and clearly visible on dark backgrounds */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(118deg) brightness(118%) contrast(119%) drop-shadow(0 0 4px rgba(74, 222, 128, 0.6));
+    cursor: pointer;
+  }
 }

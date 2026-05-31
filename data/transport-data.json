@@ -2,7 +2,6 @@
   "missionTypes": [
     { "id": "transport_universitaire_quotidien", "nameFr": "Transport universitaire quotidien", "nameAr": "النقل الجامعي اليومي" },
     { "id": "transport_entre_universites", "nameFr": "Transport entre universités", "nameAr": "النقل بين الجامعات" },
-    { "id": "transport_stage", "nameFr": "Transport vers stages", "nameAr": "النقل نحو التربصات" },
     { "id": "transport_hospitalier", "nameFr": "Transport hospitalier", "nameAr": "النقل نحو المستشفيات" },
     { "id": "transport_aeroport", "nameFr": "Transport vers aéroport", "nameAr": "النقل نحو المطارات" },
     { "id": "transport_port", "nameFr": "Transport vers port", "nameAr": "النقل نحو الموانئ" },

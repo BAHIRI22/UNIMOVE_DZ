@@ -231,8 +231,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 1:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Briefcase className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Briefcase className="w-7 h-7 text-emerald-400" />
               {isAr ? 'اختر نوع المهمة' : 'Choisissez le type de mission'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -241,14 +241,14 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
                   key={mt.id}
                   type="button"
                   onClick={() => setMissionType(mt.id)}
-                  className={`p-4 rounded-xl border text-right transition-all flex items-center justify-between ${
+                  className={`p-5 rounded-2xl border-2 text-right transition-all flex items-center justify-between ${
                     missionType === mt.id
-                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10'
                       : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
                   }`}
                 >
-                  <span className="text-sm">{isAr ? mt.nameAr : mt.nameFr}</span>
-                  {missionType === mt.id && <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />}
+                  <span className="text-lg md:text-xl font-bold">{isAr ? mt.nameAr : mt.nameFr}</span>
+                  {missionType === mt.id && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -258,8 +258,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Bus className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Bus className="w-7 h-7 text-emerald-400" />
               {isAr ? 'اختر طبيعة النقل' : 'Choisissez la nature du transport'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -268,14 +268,14 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
                   key={opt.value}
                   type="button"
                   onClick={() => setTransportNature(opt.value)}
-                  className={`p-4 rounded-xl border text-right transition-all flex items-center justify-between ${
+                  className={`p-5 rounded-2xl border-2 text-right transition-all flex items-center justify-between ${
                     transportNature === opt.value
-                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10'
                       : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
                   }`}
                 >
-                  <span className="text-sm">{isAr ? opt.labelAr : opt.labelFr}</span>
-                  {transportNature === opt.value && <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />}
+                  <span className="text-lg md:text-xl font-bold">{isAr ? opt.labelAr : opt.labelFr}</span>
+                  {transportNature === opt.value && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -285,17 +285,17 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 3:
         return (
           <div className="space-y-5">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Navigation className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Navigation className="w-7 h-7 text-emerald-400" />
               {isAr ? 'حدد نقطة الانطلاق' : 'Définissez le point de départ'}
             </h3>
             <div className="space-y-4">
               <div>
-                <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'الدائرة' : 'Daïra'}</Label>
+                <Label className="text-lg md:text-xl text-slate-200 font-extrabold mb-3 block">{isAr ? 'الدائرة' : 'Daïra'}</Label>
                 <select
                   value={departureDaira}
                   onChange={(e) => { setDepartureDaira(e.target.value); setDepartureCommune(''); }}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 font-semibold"
+                  className="w-full h-14 px-5 rounded-2xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-emerald-500 text-lg font-bold"
                 >
                   <option value="">{isAr ? 'اختر الدائرة...' : 'Choisir la daïra...'}</option>
                   {dairaOptions.map((d) => (
@@ -305,11 +305,11 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
               </div>
               {departureDaira && (
                 <div>
-                  <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'البلدية (اختياري)' : 'Commune (facultatif)'}</Label>
+                  <Label className="text-lg md:text-xl text-slate-200 font-extrabold mb-3 block">{isAr ? 'البلدية (اختياري)' : 'Commune (facultatif)'}</Label>
                   <select
                     value={departureCommune}
                     onChange={(e) => setDepartureCommune(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 font-semibold"
+                    className="w-full h-14 px-5 rounded-2xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-emerald-500 text-lg font-bold"
                   >
                     <option value="">{isAr ? 'اختر البلدية...' : 'Choisir la commune...'}</option>
                     {communeOptions.map((c) => (
@@ -319,16 +319,16 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
                 </div>
               )}
               <div>
-                <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'نقطة التجمع' : 'Point de rassemblement'}</Label>
+                <Label className="text-lg md:text-xl text-slate-200 font-extrabold mb-3 block">{isAr ? 'نقطة التجمع' : 'Point de rassemblement'}</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {meetingPointOptions.map((p) => (
                     <button
                       key={p.id}
                       type="button"
                       onClick={() => setMeetingPoint(p.id)}
-                      className={`p-3 rounded-xl border text-right transition-all text-sm ${
+                      className={`p-4 rounded-xl border text-right transition-all text-base md:text-lg font-bold ${
                         meetingPoint === p.id
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold'
                           : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
                       }`}
                     >
@@ -344,8 +344,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 4:
         return (
           <div className="space-y-5">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <MapPin className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <MapPin className="w-7 h-7 text-emerald-400" />
               {isAr ? 'حدد الوجهة' : 'Définissez la destination'}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
@@ -358,23 +358,23 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
                     onClick={() => { setDestinationType(cat.id); setDestinationName(''); setCustomDestination(''); }}
                     className={`p-4 rounded-xl border text-center transition-all ${
                       destinationType === cat.id
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold'
                         : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
                     }`}
                   >
                     <Icon className="w-6 h-6 mx-auto mb-2" />
-                    <span className="text-xs">{isAr ? cat.labelAr : cat.labelFr}</span>
+                    <span className="text-sm md:text-base font-bold">{isAr ? cat.labelAr : cat.labelFr}</span>
                   </button>
                 );
               })}
             </div>
             {destinationType && destinationType !== 'other' && (
               <div>
-                <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'الوجهة المحددة' : 'Destination précise'}</Label>
+                <Label className="text-lg md:text-xl text-slate-200 font-extrabold mb-3 block">{isAr ? 'الوجهة المحددة' : 'Destination précise'}</Label>
                 <select
                   value={destinationName}
                   onChange={(e) => setDestinationName(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-emerald-500 font-semibold"
+                  className="w-full h-14 px-5 rounded-2xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-emerald-500 text-lg font-bold"
                 >
                   <option value="">{isAr ? 'اختر...' : 'Choisir...'}</option>
                   {getDestinationOptions().map((d: any) => (
@@ -385,12 +385,12 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
             )}
             {destinationType === 'other' && (
               <div>
-                <Label className="text-slate-300 font-bold mb-2 block">{isAr ? 'اكتب الوجهة' : 'Saisissez la destination'}</Label>
+                <Label className="text-lg md:text-xl text-slate-200 font-extrabold mb-3 block">{isAr ? 'اكتب الوجهة' : 'Saisissez la destination'}</Label>
                 <Input
                   value={customDestination}
                   onChange={(e) => setCustomDestination(e.target.value)}
                   placeholder={isAr ? 'مثال: قصر الشباب، مركز تجاري...' : 'Ex: Palais de la culture, Centre commercial...'}
-                  className="bg-slate-900 border-white/10 text-white rounded-xl h-12"
+                  className="bg-slate-900 border-white/10 text-white rounded-2xl h-14 text-lg font-bold"
                 />
               </div>
             )}
@@ -400,15 +400,15 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 5:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Calendar className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Calendar className="w-7 h-7 text-green-400 drop-shadow-[0_0_6px_rgba(74,222,128,0.8)]" />
               {isAr ? 'اختر تاريخ الرحلة' : 'Choisissez la date du trajet'}
             </h3>
             <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-slate-900 border-white/10 text-white rounded-xl h-14 text-lg"
+              className="bg-slate-900 border-white/10 text-white rounded-2xl h-16 text-xl font-bold"
             />
           </div>
         );
@@ -416,15 +416,15 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 6:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Clock className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Clock className="w-7 h-7 text-green-400 drop-shadow-[0_0_6px_rgba(74,222,128,0.8)]" />
               {isAr ? 'اختر وقت الانطلاق' : 'Choisissez l\'heure de départ'}
             </h3>
             <Input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="bg-slate-900 border-white/10 text-white rounded-xl h-14 text-lg"
+              className="bg-slate-900 border-white/10 text-white rounded-2xl h-16 text-xl font-bold"
             />
           </div>
         );
@@ -432,14 +432,14 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 7:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Users className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Users className="w-7 h-7 text-emerald-400" />
               {isAr ? 'عدد المسافرين' : 'Nombre de voyageurs'}
             </h3>
             <div className="flex items-center justify-center gap-8 py-8">
-              <Button type="button" variant="outline" onClick={() => setSeats(Math.max(1, seats - 1))} className="h-14 w-14 rounded-full text-2xl">-</Button>
-              <span className="text-5xl font-black text-white">{seats}</span>
-              <Button type="button" variant="outline" onClick={() => setSeats(Math.min(60, seats + 1))} className="h-14 w-14 rounded-full text-2xl">+</Button>
+              <Button type="button" variant="outline" onClick={() => setSeats(Math.max(1, seats - 1))} className="h-16 w-16 rounded-full text-3xl font-black shadow-md">-</Button>
+              <span className="text-6xl font-black text-white">{seats}</span>
+              <Button type="button" variant="outline" onClick={() => setSeats(Math.min(60, seats + 1))} className="h-16 w-16 rounded-full text-3xl font-black shadow-md">+</Button>
             </div>
           </div>
         );
@@ -447,31 +447,31 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 8:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <ArrowRightLeft className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <ArrowRightLeft className="w-7 h-7 text-emerald-400" />
               {isAr ? 'نوع الرحلة' : 'Type de trajet'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 type="button"
                 onClick={() => setRoundTrip(false)}
-                className={`p-6 rounded-xl border text-center transition-all ${
-                  !roundTrip ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold' : 'border-white/10 text-slate-300'
+                className={`p-6 rounded-2xl border-2 text-center transition-all ${
+                  !roundTrip ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10' : 'border-white/10 text-slate-300'
                 }`}
               >
-                <MapPin className="w-8 h-8 mx-auto mb-3" />
-                <p className="text-lg">{isAr ? 'ذهاب فقط' : 'Aller simple'}</p>
+                <MapPin className="w-10 h-10 mx-auto mb-3 text-emerald-400" />
+                <p className="text-xl md:text-2xl font-bold">{isAr ? 'ذهاب فقط' : 'Aller simple'}</p>
               </button>
               <button
                 type="button"
                 onClick={() => setRoundTrip(true)}
-                className={`p-6 rounded-xl border text-center transition-all ${
-                  roundTrip ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-bold' : 'border-white/10 text-slate-300'
+                className={`p-6 rounded-2xl border-2 text-center transition-all ${
+                  roundTrip ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10' : 'border-white/10 text-slate-300'
                 }`}
               >
-                <ArrowRightLeft className="w-8 h-8 mx-auto mb-3" />
-                <p className="text-lg">{isAr ? 'ذهاب وإياب' : 'Aller-Retour'}</p>
-                <p className="text-xs mt-2 opacity-70">{isAr ? 'وفر 10% على الإياب' : 'Économisez 10% sur le retour'}</p>
+                <ArrowRightLeft className="w-10 h-10 mx-auto mb-3 text-emerald-400" />
+                <p className="text-xl md:text-2xl font-bold">{isAr ? 'ذهاب وإياب' : 'Aller-Retour'}</p>
+                <p className="text-sm mt-2 opacity-70 font-semibold">{isAr ? 'وفر 10% sur le retour' : 'Économisez 10% sur le retour'}</p>
               </button>
             </div>
           </div>
@@ -480,14 +480,14 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 9:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <Car className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <Car className="w-7 h-7 text-emerald-400" />
               {isAr ? 'اختر المركبة' : 'Choisissez le véhicule'}
             </h3>
             {pricing && (
-              <Card className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-3 mb-4">
-                <Sparkles className="w-6 h-6 text-emerald-400 animate-pulse shrink-0" />
-                <p className="text-sm font-bold text-white">
+              <Card className="p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center gap-4 mb-4">
+                <Sparkles className="w-8 h-8 text-emerald-400 animate-pulse shrink-0" />
+                <p className="text-base font-bold text-white">
                   {isAr
                     ? `المركبة المقترحة لـ ${seats} ركاب: ${recommended.labelAr}`
                     : `Véhicule recommandé pour ${seats} passagers : ${recommended.labelFr}`}
@@ -502,18 +502,18 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
                   <Card
                     key={opt.value}
                     onClick={() => setVehicleType(opt.value)}
-                    className={`p-5 border-2 rounded-2xl cursor-pointer transition-all ${
+                    className={`p-6 border-2 rounded-2xl cursor-pointer transition-all relative ${
                       isSel ? 'border-emerald-500 bg-emerald-950/20' : 'border-white/10 bg-black/40 hover:border-emerald-500/30'
                     }`}
                   >
                     {isRec && (
-                      <span className="absolute top-0 right-0 bg-emerald-500 text-black text-[9px] font-black px-2 py-1 rounded-bl-xl">
+                      <span className="absolute top-0 right-0 bg-emerald-500 text-black text-[10px] font-black px-3 py-1.5 rounded-bl-2xl">
                         {isAr ? 'موصى به' : 'Conseillé'}
                       </span>
                     )}
-                    <h4 className="font-extrabold text-white">{isAr ? opt.titleAr : opt.titleFr}</h4>
-                    <p className="text-xs text-slate-400 mt-2">{isAr ? 'القدرة:' : 'Capacité:'} {opt.capacity}</p>
-                    <p className="text-xs text-emerald-400 mt-1">{isAr ? 'الراحة:' : 'Confort:'} {opt.comfort}</p>
+                    <h4 className="font-black text-xl text-white">{isAr ? opt.titleAr : opt.titleFr}</h4>
+                    <p className="text-sm md:text-base text-slate-400 mt-2 font-medium">{isAr ? 'القدرة:' : 'Capacité:'} {opt.capacity} {isAr ? 'مقاعد' : 'places'}</p>
+                    <p className="text-sm md:text-base text-emerald-400 mt-1 font-bold">{isAr ? 'الراحة:' : 'Confort:'} {opt.comfort}</p>
                   </Card>
                 );
               })}
@@ -524,11 +524,11 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       case 10:
         return (
           <div className="space-y-5">
-            <h3 className="text-xl font-black text-emerald-400 flex items-center gap-2">
-              <CheckCircle className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
+              <CheckCircle className="w-7 h-7 text-emerald-400" />
               {isAr ? 'ملخص الرحلة والتأكيد' : 'Résumé et confirmation'}
             </h3>
-            <Card className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-3">
+            <Card className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-4">
               <SummaryRow label={isAr ? 'نوع المهمة' : 'Type de mission'} value={isAr ? transportData.missionTypes.find((m) => m.id === missionType)?.nameAr : transportData.missionTypes.find((m) => m.id === missionType)?.nameFr} />
               <SummaryRow label={isAr ? 'نقطة الانطلاق' : 'Point de départ'} value={`${selectedDaira?.nameAr || ''} — ${meetingPointOptions.find((p) => p.id === meetingPoint)?.nameAr || ''}`} />
               <SummaryRow label={isAr ? 'الوجهة' : 'Destination'} value={destinationType === 'other' ? customDestination : (isAr ? getDestinationOptions().find((d: any) => d.id === destinationName)?.nameAr : getDestinationOptions().find((d: any) => d.id === destinationName)?.nameFr) || ''} />
@@ -555,7 +555,7 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
             )}
             <Button
               onClick={handleConfirm}
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-lg rounded-2xl"
+              className="w-full h-16 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl rounded-2xl"
             >
               {isAr ? 'تأكيد الحجز' : 'Confirmer la réservation'}
             </Button>
@@ -602,8 +602,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
 
       <div className="flex justify-between gap-4">
         {step > 1 && (
-          <Button type="button" variant="outline" onClick={prevStep} className="h-12 px-6 rounded-xl">
-            <ChevronLeft className="w-5 h-5 mr-1" />
+          <Button type="button" variant="outline" onClick={prevStep} className="h-14 px-8 rounded-2xl text-lg font-bold">
+            <ChevronLeft className="w-6 h-6 mr-1" />
             {isAr ? 'السابق' : 'Précédent'}
           </Button>
         )}
@@ -612,10 +612,10 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
             type="button"
             onClick={nextStep}
             disabled={!canProceed()}
-            className="h-12 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold ml-auto"
+            className="h-14 px-8 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-black ml-auto"
           >
             {isAr ? 'التالي' : 'Suivant'}
-            <ChevronRight className="w-5 h-5 ml-1" />
+            <ChevronRight className="w-6 h-6 ml-1" />
           </Button>
         )}
       </div>
@@ -625,9 +625,9 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center py-2 border-b border-white/5">
-      <span className="text-sm text-slate-400 font-bold">{label}</span>
-      <span className="text-sm text-white font-bold">{value || '-'}</span>
+    <div className="flex justify-between items-center py-3 border-b border-white/5">
+      <span className="text-base md:text-lg text-slate-400 font-extrabold">{label}</span>
+      <span className="text-base md:text-lg text-white font-extrabold">{value || '-'}</span>
     </div>
   );
 }
