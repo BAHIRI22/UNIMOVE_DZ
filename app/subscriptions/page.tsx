@@ -87,7 +87,7 @@ const PLANS: Plan[] = [
 
 export default function SubscriptionsPage() {
   const { language, isRTL } = useLanguage();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [pendingSubId, setPendingSubId] = useState<string | null>(null);
@@ -199,22 +199,13 @@ export default function SubscriptionsPage() {
         });
       }
 
-      // 3. Update user status
-      await updateDoc(doc(db, 'users', user.id), {
+      // 3. Update user status in Firestore and sync state/localStorage
+      updateUser({
         subscriptionStatus: 'active',
         subscriptionPlan: selectedPlan.type,
         subscriptionEndDate: endDateString,
         validUntil: endDate.toLocaleDateString('fr-FR'), // Compatibilité avec les anciennes cartes
         subscription: selectedPlan.type, // Compatibilité avec MembershipCard
-      });
-
-      // 4. Sync localStorage
-      syncLocalUser({
-        subscriptionStatus: 'active',
-        subscriptionPlan: selectedPlan.type,
-        subscriptionEndDate: endDateString,
-        validUntil: endDate.toLocaleDateString('fr-FR'),
-        subscription: selectedPlan.type,
       });
 
       // 5. Create User Notification

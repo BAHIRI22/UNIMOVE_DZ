@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { ATTRIBUTIONS } from '@/constants';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Smartphone, Download } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, Smartphone, Download } from 'lucide-react';
 import { QRCodeDisplay } from './QRCodeDisplay';
 
 export function Footer() {
@@ -215,9 +215,6 @@ export function Footer() {
           <div className="flex items-center gap-5">
             <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
               <Facebook className="w-7 h-7" />
-            </a>
-            <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Twitter className="w-7 h-7" />
             </a>
             <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
               <Instagram className="w-7 h-7" />

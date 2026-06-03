@@ -2,7 +2,6 @@
 
 import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { MembershipCard } from '@/components/Dashboard/MembershipCard';
-import { ReservationsList } from '@/components/Dashboard/ReservationsList';
 import { UserBookings } from '@/components/Dashboard/UserBookings';
 import { VerificationUpload } from '@/components/Dashboard/VerificationUpload';
 import { BookingModal } from '@/components/Dashboard/BookingModal';
@@ -477,9 +476,6 @@ export default function DashboardPage() {
 
                 {/* Real bookings from Firestore */}
                 <UserBookings />
-
-                {/* Reservations */}
-                <ReservationsList />
               </div>
             </motion.div>
 

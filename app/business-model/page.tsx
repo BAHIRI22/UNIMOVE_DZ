@@ -35,7 +35,6 @@ import {
   Phone,
   Mail,
   Facebook,
-  Twitter,
   Instagram,
   Linkedin,
   Award,
@@ -135,7 +134,7 @@ export default function BusinessModelPage() {
     { icon: MessageCircle, name: language === 'ar' ? 'SMS' : 'SMS', desc: language === 'ar' ? 'نص عربي صحيح' : 'Alertes instantanées' },
     { icon: Mail, name: language === 'ar' ? 'البريد الإلكتروني' : 'Email', desc: language === 'ar' ? 'اتصال رسمي' : 'Communication formelle' },
     { icon: MessageCircle, name: language === 'ar' ? 'WhatsApp' : 'WhatsApp', desc: language === 'ar' ? 'محادثة سريعة' : 'Conversation rapide' },
-    { icon: Facebook, name: language === 'ar' ? 'الشبكات الاجتماعية' : 'Réseaux sociaux', desc: language === 'ar' ? 'Facebook, Instagram, Twitter' : 'Facebook, Instagram, Twitter' },
+    { icon: Facebook, name: language === 'ar' ? 'الشبكات الاجتماعية' : 'Réseaux sociaux', desc: language === 'ar' ? 'Facebook, Instagram, X' : 'Facebook, Instagram, X' },
     { icon: GraduationCap, name: language === 'ar' ? 'حملات جامعية' : 'Campagnes universitaires', desc: language === 'ar' ? 'ترويج الحرم الجامعي' : 'Promotion campus' },
     { icon: Building2, name: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', desc: language === 'ar' ? 'تكامل مؤسسي' : 'Intégration institutionnelle' },
   ];

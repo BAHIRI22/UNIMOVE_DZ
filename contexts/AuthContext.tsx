@@ -85,6 +85,9 @@ export interface User {
   validUntil: string;
   preferredRoute: string;
   documents?: string[];
+  subscriptionStatus?: 'active' | 'inactive';
+  subscriptionPlan?: string;
+  subscriptionEndDate?: string;
   createdAt: string;
   updatedAt?: string;
   isApproved?: boolean;
@@ -143,6 +146,9 @@ const normalizeStoredUser = (data: any, firebaseUser?: FirebaseUser): User => ({
   validUntil: data.validUntil || '',
   preferredRoute: data.preferredRoute || '',
   documents: data.documents || [],
+  subscriptionStatus: data.subscriptionStatus || 'inactive',
+  subscriptionPlan: data.subscriptionPlan || '',
+  subscriptionEndDate: data.subscriptionEndDate || '',
   createdAt: data.createdAt || new Date().toISOString(),
   updatedAt: data.updatedAt || new Date().toISOString(),
   isApproved: data.isApproved ?? (data.verified === true),
@@ -548,10 +554,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     const updatedUser = normalizeStoredUser({ ...user, ...userData, updatedAt: new Date().toISOString() }, user.firebaseUser);
     setUser(updatedUser);
-    if (updatedUser.phoneNumber) {
-      localStorage.setItem(`user_${updatedUser.phoneNumber}`, JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
-      updateDoc(doc(db, 'users', updatedUser.id), { ...userData, updatedAt: updatedUser.updatedAt }).catch(console.error);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('unimove_current_user', JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
+      if (updatedUser.phoneNumber) {
+        localStorage.setItem(`user_${updatedUser.phoneNumber}`, JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
+      }
+      if (updatedUser.phone && updatedUser.phone !== updatedUser.phoneNumber) {
+        localStorage.setItem(`user_${updatedUser.phone}`, JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
+      }
     }
+    updateDoc(doc(db, 'users', updatedUser.id), { ...userData, updatedAt: updatedUser.updatedAt }).catch(console.error);
   };
 
   return (
