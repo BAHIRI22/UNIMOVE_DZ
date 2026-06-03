@@ -7,13 +7,40 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, Smartphone, Download } from 'lucide-react';
 import { QRCodeDisplay } from './QRCodeDisplay';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
+interface ContactLinks {
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  x?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+}
 
 export function Footer() {
   const { language } = useLanguage();
   const [mounted, setMounted] = useState(false);
+  const [contactLinks, setContactLinks] = useState<ContactLinks>({
+    email: 'support@unimove-dz.dz',
+    phone: '+213 (0) 55 70 77 069',
+  });
 
   useEffect(() => {
     setMounted(true);
+    const fetchLinks = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'contactLinks'));
+        if (snap.exists()) {
+          setContactLinks((prev) => ({ ...prev, ...snap.data() }));
+        }
+      } catch (e) {
+        console.error('[Footer] Error fetching contact links:', e);
+      }
+    };
+    fetchLinks();
   }, []);
 
   return (
@@ -65,18 +92,22 @@ export function Footer() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-xl text-emerald-300 mb-8">
-              <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
-                <Mail className="w-6 h-6" />
-              </div>
-              <span className="font-medium">support@unimove-dz.dz</span>
-            </div>
-            <div className="flex items-center gap-4 text-xl text-emerald-300">
-              <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
-                <Phone className="w-6 h-6" />
-              </div>
-              <span className="font-medium">+213 (0) 55 70 77 069</span>
-            </div>
+            {contactLinks.email && (
+              <a href={`mailto:${contactLinks.email}`} className="flex items-center gap-4 text-xl text-emerald-300 mb-8 hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <span className="font-medium">{contactLinks.email}</span>
+              </a>
+            )}
+            {contactLinks.phone && (
+              <a href={`tel:${contactLinks.phone.replace(/\s/g, '')}`} className="flex items-center gap-4 text-xl text-emerald-300 hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <span className="font-medium">{contactLinks.phone}</span>
+              </a>
+            )}
 
             {/* PWA QR Install */}
             <div className="mt-8 p-5 rounded-2xl bg-white/5 border border-white/10">
@@ -213,15 +244,26 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-10">
           {/* Social Links */}
           <div className="flex items-center gap-5">
-            <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Facebook className="w-7 h-7" />
-            </a>
-            <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Instagram className="w-7 h-7" />
-            </a>
-            <a href="#" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Linkedin className="w-7 h-7" />
-            </a>
+            {contactLinks.facebook && (
+              <a href={contactLinks.facebook} target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                <Facebook className="w-7 h-7" />
+              </a>
+            )}
+            {contactLinks.instagram && (
+              <a href={contactLinks.instagram} target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                <Instagram className="w-7 h-7" />
+              </a>
+            )}
+            {contactLinks.linkedin && (
+              <a href={contactLinks.linkedin} target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                <Linkedin className="w-7 h-7" />
+              </a>
+            )}
+            {contactLinks.x && (
+              <a href={contactLinks.x} target="_blank" rel="noopener noreferrer" className="w-14 h-14 bg-white/10 hover:bg-emerald-500 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+            )}
           </div>
 
           {/* Copyright */}

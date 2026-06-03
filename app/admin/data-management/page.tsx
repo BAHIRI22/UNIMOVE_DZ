@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
 import transportData from '@/data/transport-data.json';
 import {
   University, Building2, Home, Hospital, Plane, Ship,
   TrainFront, MapPin, Landmark, Bus, Car, DollarSign,
-  ChevronLeft, Plus, Edit3, Trash2, Save, X
+  ChevronLeft, Plus, Edit3, Trash2, Save, X, Link2, Mail, Phone, Globe
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const CATEGORIES = [
   { id: 'universities', labelAr: 'الجامعات', labelFr: 'Universités', icon: University },
@@ -24,6 +26,7 @@ const CATEGORIES = [
   { id: 'missionTypes', labelAr: 'أنواع المهمات', labelFr: 'Types de missions', icon: Bus },
   { id: 'transportNatures', labelAr: 'طبيعة النقل', labelFr: 'Nature du transport', icon: Car },
   { id: 'pricingRules', labelAr: 'قواعد التسعير', labelFr: 'Règles de tarification', icon: DollarSign },
+  { id: 'contactLinks', labelAr: 'روابط التواصل', labelFr: 'Liens de contact', icon: Link2 },
 ];
 
 export default function DataManagementPage() {
@@ -33,6 +36,34 @@ export default function DataManagementPage() {
   const [activeCategory, setActiveCategory] = useState('universities');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<any>({});
+
+  const defaultContactLinks = {
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    x: '',
+    email: 'support@unimove-dz.dz',
+    phone: '+213 (0) 55 70 77 069',
+    website: '',
+  };
+
+  const [contactLinks, setContactLinks] = useState(defaultContactLinks);
+  const [contactLinksLoading, setContactLinksLoading] = useState(false);
+  const [contactLinksSaved, setContactLinksSaved] = useState(false);
+
+  useEffect(() => {
+    const fetchContactLinks = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'contactLinks'));
+        if (snap.exists()) {
+          setContactLinks({ ...defaultContactLinks, ...snap.data() });
+        }
+      } catch (e) {
+        console.error('[DataManagement] Error fetching contact links:', e);
+      }
+    };
+    fetchContactLinks();
+  }, []);
 
   const label = (fr: string, ar: string) => (isAr ? ar : fr);
 
@@ -64,6 +95,86 @@ export default function DataManagementPage() {
     setEditingId(newId);
     setEditForm({ id: newId, nameFr: '', nameAr: '' });
   };
+
+  const handleContactLinkChange = (field: string, value: string) => {
+    setContactLinks((prev) => ({ ...prev, [field]: value }));
+    setContactLinksSaved(false);
+  };
+
+  const handleSaveContactLinks = async () => {
+    setContactLinksLoading(true);
+    try {
+      await setDoc(doc(db, 'settings', 'contactLinks'), {
+        ...contactLinks,
+        updatedAt: serverTimestamp(),
+      });
+      setContactLinksSaved(true);
+      setTimeout(() => setContactLinksSaved(false), 3000);
+    } catch (e) {
+      console.error('[DataManagement] Error saving contact links:', e);
+      alert(isAr ? 'حدث خطأ أثناء الحفظ' : 'Erreur lors de l\'enregistrement');
+    } finally {
+      setContactLinksLoading(false);
+    }
+  };
+
+  const renderContactLinks = () => (
+    <Card className="p-6 md:p-8 bg-slate-900 border border-emerald-500/20 rounded-2xl">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <Link2 className="w-5 h-5 text-emerald-400" />
+        </div>
+        <div>
+          <h3 className="text-xl font-black text-emerald-400">{label('Liens de contact & réseaux sociaux', 'روابط التواصل والشبكات الاجتماعية')}</h3>
+          <p className="text-sm text-slate-400">{label('Ces liens apparaissent dans le pied de page du site', 'تظهر هذه الروابط في تذييل الموقع')}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          { field: 'facebook', labelFr: 'Facebook', labelAr: 'فيسبوك', icon: Link2, placeholder: 'https://facebook.com/...' },
+          { field: 'instagram', labelFr: 'Instagram', labelAr: 'إنستغرام', icon: Link2, placeholder: 'https://instagram.com/...' },
+          { field: 'linkedin', labelFr: 'LinkedIn', labelAr: 'لينكدإن', icon: Link2, placeholder: 'https://linkedin.com/...' },
+          { field: 'x', labelFr: 'X (Twitter)', labelAr: 'X (تويتر)', icon: Link2, placeholder: 'https://x.com/...' },
+          { field: 'email', labelFr: 'Email', labelAr: 'البريد الإلكتروني', icon: Mail, placeholder: 'contact@unimove-dz.dz' },
+          { field: 'phone', labelFr: 'Téléphone', labelAr: 'الهاتف', icon: Phone, placeholder: '+213 (0) 55 70 77 069' },
+          { field: 'website', labelFr: 'Site web', labelAr: 'الموقع الإلكتروني', icon: Globe, placeholder: 'https://unimove-dz.vercel.app' },
+        ].map((item) => (
+          <div key={item.field} className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-2">
+            <div className="flex items-center gap-2 text-emerald-300 text-sm font-bold">
+              <item.icon className="w-4 h-4" />
+              <span>{isAr ? item.labelAr : item.labelFr}</span>
+            </div>
+            <input
+              type="text"
+              value={(contactLinks as any)[item.field] || ''}
+              onChange={(e) => handleContactLinkChange(item.field, e.target.value)}
+              placeholder={item.placeholder}
+              className="bg-slate-800 border border-emerald-500/30 rounded-lg px-3 py-2 text-white w-full text-sm placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-3 mt-6">
+        <button
+          onClick={handleSaveContactLinks}
+          disabled={contactLinksLoading}
+          className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-800 disabled:opacity-60 rounded-xl font-bold transition-colors"
+        >
+          {contactLinksLoading ? (
+            <span className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
+          {label('Enregistrer', 'حفظ')}
+        </button>
+        {contactLinksSaved && (
+          <span className="text-emerald-400 font-bold text-sm">{label('Enregistré !', 'تم الحفظ!')}</span>
+        )}
+      </div>
+    </Card>
+  );
 
   const renderPricingRules = () => (
     <Card className="p-6 bg-slate-900 border border-emerald-500/20 rounded-2xl">
@@ -126,6 +237,8 @@ export default function DataManagementPage() {
       {/* Content */}
       {activeCategory === 'pricingRules' ? (
         renderPricingRules()
+      ) : activeCategory === 'contactLinks' ? (
+        renderContactLinks()
       ) : (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
