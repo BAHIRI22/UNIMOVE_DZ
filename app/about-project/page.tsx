@@ -2,8 +2,10 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   AlertTriangle,
   BarChart3,
@@ -25,6 +27,7 @@ import {
 
 export default function AboutProjectPage() {
   const { language } = useLanguage();
+  const router = useRouter();
 
   const sections = [
     {
@@ -86,6 +89,19 @@ export default function AboutProjectPage() {
         </div>
       </div>
       <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <div
+          className={`absolute z-10 ${language === 'ar' ? 'top-6 right-6 md:top-8 md:right-8' : 'top-6 left-6 md:top-8 md:left-8'}`}
+        >
+          <Button
+            onClick={() => router.back()}
+            variant="ghost"
+            className="h-11 rounded-xl font-bold gap-2 text-slate-900 bg-white/70 hover:bg-white/80 border border-white/60"
+          >
+            {/* Using Unicode arrow to avoid new icon imports */}
+            <span className={`${language === 'ar' ? 'rotate-180' : ''}`}>←</span>
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
+        </div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.14),transparent_40%)]" />
         <div className="relative mx-auto max-w-7xl text-center">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}>

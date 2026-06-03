@@ -45,10 +45,7 @@ export function MembershipCard() {
     );
   }
 
-  const isSubscriptionActive =
-    user.subscriptionStatus === 'active' &&
-    user.subscriptionEndDate &&
-    new Date(user.subscriptionEndDate) > new Date();
+  const isSubscriptionActive = user.subscriptionStatus === 'active';
 
   if (!isSubscriptionActive) {
     return (

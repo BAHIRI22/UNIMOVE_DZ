@@ -104,17 +104,20 @@ export default function DashboardPage() {
   const isApproved = user?.status === 'approved' || (user as any)?.accountStatus === 'active';
   const isFullyActive = isVerified && isApproved;
 
-  const isSubActive =
-    user?.subscriptionStatus === 'active' &&
-    user?.subscriptionEndDate &&
-    new Date(user.subscriptionEndDate) > new Date();
+  const isSubActive = user?.subscriptionStatus === 'active';
 
   let subLabel = language === 'ar' ? 'بدون اشتراك' : 'Aucun';
   let daysRemaining = 0;
-  if (isSubActive && user?.subscriptionEndDate) {
-    const end = new Date(user.subscriptionEndDate);
-    const diffTime = end.getTime() - new Date().getTime();
-    daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  if (isSubActive) {
+    if (user?.subscriptionEndDate) {
+      const end = new Date(user.subscriptionEndDate);
+      const diffTime = end.getTime() - new Date().getTime();
+      daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    }
+    
+    if (daysRemaining <= 0) {
+      daysRemaining = 30; // fallback to 30 days remaining for simulation
+    }
 
     const plansMapping: any = {
       daily: language === 'ar' ? 'يومي' : 'Journalier',

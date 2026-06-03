@@ -238,11 +238,12 @@ export default function DriverDashboardPage() {
         const uData = uDoc.data() as any;
 
         const isVerified = uData.verified === true || uData.verificationStatus === 'approved';
-        const isSubscribed = uData.subscriptionStatus === 'active' && uData.subscriptionEndDate && new Date(uData.subscriptionEndDate) > new Date();
+        const isSubscribed = uData.subscriptionStatus === 'active';
 
         if (isVerified && isSubscribed) {
-          const successMsgAr = `البطاقة صالحة! المشترك: ${uData.fullName}. الاشتراك نشط لغاية ${new Date(uData.subscriptionEndDate).toLocaleDateString('ar-DZ')}.`;
-          const successMsgFr = `Carte valide ! Passager : ${uData.fullName}. Abonnement actif jusqu'au ${new Date(uData.subscriptionEndDate).toLocaleDateString('fr-FR')}.`;
+          const endDate = uData.subscriptionEndDate ? new Date(uData.subscriptionEndDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+          const successMsgAr = `البطاقة صالحة! المشترك: ${uData.fullName}. الاشتراك نشط لغاية ${endDate.toLocaleDateString('ar-DZ')}.`;
+          const successMsgFr = `Carte valide ! Passager : ${uData.fullName}. Abonnement actif jusqu'au ${endDate.toLocaleDateString('fr-FR')}.`;
 
           setScanResult({
             success: true,

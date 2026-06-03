@@ -77,7 +77,24 @@ export default function QAChecklistPage() {
     >
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30, flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30, flexWrap: 'wrap', gap: 16, position: 'relative' }}>
+          <button
+            onClick={() => router.back()}
+            style={{
+              position: 'absolute',
+              top: -8,
+              [isRTL ? 'right' : 'left']: 0,
+              padding: '8px 12px',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(255,255,255,0.08)',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 800,
+            } as React.CSSProperties}
+          >
+            {isRTL ? '← رجوع' : '← Retour'}
+          </button>
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, marginBottom: 6 }}>
               {isRTL ? 'قائمة فحص الجودة' : 'Checklist QA'}

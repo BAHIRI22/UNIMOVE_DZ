@@ -3,6 +3,8 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import {
   ArrowUpRight,
   BarChart3,
@@ -36,6 +38,7 @@ import {
 
 export default function InvestorsPage() {
   const { language } = useLanguage();
+  const router = useRouter();
 
   const startupKpis = [
     { icon: Users, value: '+10K', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés', trend: '+45%' },
@@ -108,13 +111,23 @@ export default function InvestorsPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
-      <section className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+      <section className="relative px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.26),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.20),transparent_42%)]" />
         <div className="relative mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-black text-emerald-100 backdrop-blur-xl">
-              <Rocket className="h-4 w-4" />
-              {language === 'ar' ? 'Investor Pitch Experience' : 'Investor Pitch Experience'}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-black text-emerald-100 backdrop-blur-xl">
+                <Rocket className="h-4 w-4" />
+                {language === 'ar' ? 'Investor Pitch Experience' : 'Investor Pitch Experience'}
+              </div>
+              <Button
+                onClick={() => router.back()}
+                variant="outline"
+                className="h-11 px-5 rounded-2xl font-bold gap-2 text-white bg-slate-900 hover:bg-slate-800 border border-white/10 shrink-0 w-fit"
+              >
+                <span className={`${language === 'ar' ? 'rotate-180' : ''}`}>←</span>
+                {language === 'ar' ? 'رجوع' : 'Retour'}
+              </Button>
             </div>
             <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl">
               {language === 'ar'

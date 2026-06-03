@@ -9,6 +9,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Printer, Download, CheckCircle, QrCode } from 'lucide-react';
+import { QRCodeDisplay } from '@/components/QRCodeDisplay';
 
 interface Payment {
   id: string;
@@ -163,11 +164,13 @@ export default function ReceiptPage() {
             ))}
           </div>
 
-          {/* QR placeholder */}
+          {/* Real QR Code */}
           <div className="mt-10 flex flex-col items-center gap-3">
-            <div className="w-32 h-32 bg-white rounded-2xl p-3 flex items-center justify-center">
-              <QrCode className="w-24 h-24 text-slate-900" />
-            </div>
+            <QRCodeDisplay
+              value={payment.receiptNumber || payment.id}
+              size={120}
+              className="w-32 h-32 p-3 bg-white rounded-2xl flex items-center justify-center"
+            />
             <p className="text-xs text-slate-500 font-mono">{payment.receiptNumber || payment.id}</p>
           </div>
 

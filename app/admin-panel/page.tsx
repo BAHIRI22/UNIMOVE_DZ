@@ -1354,14 +1354,31 @@ export default function AdminPanelPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <div className="admin-logo" style={{ position: 'relative', width: 105, height: 105, flexShrink: 0 }}>
-              <img src="/images/udl-logo.jpeg" alt="UDL" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+          {/* Brand Logos */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+            {/* App Logo */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+              <div className="admin-logo" style={{ position: 'relative', width: 105, height: 105, flexShrink: 0 }}>
+                <img src="/images/logo.png?v=logo-clean" alt="UNIMOVE-DZ" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              </div>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#10b981', textAlign: 'center', lineHeight: 1.3 }}>
+                UNIMOVE-DZ
+              </p>
             </div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#10b981', textAlign: 'center', lineHeight: 1.3, maxWidth: 100 }}>
-              {language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djillali Liabès'}
-            </p>
+
+            {/* Vertical Divider */}
+            <div style={{ height: 60, borderLeft: '1px solid rgba(255,255,255,0.15)' }} />
+
+            {/* University Logo */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+              <div className="admin-logo" style={{ position: 'relative', width: 105, height: 105, flexShrink: 0 }}>
+                <img src="/images/udl-logo.jpeg" alt="UDL" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+              </div>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#10b981', textAlign: 'center', lineHeight: 1.3, maxWidth: 100 }}>
+                {language === 'ar' ? 'جامعة الجيلالي اليابس' : 'Université Djillali Liabès'}
+              </p>
+            </div>
           </div>
           <div>
             <h1 className="admin-title" style={{ fontSize: 48, fontWeight: 900, marginBottom: 10 }}>لوحة الإدارة</h1>

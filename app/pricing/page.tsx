@@ -22,9 +22,11 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function PricingPage() {
   const { language } = useLanguage();
+  const router = useRouter();
 
   const pricingPlans = [
     {
@@ -150,6 +152,18 @@ export default function PricingPage() {
         className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white py-24 md:py-32"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <div
+          className={`absolute z-10 ${language === 'ar' ? 'top-6 right-6 md:top-8 md:right-8' : 'top-6 left-6 md:top-8 md:left-8'}`}
+        >
+          <Button
+            onClick={() => router.back()}
+            variant="ghost"
+            className="h-11 rounded-xl font-bold gap-2 text-white bg-white/10 hover:bg-white/20 border border-white/20"
+          >
+            <span className={`${language === 'ar' ? 'rotate-180' : ''}`}>←</span>
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
+        </div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
         

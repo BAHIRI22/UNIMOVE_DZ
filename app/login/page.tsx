@@ -149,7 +149,7 @@ export default function LoginPage() {
                   </p>
                   <a
                     href="/register"
-                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25 text-sm"
+                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25 text-sm blink-account"
                   >
                     {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
                   </a>
@@ -174,16 +174,18 @@ export default function LoginPage() {
                     playsInline
                     preload="auto"
                     src="/videos/UNIMOVEDZ.mp4"
-                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                     onLoadedData={(e) => console.log('[Login] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
-                    onError={(e) => console.error('[Login] Video error', e)}
+                    onError={(e) => {
+                      console.warn('[Login] Video load error/warning:', e);
+                    }}
                   />
                   
                   {/* Cinematic Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/50 to-transparent z-10" />
                   
                   {/* Content Overlay */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -311,12 +313,14 @@ export default function LoginPage() {
                     playsInline
                     preload="auto"
                     src="/videos/UNIMOVEDZ.mp4"
-                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                     onLoadedData={(e) => console.log('[Login2] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
-                    onError={(e) => console.error('[Login2] Video error', e)}
+                    onError={(e) => {
+                      console.warn('[Login2] Video load error/warning:', e);
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/50 to-transparent z-10" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="relative w-[92px] h-[92px] flex-shrink-0">
                         <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
@@ -387,7 +391,7 @@ export default function LoginPage() {
                   </p>
                   <a
                     href="/register"
-                    className="inline-block w-full text-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25"
+                    className="inline-block w-full text-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/25 blink-account"
                   >
                     {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
                   </a>
@@ -438,12 +442,12 @@ export default function LoginPage() {
                     playsInline
                     preload="auto"
                     src="/videos/UNIMOVEDZ.mp4"
-                    className="absolute inset-0 w-full h-full object-cover z-10"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                     onLoadedData={(e) => console.log('[Login3] Video loaded', e.currentTarget.videoWidth, e.currentTarget.videoHeight)}
-                    onError={(e) => console.error('[Login3] Video error', e)}
+                    onError={(e) => console.warn('[Login3] Video error', e)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/40 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/50 to-transparent z-10" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-5 z-20">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="relative w-[73px] h-[73px] flex-shrink-0">
                         <Image src="/images/udl-logo.jpeg" alt="UDL" fill className="object-contain rounded-md" />
@@ -514,7 +518,7 @@ export default function LoginPage() {
                   </p>
                   <a
                     href="/register"
-                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all text-sm"
+                    className="inline-block w-full text-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium rounded-xl transition-all text-sm blink-account"
                   >
                     {language === 'ar' ? 'إنشاء حساب جديد' : 'Créer un compte'}
                   </a>

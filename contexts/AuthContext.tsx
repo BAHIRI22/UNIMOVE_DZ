@@ -437,6 +437,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (user?.id) {
+      const sessionKey = 'unimove_welcome_played';
+      if (typeof window !== 'undefined' && !sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, 'true');
+        import('@/lib/sound').then(({ sound }) => {
+          sound.playWelcome();
+        });
+      }
+    }
+  }, [user?.id]);
+
   const loginWithFirebase = async (firebaseUser: FirebaseUser, userData?: Partial<User>) => {
     setIsLoading(true);
     try {
@@ -449,6 +461,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem('unimove_current_phone', phoneNumber);
           localStorage.setItem('unimove_current_user', JSON.stringify(existingUser));
         }
+        // Gentle success chime on successful login
+        if (typeof window !== 'undefined') {
+          import('@/lib/sound').then(({ sound }) => sound.playSuccess()).catch(() => {});
+        }
         return hydratedUser;
       }
       if (userData) {
@@ -457,9 +473,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem('unimove_current_phone', phoneNumber);
           localStorage.setItem('unimove_current_user', JSON.stringify(newUser));
         }
+        // Success sound for first-time account creation
+        if (typeof window !== 'undefined') {
+          import('@/lib/sound').then(({ sound }) => sound.playSuccess()).catch(() => {});
+        }
         return newUser;
       }
       setUser(null);
+      // Error tone when authentication could not resolve a user
+      if (typeof window !== 'undefined') {
+        import('@/lib/sound').then(({ sound }) => sound.playError()).catch(() => {});
+      }
       return null;
     } finally {
       setIsLoading(false);
@@ -493,6 +517,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('unimove_current_user', JSON.stringify({ ...newUser, firebaseUser: undefined }));
     }
     setUser(newUser);
+    // Optional soft welcome for successful account creation path
+    if (typeof window !== 'undefined') {
+      import('@/lib/sound').then(({ sound }) => sound.playSuccess()).catch(() => {});
+    }
     return newUser;
   };
 

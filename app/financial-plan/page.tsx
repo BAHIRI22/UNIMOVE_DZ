@@ -20,12 +20,16 @@ import {
   Activity,
   Zap,
   Shield,
-  Clock
+  Clock,
+  ChevronLeft
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function FinancialPlanPage() {
   const { language } = useLanguage();
+  const router = useRouter();
 
   const kpis = [
     { 
@@ -63,14 +67,14 @@ export default function FinancialPlanPage() {
   ];
 
   const revenueProjections = [
-    { month: language === 'ar' ? 'يناير' : 'Jan', value: 800000 },
-    { month: language === 'ar' ? 'فبراير' : 'Fév', value: 950000 },
+    { month: language === 'ar' ? 'جانفي' : 'Jan', value: 800000 },
+    { month: language === 'ar' ? 'فيفري' : 'Fév', value: 950000 },
     { month: language === 'ar' ? 'مارس' : 'Mar', value: 1100000 },
-    { month: language === 'ar' ? 'أبريل' : 'Avr', value: 1050000 },
-    { month: language === 'ar' ? 'مايو' : 'Mai', value: 1200000 },
-    { month: language === 'ar' ? 'يونيو' : 'Juin', value: 1350000 },
-    { month: language === 'ar' ? 'يوليو' : 'Juil', value: 1250000 },
-    { month: language === 'ar' ? 'أغسطس' : 'Août', value: 1150000 },
+    { month: language === 'ar' ? 'افريل' : 'Avr', value: 1050000 },
+    { month: language === 'ar' ? 'ماي' : 'Mai', value: 1200000 },
+    { month: language === 'ar' ? 'جوان' : 'Juin', value: 1350000 },
+    { month: language === 'ar' ? 'جويلية' : 'Juil', value: 1250000 },
+    { month: language === 'ar' ? 'أوت' : 'Août', value: 1150000 },
     { month: language === 'ar' ? 'سبتمبر' : 'Sep', value: 1300000 },
     { month: language === 'ar' ? 'أكتوبر' : 'Oct', value: 1450000 },
     { month: language === 'ar' ? 'نوفمبر' : 'Nov', value: 1400000 },
@@ -156,6 +160,8 @@ export default function FinancialPlanPage() {
   ];
 
   const maxValue = Math.max(...revenueProjections.map(r => r.value));
+  const formatDA = (v: number) =>
+    new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'fr-DZ', { maximumFractionDigits: 0 }).format(v) + ' DA';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-blue-50/20">
@@ -166,6 +172,18 @@ export default function FinancialPlanPage() {
         className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white py-24 md:py-32"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <div
+          className={`absolute z-10 ${language === 'ar' ? 'top-6 right-6 md:top-8 md:right-8' : 'top-6 left-6 md:top-8 md:left-8'}`}
+        >
+          <Button
+            onClick={() => router.back()}
+            variant="ghost"
+            className="h-11 rounded-xl font-bold gap-2 text-white bg-white/10 hover:bg-white/20 border border-white/20"
+          >
+            <ChevronLeft className={`h-5 w-5 ${language === 'ar' ? 'rotate-180' : ''}`} />
+            {language === 'ar' ? 'رجوع' : 'Retour'}
+          </Button>
+        </div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
         
@@ -247,17 +265,37 @@ export default function FinancialPlanPage() {
             
             <div className="relative h-64 md:h-80">
               <div className="absolute inset-0 flex items-end justify-between gap-2 md:gap-4">
-                {revenueProjections.map((item, index) => (
-                  <div key={index} className="flex h-full flex-1 flex-col items-center justify-end gap-3">
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${(item.value / maxValue) * 100}%` }}
-                      transition={{ delay: 1.1 + index * 0.05 }}
-                      className="w-full rounded-t-2xl bg-gradient-to-t from-emerald-600 to-emerald-300 shadow-lg shadow-emerald-500/20"
-                    />
-                    <span className="text-xs font-bold text-slate-600">{item.month}</span>
-                  </div>
-                ))}
+                {revenueProjections.map((item, index) => {
+                  const prev = index > 0 ? revenueProjections[index - 1].value : null;
+                  const deltaPct = prev ? Math.round(((item.value - prev) / prev) * 100) : null;
+                  return (
+                    <div key={index} className="group relative flex h-full flex-1 flex-col items-center justify-end gap-2">
+                      {/* Hover tooltip */}
+                      <div className="pointer-events-none absolute bottom-full mb-2 hidden rounded-lg bg-slate-900/90 px-2 py-1 text-[10px] font-bold text-white shadow-lg group-hover:block">
+                        {item.month}: {formatDA(item.value)}
+                      </div>
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${(item.value / maxValue) * 100}%` }}
+                        transition={{ delay: 1.1 + index * 0.05 }}
+                        className="relative w-full rounded-t-2xl bg-gradient-to-t from-emerald-600 to-emerald-300 shadow-lg shadow-emerald-500/20"
+                        title={`${item.month}: ${formatDA(item.value)}`}
+                        aria-label={`${item.month}: ${formatDA(item.value)}`}
+                      >
+                        {/* Value label inside bar */}
+                        <span className="absolute top-1 left-1/2 -translate-x-1/2 text-[10px] font-extrabold text-white drop-shadow">
+                          {formatDA(item.value)}
+                        </span>
+                      </motion.div>
+                      <span className="text-xs font-bold text-slate-600">{item.month}</span>
+                      {deltaPct !== null && (
+                        <span className={`text-[10px] font-bold ${deltaPct >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                          {deltaPct >= 0 ? '+' : ''}{deltaPct}%
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Card>

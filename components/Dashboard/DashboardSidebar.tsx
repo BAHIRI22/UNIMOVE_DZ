@@ -86,25 +86,57 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-slate-200">
-            {!isCollapsed && (
+            {!isCollapsed ? (
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center gap-4"
               >
-                <motion.div
-                  className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Bus className="w-7 h-7 text-emerald-600" />
-                </motion.div>
+                {role === 'admin' ? (
+                  <motion.div
+                    className="w-12 h-12 flex-shrink-0"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <img
+                      src="/images/logo.png?v=logo-clean"
+                      alt="UNIMOVE-DZ Logo"
+                      className="w-full h-full object-contain"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Bus className="w-7 h-7 text-emerald-600" />
+                  </motion.div>
+                )}
                 <div>
                   <h1 className="font-black text-lg text-gray-900">UNIMOVE-DZ</h1>
                   <p className="text-sm text-gray-500 font-medium">
                     {language === 'ar' ? 'نقل جامعي ذكي' : 'Transport universitaire intelligent'}
                   </p>
                 </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                className="mx-auto flex-shrink-0"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
+                {role === 'admin' ? (
+                  <img
+                    src="/images/logo.png?v=logo-clean"
+                    alt="UNIMOVE-DZ Logo"
+                    className="w-10 h-10 object-contain"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
+                    <Bus className="w-5 h-5 text-emerald-600" />
+                  </div>
+                )}
               </motion.div>
             )}
             <motion.button

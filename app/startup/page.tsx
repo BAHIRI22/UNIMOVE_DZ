@@ -2,6 +2,8 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -26,6 +28,7 @@ import {
 
 export default function StartupPage() {
   const { language } = useLanguage();
+  const router = useRouter();
 
   const pillars = [
     {
@@ -96,9 +99,19 @@ export default function StartupPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.25),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.18),transparent_40%)]" />
         <div className="relative mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-emerald-100 backdrop-blur-xl">
-              <Sparkles className="h-4 w-4" />
-              {language === 'ar' ? 'قصة شركة ناشئة جامعية' : 'Startup universitaire premium'}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-emerald-100 backdrop-blur-xl">
+                <Sparkles className="h-4 w-4" />
+                {language === 'ar' ? 'قصة شركة ناشئة جامعية' : 'Startup universitaire premium'}
+              </div>
+              <Button
+                onClick={() => router.back()}
+                variant="outline"
+                className="h-11 px-5 rounded-2xl font-bold gap-2 text-white bg-slate-900 hover:bg-slate-800 border border-white/10 shrink-0 w-fit"
+              >
+                <span className={`${language === 'ar' ? 'rotate-180' : ''}`}>←</span>
+                {language === 'ar' ? 'رجوع' : 'Retour'}
+              </Button>
             </div>
             <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl">
               {language === 'ar' ? 'UNIMOVE-DZ ليست مجرد نقل، إنها بنية تحتية جامعية ذكية.' : 'UNIMOVE-DZ n’est pas un simple transport, c’est une infrastructure universitaire intelligente.'}

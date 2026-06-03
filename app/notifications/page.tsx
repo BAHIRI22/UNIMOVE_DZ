@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/Dashboard/DashboardLayout';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { collection, query, where, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, deleteDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,36 +54,55 @@ export default function NotificationsPage() {
     const isAdminUser = user.role === 'admin' || user.role === 'superadmin';
     const userIdsToQuery = isAdminUser ? [user.id, 'admin'] : [user.id];
 
-    const q = query(
-      collection(db, 'notifications'),
-      where('userId', 'in', userIdsToQuery),
-      orderBy('createdAt', 'desc')
-    );
+    let unsub: (() => void) | null = null;
+    const subscribe = (ordered: boolean) => {
+      const col = collection(db, 'notifications');
+      const q = ordered
+        ? (isAdminUser
+            ? query(col, where('userId', 'in', userIdsToQuery), orderBy('createdAt', 'desc'))
+            : query(col, where('userId', '==', user.id), orderBy('createdAt', 'desc')))
+        : (isAdminUser
+            ? query(col, where('userId', 'in', userIdsToQuery))
+            : query(col, where('userId', '==', user.id)));
 
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const items: Notification[] = [];
-        snapshot.forEach((doc) => {
-          items.push({ id: doc.id, ...doc.data() } as Notification);
-        });
-        // Sort unread first, then by date desc
-        items.sort((a, b) => {
-          if (a.read === b.read) {
-            return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+      unsub = onSnapshot(
+        q,
+        (snapshot) => {
+          const raw: Notification[] = [];
+          snapshot.forEach((d) => {
+            raw.push({ id: d.id, ...(d.data() as any) } as Notification);
+          });
+          let hiddenLocal: string[] = [];
+          if (typeof window !== 'undefined') {
+            try { hiddenLocal = JSON.parse(localStorage.getItem(`hidden_notifications_${user.id}`) || '[]'); } catch {}
           }
-          return a.read ? 1 : -1;
-        });
-        setNotifications(items);
-        setLoading(false);
-      },
-      (error) => {
-        console.error('[Notifications Page] Error fetching notifications:', error);
-        setLoading(false);
-      }
-    );
+          const items = raw.filter((n: any) => (!Array.isArray((n as any).hiddenFor) || !(n as any).hiddenFor.includes(user.id)) && !hiddenLocal.includes((n as any).id));
+          items.sort((a, b) => {
+            if (a.read === b.read) {
+              return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+            }
+            return a.read ? 1 : -1;
+          });
+          setNotifications(items);
+          setLoading(false);
+        },
+        (error) => {
+          const code = (error as any)?.code || '';
+          const msg = (error as any)?.message || '';
+          if (ordered && (code === 'failed-precondition' || msg.includes('index'))) {
+            console.warn('[Notifications Page] Missing Firestore index. Falling back without orderBy(createdAt).');
+            try { unsub && unsub(); } catch {}
+            subscribe(false);
+            return;
+          }
+          console.error('[Notifications Page] Error fetching notifications:', error);
+          setLoading(false);
+        }
+      );
+    };
 
-    return () => unsubscribe();
+    subscribe(true);
+    return () => { if (unsub) unsub(); };
   }, [authLoading, user, router]);
 
   const handleMarkAsRead = async (id: string) => {
@@ -103,11 +122,33 @@ export default function NotificationsPage() {
     }
   };
 
+  const [deletingIds, setDeletingIds] = useState<string[]>([]);
   const handleDelete = async (id: string) => {
+    if (!user) return;
+    setDeletingIds((prev) => Array.from(new Set([...prev, id])));
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    const ref = doc(db, 'notifications', id);
     try {
-      await deleteDoc(doc(db, 'notifications', id));
-    } catch (e) {
-      console.error('[Notifications Page] Error deleting notification:', e);
+      await deleteDoc(ref);
+    } catch (e: any) {
+      try {
+        await updateDoc(ref, { hiddenFor: arrayUnion(user.id), read: true });
+      } catch (e2) {
+        try {
+          if (typeof window !== 'undefined') {
+            const k = `hidden_notifications_${user.id}`;
+            const arr = JSON.parse(localStorage.getItem(k) || '[]');
+            if (!Array.isArray(arr)) {
+              localStorage.setItem(k, JSON.stringify([id]));
+            } else if (!arr.includes(id)) {
+              arr.push(id);
+              localStorage.setItem(k, JSON.stringify(arr));
+            }
+          }
+        } catch {}
+      }
+    } finally {
+      setDeletingIds((prev) => prev.filter((x) => x !== id));
     }
   };
 

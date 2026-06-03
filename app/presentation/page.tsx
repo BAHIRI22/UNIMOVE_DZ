@@ -17,7 +17,17 @@ export default function PresentationPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
       <div className="max-w-6xl mx-auto p-8 space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="relative text-center space-y-4">
+          <div className={`absolute ${language === 'ar' ? 'top-0 right-0' : 'top-0 left-0'}`}>
+            <Button
+              onClick={() => router.back()}
+              variant="ghost"
+              className="h-10 rounded-xl font-bold gap-2 text-gray-900 bg-white/70 hover:bg-white/80 border border-gray-200"
+            >
+              <span className={`${language === 'ar' ? 'rotate-180' : ''}`}>←</span>
+              {language === 'ar' ? 'رجوع' : 'Retour'}
+            </Button>
+          </div>
           <div className="flex items-center justify-center gap-4">
             <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center">
               <Sparkles className="w-8 h-8 text-white" />

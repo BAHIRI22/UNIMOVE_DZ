@@ -236,30 +236,44 @@ export function calculateDynamicPricing(params: {
   subtotal = subtotal * transportNatureMultiplier;
 
   // Calculate final price with discounts
-  const discountAmount = subtotal * (totalDiscountsPercent / 100);
-  let estimatedPrice = subtotal - discountAmount;
+  let estimatedPrice = 0;
+  if (isSubscriptionActive) {
+    estimatedPrice = 0;
+    totalDiscountsPercent = 100;
+  } else {
+    const discountAmount = subtotal * (totalDiscountsPercent / 100);
+    estimatedPrice = subtotal - discountAmount;
 
-  // Minimum price restriction (100 DA)
-  if (estimatedPrice < 100) {
-    estimatedPrice = 100;
+    // Minimum price restriction (100 DA)
+    if (estimatedPrice < 100) {
+      estimatedPrice = 100;
+    }
+
+    // Round to nearest 5 DA
+    estimatedPrice = Math.round(estimatedPrice / 5) * 5;
   }
-
-  // Round to nearest 5 DA
-  estimatedPrice = Math.round(estimatedPrice / 5) * 5;
 
   // Build Arabic & French Descriptions
   const vehicleLabelAr = vehicleType === 'car' ? 'سيارة' : vehicleType === 'minibus' ? 'حافلة صغيرة' : 'حافلة كبيرة';
   const vehicleLabelFr = vehicleType === 'car' ? 'Voiture' : vehicleType === 'minibus' ? 'Mini Bus' : 'Bus';
 
-  const pricingDetailsAr = `السعر الأساسي للمسار: ${basePrice} د.ج + تكلفة المسافة (${distanceKm} كم × ${pricePerKm} د.ج) = ${basePrice + distancePrice} د.ج${isRoundTrip ? ' (× 1.8 للذهاب والإياب)' : ''}.`;
-  const pricingDetailsFr = `Prix de base : ${basePrice} DA + Distance (${distanceKm} km × ${pricePerKm} DA/km) = ${basePrice + distancePrice} DA${isRoundTrip ? ' (× 1.8 Aller-Retour)' : ''}.`;
+  const pricingDetailsAr = isSubscriptionActive
+    ? 'هذه الرحلة مشمولة بالكامل ومجانية ضمن اشتراكك النشط في UNIMOVE-DZ.'
+    : `السعر الأساسي للمسار: ${basePrice} د.ج + تكلفة المسافة (${distanceKm} كم × ${pricePerKm} د.ج) = ${basePrice + distancePrice} د.ج${isRoundTrip ? ' (× 1.8 للذهاب والإياب)' : ''}.`;
+  const pricingDetailsFr = isSubscriptionActive
+    ? 'Ce trajet est entièrement inclus et gratuit dans votre abonnement actif UNIMOVE-DZ.'
+    : `Prix de base : ${basePrice} DA + Distance (${distanceKm} km × ${pricePerKm} DA/km) = ${basePrice + distancePrice} DA${isRoundTrip ? ' (× 1.8 Aller-Retour)' : ''}.`;
 
-  const discountDetailsAr = discountDetailsListAr.length > 0
-    ? `تخفيضات مطبقة: ${discountDetailsListAr.join(' + ')} (إجمالي الخصم: -${totalDiscountsPercent}%)`
-    : 'لا توجد تخفيضات مطبقة على هذا الطلب.';
-  const discountDetailsFr = discountDetailsListFr.length > 0
-    ? `Réductions appliquées : ${discountDetailsListFr.join(' + ')} (Total : -${totalDiscountsPercent}%)`
-    : 'Aucune réduction appliquée à cette demande.';
+  const discountDetailsAr = isSubscriptionActive
+    ? 'تم تطبيق خصم الاشتراك الفعال بنسبة 100% (رحلة مجانية).'
+    : discountDetailsListAr.length > 0
+      ? `تخفيضات مطبقة: ${discountDetailsListAr.join(' + ')} (إجمالي الخصم: -${totalDiscountsPercent}%)`
+      : 'لا توجد تخفيضات مطبقة على هذا الطلب.';
+  const discountDetailsFr = isSubscriptionActive
+    ? "Remise d'abonnement actif de 100% appliquée (trajet gratuit)."
+    : discountDetailsListFr.length > 0
+      ? `Réductions appliquées : ${discountDetailsListFr.join(' + ')} (Total : -${totalDiscountsPercent}%)`
+      : 'Aucune réduction appliquée à cette demande.';
 
   return {
     estimatedDistanceKm: distanceKm,

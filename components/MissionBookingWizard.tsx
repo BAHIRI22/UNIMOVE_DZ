@@ -95,6 +95,7 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
   const [vehicleType, setVehicleType] = useState<'car' | 'minibus' | 'bus'>('bus');
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [pricing, setPricing] = useState<PricingResult | null>(null);
+  const [tripDirection, setTripDirection] = useState<'aller' | 'retour'>('aller');
 
   const isStudentVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
   const isSubscriptionActive = user?.subscriptionStatus === 'active';
@@ -176,10 +177,14 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
     const meetingLabel = meetingPointOptions.find((p) => p.id === meetingPoint)?.nameAr || meetingPoint;
     const fullDeparture = `${departureLabel} (${meetingLabel})`;
 
+    // Swap departure and destination if tripDirection is 'retour'
+    const finalDeparturePoint = tripDirection === 'aller' ? fullDeparture : finalDestination;
+    const finalDestinationPoint = tripDirection === 'aller' ? finalDestination : fullDeparture;
+
     onReservationSubmit({
       tripCategory: missionType,
-      departurePoint: fullDeparture,
-      destination: finalDestination || '',
+      departurePoint: finalDeparturePoint || '',
+      destination: finalDestinationPoint || '',
       customDestination: destinationType === 'other' ? customDestination : undefined,
       date,
       time,
@@ -522,6 +527,16 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
         );
 
       case 10:
+        const finalDest = destinationType === 'other' ? customDestination : (isAr ? getDestinationOptions().find((d: any) => d.id === destinationName)?.nameAr : getDestinationOptions().find((d: any) => d.id === destinationName)?.nameFr) || '';
+        const depLabel = selectedDaira
+          ? `${selectedDaira.nameAr}${departureCommune ? ' — ' + communeOptions.find((c) => c.id === departureCommune)?.nameAr : ''}`
+          : '';
+        const meetLabel = meetingPointOptions.find((p) => p.id === meetingPoint)?.nameAr || meetingPoint;
+        const fullDep = `${depLabel} (${meetLabel})`;
+
+        const summaryDeparture = tripDirection === 'aller' ? fullDep : finalDest;
+        const summaryDestination = tripDirection === 'aller' ? finalDest : fullDep;
+
         return (
           <div className="space-y-5">
             <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
@@ -529,9 +544,10 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
               {isAr ? 'ملخص الرحلة والتأكيد' : 'Résumé et confirmation'}
             </h3>
             <Card className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-4">
+              <SummaryRow label={isAr ? 'اتجاه الرحلة' : 'Sens du trajet'} value={tripDirection === 'aller' ? (isAr ? 'ذهاب (إلى الجامعة)' : 'Aller (Vers Université)') : (isAr ? 'عودة (إلى المنزل/البلدية)' : 'Retour (Vers Domicile)')} />
               <SummaryRow label={isAr ? 'نوع المهمة' : 'Type de mission'} value={isAr ? transportData.missionTypes.find((m) => m.id === missionType)?.nameAr : transportData.missionTypes.find((m) => m.id === missionType)?.nameFr} />
-              <SummaryRow label={isAr ? 'نقطة الانطلاق' : 'Point de départ'} value={`${selectedDaira?.nameAr || ''} — ${meetingPointOptions.find((p) => p.id === meetingPoint)?.nameAr || ''}`} />
-              <SummaryRow label={isAr ? 'الوجهة' : 'Destination'} value={destinationType === 'other' ? customDestination : (isAr ? getDestinationOptions().find((d: any) => d.id === destinationName)?.nameAr : getDestinationOptions().find((d: any) => d.id === destinationName)?.nameFr) || ''} />
+              <SummaryRow label={isAr ? 'نقطة الانطلاق' : 'Point de départ'} value={summaryDeparture} />
+              <SummaryRow label={isAr ? 'الوجهة' : 'Destination'} value={summaryDestination} />
               <SummaryRow label={isAr ? 'التاريخ' : 'Date'} value={date} />
               <SummaryRow label={isAr ? 'الوقت' : 'Heure'} value={time} />
               <SummaryRow label={isAr ? 'المسافرين' : 'Voyageurs'} value={`${seats}`} />
@@ -540,17 +556,31 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
             </Card>
             {pricing && (
               <Card className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-xs text-slate-300">{isAr ? 'السعر التقديري' : 'Prix estimé'}</p>
-                    <p className="text-3xl font-black text-emerald-400">{pricing.estimatedPrice} DA</p>
+                {isSubscriptionActive ? (
+                  <div className="text-center space-y-2">
+                    <Sparkles className="w-10 h-10 text-emerald-400 mx-auto animate-bounce" />
+                    <h4 className="text-xl font-black text-emerald-400">
+                      {isAr ? 'الرحلة مجانية بالكامل! 🎉' : 'Trajet 100% Gratuit ! 🎉'}
+                    </h4>
+                    <p className="text-sm text-emerald-100 font-bold">
+                      {isAr ? 'هذا المسار مشمول ومغطى باشتراكك الفعال.' : 'Ce trajet est inclus dans votre abonnement actif.'}
+                    </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-slate-300">{isAr ? 'للمسافر الواحد' : 'Par passager'}</p>
-                    <p className="text-lg font-bold text-white">{Math.round(pricing.estimatedPrice / seats)} DA</p>
-                  </div>
-                </div>
-                <p className="text-[10px] text-amber-300 mt-2">{isAr ? '* السعر تقديري وقد يتغير بعد موافقة الإدارة' : '* Tarif estimé, peut être réajusté après validation'}</p>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-xs text-slate-300">{isAr ? 'السعر التقديري' : 'Prix estimé'}</p>
+                        <p className="text-3xl font-black text-emerald-400">{pricing.estimatedPrice} DA</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-slate-300">{isAr ? 'للمسافر الواحد' : 'Par passager'}</p>
+                        <p className="text-lg font-bold text-white">{Math.round(pricing.estimatedPrice / seats)} DA</p>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-amber-300 mt-2">{isAr ? '* السعر تقديري وقد يتغير بعد موافقة الإدارة' : '* Tarif estimé, peut être réajusté après validation'}</p>
+                  </>
+                )}
               </Card>
             )}
             <Button
@@ -584,6 +614,34 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
         </div>
       </div>
 
+      {/* Trip Direction Selector */}
+      <div className="bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 flex gap-2">
+        <button
+          type="button"
+          onClick={() => setTripDirection('aller')}
+          className={`flex-1 py-3 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center justify-center gap-2 ${
+            tripDirection === 'aller'
+              ? 'bg-emerald-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <ArrowRightLeft className="w-4 h-4 shrink-0" />
+          <span>{isAr ? 'ذهاب (من المنزل ◀ إلى الجامعة)' : 'Aller (Domicile ◀ Université)'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setTripDirection('retour')}
+          className={`flex-1 py-3 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center justify-center gap-2 ${
+            tripDirection === 'retour'
+              ? 'bg-emerald-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <ArrowRightLeft className="w-4 h-4 shrink-0 rotate-180" />
+          <span>{isAr ? 'عودة (من الجامعة ◀ إلى المنزل)' : 'Retour (Université ◀ Domicile)'}</span>
+        </button>
+      </div>
+
       {renderStepIndicator()}
 
       <AnimatePresence mode="wait">
@@ -594,7 +652,7 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="p-6 border border-emerald-500/20 bg-black/40 backdrop-blur-lg rounded-[2rem]">
+          <Card className="p-6 md:p-8 border-2 border-emerald-500/25 bg-slate-900/95 backdrop-blur-xl rounded-[2rem] shadow-2xl">
             {renderStep()}
           </Card>
         </motion.div>

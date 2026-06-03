@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Bell, Search, Settings, Menu, User, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
 import { db } from '@/lib/firebase';
@@ -38,46 +39,96 @@ export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
       return;
     }
 
-    // Subscribe to unread count
+    // Subscribe to unread count (with index-free fallback)
     const qUnread = query(
       collection(db, 'notifications'),
       where('userId', '==', user.id),
       where('read', '==', false)
     );
 
-    const unsubUnread = onSnapshot(qUnread, (snapshot) => {
-      setUnreadCount(snapshot.size);
-    }, (error) => {
-      console.error('[DashboardTopbar] Error fetching unread notifications count:', error);
-    });
+    let isInitial = true;
+    let unsubUnread: (() => void) | null = null;
+    const subscribeUnread = (withReadFilter: boolean) => {
+      const baseCol = collection(db, 'notifications');
+      const filters = withReadFilter
+        ? [where('userId', '==', user.id), where('read', '==', false)]
+        : [where('userId', '==', user.id)];
+      const q = query(baseCol, ...filters);
 
-    // Subscribe to last 3 notifications for dropdown preview
-    const qRecent = query(
-      collection(db, 'notifications'),
-      where('userId', '==', user.id),
-      orderBy('createdAt', 'desc'),
-      limit(3)
-    );
-
-    const unsubRecent = onSnapshot(qRecent, (snapshot) => {
-      const items: SimpleNotification[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        items.push({
-          id: doc.id,
-          titleAr: data.titleAr || '',
-          titleFr: data.titleFr || '',
-          read: data.read ?? false,
-        });
+      unsubUnread = onSnapshot(q, (snapshot) => {
+        if (withReadFilter) {
+          setUnreadCount(snapshot.size);
+        } else {
+          let cnt = 0;
+          snapshot.forEach((d) => { if (!d.data().read) cnt++; });
+          setUnreadCount(cnt);
+        }
+        if (!isInitial) {
+          const hasAdded = snapshot.docChanges().some(change => {
+            if (change.type !== 'added') return false;
+            const data = change.doc.data();
+            return withReadFilter ? true : data.read === false;
+          });
+          if (hasAdded) {
+            import('@/lib/sound').then(({ sound }) => {
+              sound.playNotification();
+            });
+          }
+        }
+        isInitial = false;
+      }, (error) => {
+        const code = (error as any)?.code || '';
+        const msg = (error as any)?.message || '';
+        if (withReadFilter && (code === 'failed-precondition' || msg.includes('index'))) {
+          console.warn('[DashboardTopbar] Missing Firestore index for unread count. Falling back without where(read==false).');
+          try { unsubUnread && unsubUnread(); } catch {}
+          subscribeUnread(false);
+          return;
+        }
+        console.error('[DashboardTopbar] Error fetching unread notifications count:', error);
       });
-      setRecentNotifications(items);
-    }, (error) => {
-      console.error('[DashboardTopbar] Error fetching recent notifications:', error);
-    });
+    };
+    subscribeUnread(true);
+
+    // Subscribe to last 3 notifications for dropdown preview (with index-free fallback)
+    let unsubRecent: (() => void) | null = null;
+    const subscribeRecent = (ordered: boolean) => {
+      const baseCol = collection(db, 'notifications');
+      const baseFilter = where('userId', '==', user.id);
+      const q = ordered
+        ? query(baseCol, baseFilter, orderBy('createdAt', 'desc'), limit(3))
+        : query(baseCol, baseFilter, limit(3));
+
+      unsubRecent = onSnapshot(q, (snapshot) => {
+        const items: SimpleNotification[] = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          items.push({
+            id: doc.id,
+            titleAr: data.titleAr || '',
+            titleFr: data.titleFr || '',
+            read: data.read ?? false,
+          });
+        });
+        setRecentNotifications(items);
+      }, (error) => {
+        // Missing composite index for (userId, createdAt desc)
+        const code = (error as any)?.code || '';
+        const msg = (error as any)?.message || '';
+        if (ordered && (code === 'failed-precondition' || msg.includes('index'))) {
+          console.warn('[DashboardTopbar] Missing Firestore index for recent notifications. Falling back without orderBy(createdAt).');
+          try { unsubRecent && unsubRecent(); } catch {}
+          subscribeRecent(false);
+          return;
+        }
+        console.error('[DashboardTopbar] Error fetching recent notifications:', error);
+      });
+    };
+    subscribeRecent(true);
 
     return () => {
-      unsubUnread();
-      unsubRecent();
+      if (unsubUnread) unsubUnread();
+      if (unsubRecent) unsubRecent();
     };
   }, [user?.id]);
 

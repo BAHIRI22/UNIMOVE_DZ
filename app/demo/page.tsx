@@ -24,6 +24,14 @@ export default function DemoPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-slate-100 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
+        <div className="flex justify-between items-center mb-2">
+          <Link
+            href="/dashboard"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-white hover:bg-slate-50 text-sm font-bold text-slate-800 border border-slate-200 px-5 shadow-sm transition hover:-translate-y-0.5"
+          >
+            <span>{language === 'ar' ? '← رجوع للوحة التحكم' : '← Retour au Dashboard'}</span>
+          </Link>
+        </div>
         <PresentationMode />
 
         <section className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">

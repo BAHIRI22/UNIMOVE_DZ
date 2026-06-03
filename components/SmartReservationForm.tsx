@@ -573,18 +573,34 @@ export function SmartReservationForm({ onReservationSubmit }: SmartReservationFo
 
       {/* 7. Warnings and Submissions */}
       <Card className="p-6 border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-emerald-900/10 to-teal-950/40 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="text-center md:text-right space-y-1">
-          <p className="text-xs text-slate-300/80 font-bold">{isAr ? 'السعر التقديري النهائي للرحلة' : 'Prix total estimé'}</p>
-          <div className="flex items-baseline justify-center md:justify-start gap-1">
-            <span className="text-4xl font-black text-emerald-400">{pricing?.estimatedPrice || 100}</span>
-            <span className="text-sm text-emerald-400 font-bold">DA</span>
+        {isSubscriptionActive ? (
+          <div className="text-center md:text-right space-y-1">
+            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full font-black uppercase tracking-wider block w-fit mb-1">
+              {isAr ? 'رحلة مغطاة بالاشتراك' : 'Trajet inclus'}
+            </span>
+            <div className="flex items-baseline justify-center md:justify-start gap-1">
+              <span className="text-4xl font-black text-emerald-400">{isAr ? 'مجانية بالكامل' : 'Gratuit'}</span>
+            </div>
+            <p className="text-[10px] text-emerald-300 font-semibold">
+              {isAr
+                ? '* لن يتم احتساب أي تكاليف أو مطالبة بالدفع'
+                : '* Aucune charge ne sera appliquée'}
+            </p>
           </div>
-          <p className="text-[10px] text-amber-300 font-semibold">
-            {isAr
-              ? '* السعر تقديري وقد يتغير بعد موافقة الإدارة'
-              : '* Le tarif est estimé et peut être réajusté après validation par l\'administration'}
-          </p>
-        </div>
+        ) : (
+          <div className="text-center md:text-right space-y-1">
+            <p className="text-xs text-slate-300/80 font-bold">{isAr ? 'السعر التقديري النهائي للرحلة' : 'Prix total estimé'}</p>
+            <div className="flex items-baseline justify-center md:justify-start gap-1">
+              <span className="text-4xl font-black text-emerald-400">{pricing?.estimatedPrice || 100}</span>
+              <span className="text-sm text-emerald-400 font-bold">DA</span>
+            </div>
+            <p className="text-[10px] text-amber-300 font-semibold">
+              {isAr
+                ? '* السعر تقديري وقد يتغير بعد موافقة الإدارة'
+                : '* Le tarif est estimé et peut être réajusté après validation par l\'administration'}
+            </p>
+          </div>
+        )}
 
         <Button
           type="submit"

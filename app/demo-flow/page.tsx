@@ -29,17 +29,94 @@ export default function DemoFlowPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const demoSteps = [
-    { icon: Smartphone, title: language === 'ar' ? 'Inscription avec OTP Test Mode' : 'Inscription avec OTP Test Mode', description: language === 'ar' ? 'عرض التسجيل برقم الهاتف وكود اختبار دون تعديل Firebase OTP.' : 'Présenter l’inscription par téléphone avec code test sans modifier Firebase OTP.', href: '/register' },
-    { icon: Users, title: language === 'ar' ? 'Choix profil utilisateur' : 'Choix profil utilisateur', description: language === 'ar' ? 'اختيار طالب، أستاذ، إداري أو مستخدم جامعي.' : 'Choisir étudiant, enseignant, administratif ou utilisateur universitaire.', href: '/profile' },
-    { icon: Gauge, title: language === 'ar' ? 'Réservation trajet' : 'Réservation trajet', description: language === 'ar' ? 'تجربة حجز ذكية مع مسار، وقت، مركبة، ومقاعد متاحة.' : 'Expérience réservation intelligente avec trajet, horaire, véhicule et places restantes.', href: '/reservation' },
-    { icon: CreditCard, title: language === 'ar' ? 'Paiement simulé' : 'Paiement simulé', description: language === 'ar' ? 'عرض الدفع بالاشتراك أو نقداً مع قابلية تطوير الدفع الإلكتروني.' : 'Présenter le paiement abonnement ou cash avec évolution paiement électronique.', href: '/payments' },
-    { icon: QrCode, title: language === 'ar' ? 'Génération QR Card' : 'Génération QR Card', description: language === 'ar' ? 'بطاقة نقل رقمية حديثة مع QR و NFC mock وحالة الاشتراك.' : 'Carte transport digitale moderne avec QR, NFC mock et statut abonnement.', href: '/my-card' },
-    { icon: LayoutDashboard, title: language === 'ar' ? 'Dashboard utilisateur' : 'Dashboard utilisateur', description: language === 'ar' ? 'لوحة مستخدم تعرض الإحصائيات، الرحلات، النشاط، والمؤشرات.' : 'Dashboard avec statistiques, trajets, activité et indicateurs utilisateur.', href: '/dashboard' },
-    { icon: Bell, title: language === 'ar' ? 'Notifications intelligentes' : 'Notifications intelligentes', description: language === 'ar' ? 'تنبيهات حجز، دفع، مركبة قريبة، تأخر، وأماكن محدودة.' : 'Alertes réservation, paiement, véhicule proche, retard et places limitées.', href: '/notifications' },
-    { icon: Headphones, title: language === 'ar' ? 'Support' : 'Support', description: language === 'ar' ? 'إظهار الدعم، الشكاوى، والمساعدة للمستخدمين.' : 'Montrer support, réclamations et assistance utilisateurs.', href: '/support' },
-    { icon: UserCog, title: language === 'ar' ? 'Admin panel' : 'Admin panel', description: language === 'ar' ? 'لوحة إدارة للحافلات، المستخدمين، الحجوزات والمسارات.' : 'Gestion des bus, utilisateurs, réservations et itinéraires.', href: '/admin' },
-    { icon: BriefcaseBusiness, title: language === 'ar' ? 'Business model' : 'Business model', description: language === 'ar' ? 'عرض نموذج الأعمال والقيمة والسوق ومصادر الدخل.' : 'Présenter modèle économique, valeur, marché et revenus.', href: '/business-model' },
-    { icon: ChartNoAxesCombined, title: language === 'ar' ? 'Financial plan' : 'Financial plan', description: language === 'ar' ? 'عرض المؤشرات المالية، التكاليف، الإيرادات، والنمو.' : 'Présenter KPI financiers, coûts, revenus et croissance.', href: '/financial-plan' },
+    {
+      icon: Smartphone,
+      title: language === 'ar' ? 'التسجيل السريع برقم الهاتف (OTP Test Mode)' : 'Inscription OTP Test Mode',
+      description: language === 'ar'
+        ? 'شرح طريقة تسجيل حساب جديد للطلبة والأساتذة برقم الهاتف وكود فحص تجريبي (123456) آمن بالكامل ومستقل.'
+        : 'Présentation de l’inscription simplifiée par numéro de téléphone avec code OTP de test (123456) sécurisé.',
+      href: '/register',
+    },
+    {
+      icon: Users,
+      title: language === 'ar' ? 'نوع البروفايل والتحقق من الهوية' : 'Profil & Vérification d’Identité',
+      description: language === 'ar'
+        ? 'اختيار بروفايل طالب أو أستاذ مع ميزة تحميل إثبات الهوية الرقمية أو الورقية للحصول على الامتيازات والتخفيضات الاستثنائية.'
+        : 'Sélectionner le profil d’étudiant ou d’enseignant et soumettre un justificatif d’identité pour débloquer les tarifs réduits.',
+      href: '/profile',
+    },
+    {
+      icon: Gauge,
+      title: language === 'ar' ? 'معالج حجز الرحلات ثنائية الاتجاه (Aller / Retour)' : 'Réservation de Trajet Bidirectionnel',
+      description: language === 'ar'
+        ? 'حجز الرحلات الذكية والميزات الحصرية مع خيار الحجز بالاتجاهين: ذهاب (من السكن إلى الكلية) أو عودة (من الكلية إلى السكن) لتلبية الاحتياجات اليومية.'
+        : 'Réservation intelligente avec option de direction flexible : Aller (Domicile ◀ Université) ou Retour (Université ◀ Domicile) selon l’emploi du temps.',
+      href: '/reservation',
+    },
+    {
+      icon: CreditCard,
+      title: language === 'ar' ? 'بوابة الدفع وتجربة طرق الدفع' : 'Passerelle de Paiement Sécurisée',
+      description: language === 'ar'
+        ? 'بوابة دفع إلكتروني آمنة تظهر للمستخدم بعد تأكيد الحجز مباشرة، وتدعم طرق دفع وطنية متعددة (بريدي موب، الذهبية، CIB، أو نقداً عند الركوب).'
+        : 'Redirection automatique après réservation vers le portail de paiement sécurisé prenant en charge BaridiMob, Edahabia, CIB, TPE et Espèces.',
+      href: '/payments',
+    },
+    {
+      icon: QrCode,
+      title: language === 'ar' ? 'بطاقة العضوية الرقمية الذكية (Digital QR Card)' : 'Génération de Carte Digitale QR/NFC',
+      description: language === 'ar'
+        ? 'توليد بطاقة نقل رقمية فريدة تظهر حالة الاشتراك (يومي، أسبوعي، شهري، سنوي)، وتحمل أكواد NFC وQR حقيقية للصعود السريع للحافلة.'
+        : 'Création d’une carte d’abonné digitale haut de gamme avec NFC simulé et QR Code dynamique affichant le statut de l’abonnement.',
+      href: '/my-card',
+    },
+    {
+      icon: LayoutDashboard,
+      title: language === 'ar' ? 'لوحة تحكم الطالب والرحلات المحجوزة' : 'Tableau de Bord Étudiant',
+      description: language === 'ar'
+        ? 'لوحة تحكم مركزية للطالب تمكنه من استعراض رحلاته القادمة، تحميل الوصولات الرسمية، وتتبع الحافلات مباشرة على الخريطة.'
+        : 'Dashboard centralisé pour suivre l’état des réservations, imprimer les reçus officiels, et consulter le solde et les trajets effectués.',
+      href: '/dashboard',
+    },
+    {
+      icon: Bell,
+      title: language === 'ar' ? 'الإشعارات وتتبع الرحلات المباشر' : 'Notifications & Suivi GPS en Direct',
+      description: language === 'ar'
+        ? 'نظام إشعارات ذكي وتنبيهات فورية ومباشرة للأمان، واقتراب الحافلات، والمسارات المقترحة لجامعة الجيلالي اليابس.'
+        : 'Système d’alerte intelligent informant l’étudiant de l’approche du bus, des horaires modifiés et des trajets optimisés.',
+      href: '/notifications',
+    },
+    {
+      icon: Headphones,
+      title: language === 'ar' ? 'دعم مستخدمي النقل الجامعي والشكاوى' : 'Support Client & Gestion des Réclamations',
+      description: language === 'ar'
+        ? 'واجهة لتقديم المساعدة، الإبلاغ عن المفقودات، وإرسال الشكاوى والملاحظات الفورية لضمان تجربة نقل جامعي راقية.'
+        : 'Interface d’assistance pour signaler un objet perdu, envoyer une réclamation ou demander de l’aide directement à l’administration.',
+      href: '/support',
+    },
+    {
+      icon: UserCog,
+      title: language === 'ar' ? 'لوحة القيادة الإدارية الشاملة' : 'Centre de Contrôle Administratif (Admin)',
+      description: language === 'ar'
+        ? 'لوحة إدارة متكاملة لمراقبة الأسطول، السائقين، والتحقق من حسابات الطلبة، ومعالجة الاشتراكات والحجوزات لجامعة سيدي بلعباس.'
+        : 'Espace d’administration complet pour superviser les lignes de bus, valider les profils étudiants, et analyser les statistiques financières.',
+      href: '/admin',
+    },
+    {
+      icon: BriefcaseBusiness,
+      title: language === 'ar' ? 'نموذج الأعمال والمشروع الناشئ (SaaS)' : 'Modèle Économique (Business Model)',
+      description: language === 'ar'
+        ? 'عرض نموذج الأعمال والقيمة المضافة المقترحة وشرائح العملاء، ومصادر الدخل السبعة الفعالة لتشغيل مشروع UNIMOVE-DZ.'
+        : 'Présentation de la proposition de valeur, des segments de marché cibles et des 7 sources de revenus durables du projet.',
+      href: '/business-model',
+    },
+    {
+      icon: ChartNoAxesCombined,
+      title: language === 'ar' ? 'الخطة والتحليلات المالية الخمسية' : 'Plan Financier & Projections sur 5 Ans',
+      description: language === 'ar'
+        ? 'عرض المؤشرات المالية الحيوية، التكاليف التشغيلية، توقعات الإيرادات والأرباح المتنامية على مدار خمس سنوات قادمة لإثبات الجدوى الاقتصادية.'
+        : 'Analyse des KPI financiers clés, coûts, revenus de ventes et projections d’activité sur 5 ans démontrant la haute rentabilité.',
+      href: '/financial-plan',
+    },
   ];
 
   const activeStep = demoSteps[currentStep];
@@ -53,10 +130,16 @@ export default function DemoFlowPage() {
       <div className="mx-auto max-w-7xl space-y-8">
         <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
           <div>
-            <Link href="/demo" className="mb-4 inline-flex items-center gap-2 text-sm font-black text-emerald-700 hover:text-emerald-800">
-              <ArrowLeft className="h-4 w-4" />
-              {language === 'ar' ? 'العودة إلى صفحة العرض' : 'Retour à la présentation'}
-            </Link>
+            <div className="flex items-center gap-4 mb-4">
+              <Link href="/demo" className="inline-flex items-center gap-2 text-sm font-black text-emerald-700 hover:text-emerald-800">
+                <ArrowLeft className="h-4 w-4" />
+                {language === 'ar' ? 'العودة إلى صفحة العرض' : 'Retour à la présentation'}
+              </Link>
+              <span className="text-slate-300">|</span>
+              <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-black text-slate-500 hover:text-slate-800">
+                {language === 'ar' ? 'رجوع للوحة التحكم' : 'Retour au Dashboard'}
+              </Link>
+            </div>
             <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
               {language === 'ar' ? 'Parcours démonstration UNIMOVE-DZ' : 'Parcours démonstration UNIMOVE-DZ'}
             </h1>

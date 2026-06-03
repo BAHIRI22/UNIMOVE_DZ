@@ -84,9 +84,14 @@ export default function DataManagementPage() {
     <div className="min-h-screen bg-[#031813] text-white p-6 md:p-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <div>
-          <h1 className="text-4xl font-black">{label('Gestion des données', 'إدارة البيانات')}</h1>
-          <p className="text-lg opacity-70 mt-2">{label('Universités, facultés, daïras, communes, aéroports, ports, gares, hôpitaux, résidences, tarifs...', 'جامعات، كليات، دوائر، بلديات، مطارات، موانئ، محطات، مستشفيات، إقامات، تعريفات...')}</p>
+        <div className="flex items-center gap-4">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            <img src="/images/logo.png?v=logo-clean" alt="UNIMOVE-DZ Logo" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-black">{label('Gestion des données', 'إدارة البيانات')}</h1>
+            <p className="text-lg opacity-70 mt-2">{label('Universités, facultés, daïras, communes, aéroports, ports, gares, hôpitaux, résidences, tarifs...', 'جامعات، كليات، دوائر، بلديات، مطارات، موانئ، محطات، مستشفيات، إقامات، تعريفات...')}</p>
+          </div>
         </div>
         <button
           onClick={() => router.push('/admin-panel')}
