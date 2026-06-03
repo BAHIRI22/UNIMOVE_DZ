@@ -103,6 +103,9 @@ export default function SubscriptionsPage() {
   const isApproved = user?.status === 'approved' || (user as any)?.accountStatus === 'active';
   const isFullyActive = isVerified && isApproved;
 
+  const isSpecialNeeds = user?.specialNeeds === true && user?.specialNeedsVerified === true;
+  const getPlanPrice = (plan: Plan) => isSpecialNeeds ? Math.round(plan.price * 0.5) : plan.price;
+
   const syncLocalUser = (updates: Record<string, any>) => {
     if (typeof window === 'undefined') return;
     const keys = ['unimove_current_user'];
@@ -131,7 +134,9 @@ export default function SubscriptionsPage() {
         planType: plan.type,
         planNameAr: plan.nameAr,
         planNameFr: plan.nameFr,
-        price: plan.price,
+        originalPrice: plan.price,
+        price: getPlanPrice(plan),
+        specialNeedsDiscount: isSpecialNeeds ? 50 : 0,
         durationDays: plan.durationDays,
         status: 'pending',
         paymentStatus: 'unpaid',
@@ -146,7 +151,8 @@ export default function SubscriptionsPage() {
         phoneNumber: user.phone || user.phoneNumber || '',
         relatedType: 'subscription',
         relatedId: docRef.id,
-        amount: plan.price,
+        amount: getPlanPrice(plan),
+        originalAmount: plan.price,
         currency: 'DZD',
         paymentMethod: 'mock',
         paymentStatus: 'pending',
@@ -224,8 +230,8 @@ export default function SubscriptionsPage() {
         userPhone: user.phone || user.phoneNumber || '',
         titleAr: 'اشتراك جديد 💳',
         titleFr: 'Nouvel abonnement 💳',
-        messageAr: `قام المستخدم ${user.fullName} بتفعيل اشتراك جديد (${selectedPlan.nameAr} - ${selectedPlan.price} دج).`,
-        messageFr: `L'utilisateur ${user.fullName} a activé un nouvel abonnement (${selectedPlan.nameFr} - ${selectedPlan.price} DZD).`,
+        messageAr: `قام المستخدم ${user.fullName} بتفعيل اشتراك جديد (${selectedPlan.nameAr} - ${getPlanPrice(selectedPlan)} دج).`,
+        messageFr: `L'utilisateur ${user.fullName} a activé un nouvel abonnement (${selectedPlan.nameFr} - ${getPlanPrice(selectedPlan)} DZD).`,
         type: 'system',
         relatedEntityId: user.id,
         relatedEntityType: 'user',
@@ -342,9 +348,24 @@ export default function SubscriptionsPage() {
                           {language === 'ar' ? plan.nameAr : plan.nameFr}
                         </h3>
                         <div className="flex items-baseline justify-center gap-1">
-                          <span className="text-4xl font-black text-emerald-600">{plan.price}</span>
-                          <span className="text-lg font-extrabold text-slate-500">DA</span>
+                          {isSpecialNeeds ? (
+                            <>
+                              <span className="text-2xl font-bold text-slate-400 line-through">{plan.price}</span>
+                              <span className="text-4xl font-black text-emerald-600">{getPlanPrice(plan)}</span>
+                              <span className="text-lg font-extrabold text-slate-500">DA</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-4xl font-black text-emerald-600">{plan.price}</span>
+                              <span className="text-lg font-extrabold text-slate-500">DA</span>
+                            </>
+                          )}
                         </div>
+                        {isSpecialNeeds && (
+                          <div className="mt-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-black inline-block">
+                            {language === 'ar' ? 'خصم 50% لذوي الاحتياجات الخاصة' : 'Réduction 50% handicap'}
+                          </div>
+                        )}
                         <p className="text-sm text-slate-500 font-semibold">
                           {language === 'ar' ? 'صالح لمدة' : 'Valide pour'} {plan.durationDays}{' '}
                           {plan.durationDays === 1
@@ -439,9 +460,21 @@ export default function SubscriptionsPage() {
                   </div>
                   <div className="text-3xl font-black text-slate-900 flex items-center justify-center md:justify-start gap-1">
                     <span>{language === 'ar' ? 'المجموع:' : 'Total :'}</span>
-                    <span className="text-emerald-600">{selectedPlan.price}</span>
+                    {isSpecialNeeds ? (
+                      <>
+                        <span className="text-xl text-slate-400 line-through">{selectedPlan.price}</span>
+                        <span className="text-emerald-600">{getPlanPrice(selectedPlan)}</span>
+                      </>
+                    ) : (
+                      <span className="text-emerald-600">{selectedPlan.price}</span>
+                    )}
                     <span className="text-xl">DZD</span>
                   </div>
+                  {isSpecialNeeds && (
+                    <p className="text-sm font-bold text-blue-600">
+                      {language === 'ar' ? 'تم تطبيق خصم 50% لذوي الاحتياجات الخاصة' : 'Réduction 50% appliquée (handicap)'}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-3 flex-shrink-0 w-full md:w-auto">

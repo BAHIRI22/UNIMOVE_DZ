@@ -194,7 +194,40 @@ export default function PaymentCheckoutPage() {
         await updateDoc(doc(db, 'bookings', payment.relatedId), { paymentStatus: 'paid' });
       }
       if (payment.relatedType === 'subscription' && payment.relatedId) {
-        await updateDoc(doc(db, 'subscriptions', payment.relatedId), { paymentStatus: 'paid', status: 'active' });
+        const subSnap = await getDoc(doc(db, 'subscriptions', payment.relatedId));
+        if (subSnap.exists()) {
+          const subData = subSnap.data();
+          const durationDays = subData.durationDays || 30;
+          const planType = subData.planType || 'monthly';
+
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setDate(startDate.getDate() + durationDays);
+
+          const startDateString = startDate.toISOString();
+          const endDateString = endDate.toISOString();
+
+          // 1. Update subscription in Firestore
+          await updateDoc(doc(db, 'subscriptions', payment.relatedId), {
+            paymentStatus: 'paid',
+            status: 'active',
+            startDate: startDateString,
+            endDate: endDateString,
+          });
+
+          // 2. Update user subscription status in Firestore
+          await updateDoc(doc(db, 'users', user.id), {
+            subscriptionStatus: 'active',
+            subscriptionPlan: planType,
+            subscriptionEndDate: endDateString,
+            validUntil: endDate.toLocaleDateString('fr-FR'), // Compatibilité avec les anciennes cartes
+            subscription: planType, // Compatibilité avec MembershipCard
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          // Fallback if subscription doc cannot be retrieved
+          await updateDoc(doc(db, 'subscriptions', payment.relatedId), { paymentStatus: 'paid', status: 'active' });
+        }
       }
 
       await createNotification({

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, UserCheck, XCircle, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, UserCheck, XCircle, Clock, CheckCircle2, AlertCircle, FileText, Accessibility } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 
@@ -34,6 +34,11 @@ interface VerificationUser {
   adminNote?: string;
   isDeleted?: boolean;
   createdAt: string;
+  verificationDocumentUrl?: string;
+  specialNeeds?: boolean;
+  specialNeedsType?: string;
+  specialNeedsDocumentUrl?: string;
+  specialNeedsVerified?: boolean;
 }
 
 export default function AdminVerificationsPage() {
@@ -113,14 +118,18 @@ export default function AdminVerificationsPage() {
   const handleAccept = async (user: VerificationUser) => {
     setProcessing(true);
     try {
-      await updateDoc(doc(db, 'users', user.id), {
+      const updates: any = {
         verificationStatus: 'approved',
         accountStatus: 'active',
         verified: true,
         status: 'approved',
         verifiedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+      };
+      if (user.specialNeeds) {
+        updates.specialNeedsVerified = true;
+      }
+      await updateDoc(doc(db, 'users', user.id), updates);
     } catch (error) {
       console.error('Error accepting user:', error);
     } finally {
@@ -240,6 +249,12 @@ export default function AdminVerificationsPage() {
                     {language === 'ar' ? 'طريقة التحقق' : 'Méthode de vérification'}
                   </TableHead>
                   <TableHead className="font-bold text-gray-900">
+                    {language === 'ar' ? 'وثائق التحقق' : 'Documents'}
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-900">
+                    {language === 'ar' ? 'ذوي الاحتياجات' : 'Besoins spéciaux'}
+                  </TableHead>
+                  <TableHead className="font-bold text-gray-900">
                     {language === 'ar' ? 'تاريخ التسجيل' : "Date d'inscription"}
                   </TableHead>
                   <TableHead className="font-bold text-gray-900">
@@ -266,6 +281,50 @@ export default function AdminVerificationsPage() {
                     </TableCell>
                     <TableCell>
                       {language === 'ar' ? user.verificationMethodLabelAr : user.verificationMethodLabelFr}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        {user.verificationDocumentUrl ? (
+                          <a
+                            href={user.verificationDocumentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-bold"
+                          >
+                            <FileText className="w-3 h-3" />
+                            {language === 'ar' ? 'وثيقة التحقق' : 'Doc. vérification'}
+                          </a>
+                        ) : (
+                          <span className="text-xs text-gray-400">{language === 'ar' ? 'لا توجد' : 'Aucun'}</span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {user.specialNeeds ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">
+                            <Accessibility className="w-3 h-3" />
+                            {language === 'ar'
+                              ? (user.specialNeedsType === 'mobility' ? 'حركية' : user.specialNeedsType === 'visual' ? 'بصرية' : user.specialNeedsType === 'hearing' ? 'سمعية' : 'أخرى')
+                              : (user.specialNeedsType === 'mobility' ? 'Mobilité' : user.specialNeedsType === 'visual' ? 'Visuel' : user.specialNeedsType === 'hearing' ? 'Auditif' : 'Autre')}
+                          </span>
+                          {user.specialNeedsDocumentUrl ? (
+                            <a
+                              href={user.specialNeedsDocumentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800 font-bold"
+                            >
+                              <FileText className="w-3 h-3" />
+                              {language === 'ar' ? 'وثيقة الإعاقة' : 'Doc. handicap'}
+                            </a>
+                          ) : (
+                            <span className="text-xs text-red-500 font-bold">{language === 'ar' ? 'لا توجد وثيقة' : 'Pas de doc.'}</span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">{language === 'ar' ? 'لا' : 'Non'}</span>
+                      )}
                     </TableCell>
                     <TableCell>{formatDate(user.createdAt)}</TableCell>
                     <TableCell>

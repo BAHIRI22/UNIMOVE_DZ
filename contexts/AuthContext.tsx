@@ -14,6 +14,7 @@ import {
   getDoc,
   getDocs,
   limit,
+  onSnapshot,
   query,
   serverTimestamp,
   setDoc,
@@ -495,6 +496,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', user.id),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUser((currentUser) => {
+            if (!currentUser) return null;
+            const updatedUser = normalizeStoredUser({ ...currentUser, ...data }, currentUser.firebaseUser);
+            
+            const hasChanges = 
+              currentUser.subscriptionStatus !== updatedUser.subscriptionStatus ||
+              currentUser.subscriptionPlan !== updatedUser.subscriptionPlan ||
+              currentUser.subscriptionEndDate !== updatedUser.subscriptionEndDate ||
+              currentUser.verificationStatus !== updatedUser.verificationStatus ||
+              currentUser.verified !== updatedUser.verified ||
+              currentUser.accountStatus !== updatedUser.accountStatus ||
+              currentUser.validUntil !== updatedUser.validUntil ||
+              currentUser.specialNeedsVerified !== updatedUser.specialNeedsVerified ||
+              currentUser.fullName !== updatedUser.fullName;
+
+            if (hasChanges) {
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('unimove_current_user', JSON.stringify({ ...updatedUser, firebaseUser: undefined }));
+              }
+              return updatedUser;
+            }
+            return currentUser;
+          });
+        }
+      },
+      (error) => {
+        console.error('[AuthContext] Real-time user sync error:', error);
+      }
+    );
+
+    return () => unsubscribe();
   }, [user?.id]);
 
   const loginWithFirebase = async (firebaseUser: FirebaseUser, userData?: Partial<User>) => {

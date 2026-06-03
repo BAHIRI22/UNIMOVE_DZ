@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, doc, updateDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, serverTimestamp, orderBy } from 'firebase/firestore';
 import { createNotification } from '@/lib/notifications';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -129,6 +129,44 @@ export default function PaymentsPage() {
         await updateDoc(doc(db, 'bookings', payment.relatedId), {
           paymentStatus: 'paid',
         });
+      }
+
+      // Update related subscription and user if applicable
+      if (payment.relatedType === 'subscription' && payment.relatedId) {
+        const subSnap = await getDoc(doc(db, 'subscriptions', payment.relatedId));
+        if (subSnap.exists()) {
+          const subData = subSnap.data();
+          const durationDays = subData.durationDays || 30;
+          const planType = subData.planType || 'monthly';
+
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setDate(startDate.getDate() + durationDays);
+
+          const startDateString = startDate.toISOString();
+          const endDateString = endDate.toISOString();
+
+          // 1. Update subscription in Firestore
+          await updateDoc(doc(db, 'subscriptions', payment.relatedId), {
+            paymentStatus: 'paid',
+            status: 'active',
+            startDate: startDateString,
+            endDate: endDateString,
+          });
+
+          // 2. Update user subscription status in Firestore
+          await updateDoc(doc(db, 'users', user.id), {
+            subscriptionStatus: 'active',
+            subscriptionPlan: planType,
+            subscriptionEndDate: endDateString,
+            validUntil: endDate.toLocaleDateString('fr-FR'), // Compatibilité avec les anciennes cartes
+            subscription: planType, // Compatibilité avec MembershipCard
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          // Fallback if subscription doc cannot be retrieved
+          await updateDoc(doc(db, 'subscriptions', payment.relatedId), { paymentStatus: 'paid', status: 'active' });
+        }
       }
 
       // Notify user

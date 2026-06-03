@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
 import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock, CreditCard, WifiOff } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -14,7 +14,9 @@ export function MembershipCard() {
   const { t, language } = useLanguage();
   const [showQR, setShowQR] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const router = useRouter();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -107,13 +109,24 @@ export function MembershipCard() {
     );
   }
 
-  const downloadCard = () => {
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
+  const downloadCard = async () => {
+    if (!cardRef.current || !user) return;
+    setDownloading(true);
+    try {
+      const htmlToImage = await import('html-to-image');
+      const dataUrl = await htmlToImage.toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: '#022c22',
+      });
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.download = `unimove-card-${user.cardNumber}.png`;
       link.click();
+    } catch (err) {
+      console.error('Failed to download card:', err);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -134,7 +147,7 @@ export function MembershipCard() {
         whileHover={{ y: -8, scale: 1.02 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative bg-gradient-to-br from-slate-950 via-emerald-950 to-emerald-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl hover:shadow-3xl hover:shadow-emerald-500/30 transition-all duration-500 overflow-hidden border border-white/10">
+        <div ref={cardRef} className="relative bg-gradient-to-br from-slate-950 via-emerald-950 to-emerald-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl hover:shadow-3xl hover:shadow-emerald-500/30 transition-all duration-500 overflow-hidden border border-white/10">
           {/* Animated Glow Effect */}
           <motion.div
             className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl"
