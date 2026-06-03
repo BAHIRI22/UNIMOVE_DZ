@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
+import { AccessibilityProvider } from '@/contexts/AccessibilityContext'
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
+import { NotificationScheduler } from '@/components/NotificationScheduler'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: '#059669',
-  colorScheme: 'light',
+  colorScheme: 'light dark',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -47,26 +50,31 @@ export default function RootLayout({
       <body className="antialiased relative">
         <LanguageProvider>
           <AuthProvider>
-            {/* Background image */}
-            <div 
-              className="fixed inset-0 z-0 opacity-15"
-              style={{
-                backgroundImage: 'url(/images/UNIMOVE_DZ.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundAttachment: 'fixed'
-              }}
-            />
+            <ThemeProvider>
+              <AccessibilityProvider>
+                {/* Background image */}
+              <div
+                className="fixed inset-0 z-0 opacity-15"
+                style={{
+                  backgroundImage: 'url(/images/UNIMOVE_DZ.jpg)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'fixed'
+                }}
+              />
 
-            {/* Content wrapper */}
-            <div className="relative z-10">
-              {children}
-            </div>
+              {/* Content wrapper */}
+              <div className="relative z-10">
+                {children}
+              </div>
 
-            <PWAInstallPrompt />
-            
-            {/* Toast Notifications */}
-            <Toaster position="top-right" richColors closeButton />
+              <NotificationScheduler />
+              <PWAInstallPrompt />
+
+              {/* Toast Notifications */}
+              <Toaster position="top-right" richColors closeButton />
+              </AccessibilityProvider>
+            </ThemeProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>

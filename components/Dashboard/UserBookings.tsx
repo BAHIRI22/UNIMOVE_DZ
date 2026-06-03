@@ -6,8 +6,10 @@ import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestor
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
-import { Calendar, Clock, MapPin, Loader2, Navigation } from 'lucide-react';
+import { Calendar, Clock, MapPin, Loader2, Navigation, Star, WifiOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { RatingModal } from '@/components/RatingModal';
+import { hasUserRatedBooking } from '@/lib/ratings';
 
 interface Booking {
   id: string;
@@ -74,7 +76,25 @@ export function UserBookings() {
   const { language, isRTL } = useLanguage();
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [waitlist, setWaitlist] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
+
+  // Rating modal state
+  const [ratingBooking, setRatingBooking] = useState<Booking | null>(null);
+  const [ratedBookingIds, setRatedBookingIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    setIsOffline(!navigator.onLine);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     if (!user?.id) {
@@ -88,7 +108,6 @@ export function UserBookings() {
         q,
         (snap) => {
           const items = snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) })) as Booking[];
-          // Sort client-side by createdAt desc
           items.sort((a, b) => {
             const ta = a.createdAt?.seconds || 0;
             const tb = b.createdAt?.seconds || 0;
@@ -109,6 +128,37 @@ export function UserBookings() {
     }
   }, [user?.id]);
 
+  // Load waitlist entries
+  useEffect(() => {
+    if (!user?.id) return;
+    try {
+      const wq = query(collection(db, 'waitlist'), where('userId', '==', user.id), where('status', '==', 'waiting'));
+      const unsub = onSnapshot(wq, (snap) => {
+        const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        setWaitlist(items);
+      });
+      return () => unsub();
+    } catch (e) {
+      console.error('[UserBookings] waitlist error:', e);
+    }
+  }, [user?.id]);
+
+  // Check which completed bookings have already been rated
+  useEffect(() => {
+    if (!user?.id) return;
+    const checkRatings = async () => {
+      const completed = bookings.filter((b) => b.status === 'completed');
+      const rated = new Set<string>();
+      for (const b of completed) {
+        if (await hasUserRatedBooking(user.id, b.id)) {
+          rated.add(b.id);
+        }
+      }
+      setRatedBookingIds(rated);
+    };
+    checkRatings();
+  }, [bookings, user?.id]);
+
   if (loading) {
     return (
       <Card className="p-8 flex items-center justify-center">
@@ -117,11 +167,19 @@ export function UserBookings() {
     );
   }
 
-  if (!bookings.length) {
+  if (!bookings.length && !waitlist.length) {
     return (
-      <Card className="p-8 text-center text-slate-500">
-        {language === 'ar' ? 'لا توجد حجوزات بعد' : 'Aucune réservation pour le moment'}
-      </Card>
+      <>
+        {isOffline && (
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-100 text-slate-600 text-sm mb-4">
+            <WifiOff className="w-4 h-4" />
+            {language === 'ar' ? 'أنت في وضع عدم الاتصال. قد لا تظهر البيانات بشكل كامل.' : 'Vous êtes hors ligne. Les données peuvent être incomplètes.'}
+          </div>
+        )}
+        <Card className="p-8 text-center text-slate-500">
+          {language === 'ar' ? 'لا توجد حجوزات بعد' : 'Aucune réservation pour le moment'}
+        </Card>
+      </>
     );
   }
 
@@ -129,9 +187,41 @@ export function UserBookings() {
 
   return (
     <div className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
+      {isOffline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-100 text-slate-600 text-sm">
+          <WifiOff className="w-4 h-4" />
+          {language === 'ar' ? 'أنت في وضع عدم الاتصال. قد لا تظهر البيانات بشكل كامل.' : 'Vous êtes hors ligne. Les données peuvent être incomplètes.'}
+        </div>
+      )}
       <h2 className="text-2xl font-extrabold text-gray-900">
         {language === 'ar' ? 'حجوزاتي' : 'Mes réservations'}
       </h2>
+
+      {/* Waitlist Section */}
+      {waitlist.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-lg font-bold text-amber-700">
+            {language === 'ar' ? '📋 قائمة الانتظار' : '📋 Liste d\'attente'}
+          </h3>
+          {waitlist.map((w) => (
+            <Card key={w.id} className="p-4 border border-amber-200 bg-amber-50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-amber-900 text-sm">{w.fromPoint} → {w.toDestination}</p>
+                  <p className="text-xs text-amber-700 mt-1">
+                    <span className="inline-flex items-center gap-1"><Calendar className="w-3 h-3" /> {w.date}</span>
+                    <span className="inline-flex items-center gap-1 mx-2"><Clock className="w-3 h-3" /> {w.time}</span>
+                  </p>
+                </div>
+                <span className="px-2 py-1 rounded-full text-xs font-bold bg-amber-200 text-amber-800">
+                  {language === 'ar' ? 'في الانتظار' : 'En attente'}
+                </span>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
       <div className="grid gap-4">
         {bookings.map((b) => {
           const isAr = language === 'ar';
@@ -227,6 +317,21 @@ export function UserBookings() {
                       {isAr ? 'تتبع الرحلة' : 'Suivre le trajet'}
                     </button>
                   )}
+                  {b.status === 'completed' && !ratedBookingIds.has(b.id) && (
+                    <button
+                      onClick={() => setRatingBooking(b)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-400 text-yellow-900 hover:bg-yellow-500 transition"
+                    >
+                      <Star className="w-3.5 h-3.5" />
+                      {isAr ? 'قيّم الرحلة' : 'Évaluer'}
+                    </button>
+                  )}
+                  {b.status === 'completed' && ratedBookingIds.has(b.id) && (
+                    <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                      <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                      {isAr ? 'تم التقييم' : 'Évalué'}
+                    </span>
+                  )}
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold border ${STATUS_COLORS[b.status] || STATUS_COLORS.pending}`}
                   >
@@ -238,6 +343,18 @@ export function UserBookings() {
           );
         })}
       </div>
+
+      {/* Rating Modal */}
+      {ratingBooking && (
+        <RatingModal
+          isOpen={!!ratingBooking}
+          onClose={() => setRatingBooking(null)}
+          bookingId={ratingBooking.id}
+          userId={user?.id || ''}
+          driverId={ratingBooking.assignedDriverName || ''}
+          driverName={ratingBooking.assignedDriverName}
+        />
+      )}
     </div>
   );
 }

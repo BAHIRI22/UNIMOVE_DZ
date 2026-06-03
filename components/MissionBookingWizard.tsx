@@ -45,6 +45,8 @@ interface MissionBookingWizardProps {
     meetingPoint?: string;
     destinationType?: string;
     destinationName?: string;
+    requiresWheelchairSpace?: boolean;
+    requiresAssistant?: boolean;
   }) => void;
 }
 
@@ -96,6 +98,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [pricing, setPricing] = useState<PricingResult | null>(null);
   const [tripDirection, setTripDirection] = useState<'aller' | 'retour'>('aller');
+  const [requiresWheelchairSpace, setRequiresWheelchairSpace] = useState(false);
+  const [requiresAssistant, setRequiresAssistant] = useState(false);
 
   const isStudentVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
   const isSubscriptionActive = user?.subscriptionStatus === 'active';
@@ -109,9 +113,10 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       isSubscriptionActive,
       isRoundTrip: roundTrip,
       transportNature,
+      isSpecialNeeds: user?.specialNeeds || false,
     });
     setPricing(res);
-  }, [vehicleType, missionType, seats, isStudentVerified, isSubscriptionActive, roundTrip, transportNature]);
+  }, [vehicleType, missionType, seats, isStudentVerified, isSubscriptionActive, roundTrip, transportNature, user?.specialNeeds]);
 
   const recommended = recommendVehicle(seats);
 
@@ -205,6 +210,8 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
       meetingPoint,
       destinationType,
       destinationName,
+      requiresWheelchairSpace,
+      requiresAssistant,
     });
   };
 
@@ -436,15 +443,43 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
 
       case 7:
         return (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <h3 className="text-2xl md:text-3xl font-black text-emerald-400 flex items-center gap-2 mb-2">
               <Users className="w-7 h-7 text-emerald-400" />
-              {isAr ? 'عدد المسافرين' : 'Nombre de voyageurs'}
+              {isAr ? 'عدد المسافرين والاحتياجات' : 'Voyageurs et besoins spéciaux'}
             </h3>
-            <div className="flex items-center justify-center gap-8 py-8">
+            <div className="flex items-center justify-center gap-8 py-6">
               <Button type="button" variant="outline" onClick={() => setSeats(Math.max(1, seats - 1))} className="h-16 w-16 rounded-full text-3xl font-black shadow-md">-</Button>
               <span className="text-6xl font-black text-white">{seats}</span>
               <Button type="button" variant="outline" onClick={() => setSeats(Math.min(60, seats + 1))} className="h-16 w-16 rounded-full text-3xl font-black shadow-md">+</Button>
+            </div>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setRequiresWheelchairSpace((v) => !v)}
+                className={`w-full p-4 rounded-2xl border-2 text-right transition-all flex items-center justify-between ${
+                  requiresWheelchairSpace
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10'
+                    : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
+                }`}
+                aria-label={isAr ? 'يحتاج إلى مساحة كرسي متحرك' : 'Espace fauteuil roulant requis'}
+              >
+                <span className="text-base md:text-lg font-bold">{isAr ? 'يحتاج إلى مساحة كرسي متحرك' : 'Espace fauteuil roulant requis'}</span>
+                {requiresWheelchairSpace && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => setRequiresAssistant((v) => !v)}
+                className={`w-full p-4 rounded-2xl border-2 text-right transition-all flex items-center justify-between ${
+                  requiresAssistant
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-extrabold shadow-lg shadow-emerald-500/10'
+                    : 'border-white/10 hover:border-emerald-500/30 text-slate-300'
+                }`}
+                aria-label={isAr ? 'طلب مرافق/مساعد' : 'Accompagnateur requis'}
+              >
+                <span className="text-base md:text-lg font-bold">{isAr ? 'طلب مرافق / مساعد' : 'Accompagnateur requis'}</span>
+                {requiresAssistant && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
+              </button>
             </div>
           </div>
         );
@@ -545,14 +580,17 @@ export function MissionBookingWizard({ onReservationSubmit }: MissionBookingWiza
             </h3>
             <Card className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-4">
               <SummaryRow label={isAr ? 'اتجاه الرحلة' : 'Sens du trajet'} value={tripDirection === 'aller' ? (isAr ? 'ذهاب (إلى الجامعة)' : 'Aller (Vers Université)') : (isAr ? 'عودة (إلى المنزل/البلدية)' : 'Retour (Vers Domicile)')} />
-              <SummaryRow label={isAr ? 'نوع المهمة' : 'Type de mission'} value={isAr ? transportData.missionTypes.find((m) => m.id === missionType)?.nameAr : transportData.missionTypes.find((m) => m.id === missionType)?.nameFr} />
+              <SummaryRow label={isAr ? 'نوع المهمة' : 'Type de mission'} value={isAr ? transportData.missionTypes.find((m) => m.id === missionType)?.nameAr || '' : transportData.missionTypes.find((m) => m.id === missionType)?.nameFr || ''} />
               <SummaryRow label={isAr ? 'نقطة الانطلاق' : 'Point de départ'} value={summaryDeparture} />
               <SummaryRow label={isAr ? 'الوجهة' : 'Destination'} value={summaryDestination} />
               <SummaryRow label={isAr ? 'التاريخ' : 'Date'} value={date} />
               <SummaryRow label={isAr ? 'الوقت' : 'Heure'} value={time} />
               <SummaryRow label={isAr ? 'المسافرين' : 'Voyageurs'} value={`${seats}`} />
-              <SummaryRow label={isAr ? 'المركبة' : 'Véhicule'} value={isAr ? vehicleOptions.find((v) => v.value === vehicleType)?.titleAr : vehicleOptions.find((v) => v.value === vehicleType)?.titleFr} />
+              <SummaryRow label={isAr ? 'المركبة' : 'Véhicule'} value={isAr ? vehicleOptions.find((v) => v.value === vehicleType)?.titleAr || '' : vehicleOptions.find((v) => v.value === vehicleType)?.titleFr || ''} />
               <SummaryRow label={isAr ? 'الذهاب والإياب' : 'Aller-Retour'} value={roundTrip ? (isAr ? 'نعم' : 'Oui') : (isAr ? 'لا' : 'Non')} />
+              {requiresWheelchairSpace && <SummaryRow label={isAr ? 'مساحة كرسي متحرك' : 'Espace fauteuil'} value={isAr ? 'مطلوب' : 'Requis'} />}
+              {requiresAssistant && <SummaryRow label={isAr ? 'مرافق / مساعد' : 'Accompagnateur'} value={isAr ? 'مطلوب' : 'Requis'} />}
+              {user?.specialNeeds && <SummaryRow label={isAr ? 'خصم ذوي الاحتياجات الخاصة' : 'Réduction handicap'} value="-50%" />}
             </Card>
             {pricing && (
               <Card className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl">

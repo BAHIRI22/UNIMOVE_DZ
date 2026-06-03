@@ -10,6 +10,7 @@ export interface PricingResult {
     activeSubscription: boolean;
     groupDiscountPercent: number;
     roundTripDiscountPercent: number;
+    specialNeedsPercent: number;
   };
   totalDiscountsPercent: number;
   estimatedPrice: number;
@@ -131,6 +132,7 @@ export function calculateDynamicPricing(params: {
   isSubscriptionActive: boolean;
   isRoundTrip: boolean;
   transportNature?: TransportNature;
+  isSpecialNeeds?: boolean;
 }): PricingResult {
   const {
     vehicleType,
@@ -140,6 +142,7 @@ export function calculateDynamicPricing(params: {
     isSubscriptionActive = false,
     isRoundTrip = false,
     transportNature = 'daily_university',
+    isSpecialNeeds = false,
   } = params;
 
   // 1. Get Distance and Travel Time
@@ -217,6 +220,12 @@ export function calculateDynamicPricing(params: {
     discountDetailsListFr.push('Abonnement actif (-15%)');
   }
 
+  if (isSpecialNeeds) {
+    totalDiscountsPercent += 50;
+    discountDetailsListAr.push('خصم ذوي الاحتياجات الخاصة (-50%)');
+    discountDetailsListFr.push('Réduction handicap (-50%)');
+  }
+
   // Group size discount
   let groupDiscountPercent = 0;
   if (passengersCount >= 20) {
@@ -287,6 +296,7 @@ export function calculateDynamicPricing(params: {
       activeSubscription: isSubscriptionActive,
       groupDiscountPercent,
       roundTripDiscountPercent: isRoundTrip ? 10 : 0, // logical reference
+      specialNeedsPercent: isSpecialNeeds ? 50 : 0,
     },
     totalDiscountsPercent,
     estimatedPrice,

@@ -26,6 +26,9 @@ export interface NotificationPayload {
     | 'booking_approved'
     | 'booking_rejected'
     | 'subscription_expiring'
+    | 'trip_reminder'
+    | 'subscription_reminder'
+    | 'delay_alert'
     | 'system';
   read?: boolean;
   relatedEntityId?: string;

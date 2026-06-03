@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { db } from '@/lib/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { createNotification } from '@/lib/notifications';
+import { checkRouteCapacity, buildRouteKey, joinWaitlist } from '@/lib/waitlist';
 
 export default function ReservationPage() {
   const { language } = useLanguage();
@@ -50,6 +51,8 @@ export default function ReservationPage() {
     meetingPoint?: string;
     destinationType?: string;
     destinationName?: string;
+    requiresWheelchairSpace?: boolean;
+    requiresAssistant?: boolean;
   }) => {
     // Block if user is not verified or approved
     const isVerified = user?.verified === true || user?.verificationStatus === 'approved' || user?.verificationStatus === 'verified';
@@ -60,10 +63,50 @@ export default function ReservationPage() {
     }
 
     const reservationNumber = generateReservationNumber();
+    const routeKey = buildRouteKey(data.departurePoint, data.destination, data.date, data.time);
+
+    // Check route capacity before booking
+    try {
+      const capacityCheck = await checkRouteCapacity(routeKey, data.vehicleType);
+      if (capacityCheck.isFull) {
+        const join = confirm(
+          language === 'ar'
+            ? `الرحلة ممتلئة (${capacityCheck.totalPassengers}/${capacityCheck.capacity}). هل تريد الانضمام إلى قائمة الانتظار؟`
+            : `Trajet complet (${capacityCheck.totalPassengers}/${capacityCheck.capacity}). Rejoindre la liste d'attente ?`
+        );
+        if (join && user) {
+          await joinWaitlist({
+            userId: user.id,
+            fullName: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            phoneNumber: user.phoneNumber || user.phone || '',
+            routeKey,
+            fromPoint: data.departurePoint,
+            toDestination: data.destination,
+            date: data.date,
+            time: data.time,
+            passengersCount: data.seats,
+            vehicleType: data.vehicleType,
+          });
+          await createNotification({
+            userId: user.id,
+            titleAr: 'تمت إضافتك لقائمة الانتظار 📋',
+            titleFr: 'Ajouté à la liste d\'attente 📋',
+            messageAr: `تم إضافتك لقائمة الانتظار للرحلة من ${data.departurePoint} إلى ${data.destination} بتاريخ ${data.date}. سيتم إعلامك حال توفر مقعد.`,
+            messageFr: `Vous êtes sur la liste d'attente pour le trajet de ${data.departurePoint} à ${data.destination} le ${data.date}. Vous serez notifié dès qu'une place se libère.`,
+            type: 'system',
+          });
+          alert(language === 'ar' ? 'تمت إضافتك لقائمة الانتظار بنجاح' : 'Ajouté à la liste d\'attente avec succès');
+        }
+        return;
+      }
+    } catch (e) {
+      console.error('[Reservation] Capacity check error:', e);
+    }
 
     // Persist to Firestore (collection: bookings)
     try {
       const docRef = await addDoc(collection(db, 'bookings'), {
+        routeKey,
         userId: user.id,
         fullName: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
         phoneNumber: user.phoneNumber || user.phone || '',
@@ -130,6 +173,10 @@ export default function ReservationPage() {
         destinationName: data.destinationName || '',
         driverId: '',
         bookingStatus: 'pending',
+        requiresWheelchairSpace: data.requiresWheelchairSpace || false,
+        requiresAssistant: data.requiresAssistant || false,
+        specialNeedsUser: user?.specialNeeds || false,
+        specialNeedsType: user?.specialNeedsType || '',
         updatedAt: serverTimestamp(),
       });
       console.log('[Reservation] Phase 10 Booking created in Firestore:', reservationNumber);
@@ -143,6 +190,25 @@ export default function ReservationPage() {
         messageFr: `Votre demande de trajet #${reservationNumber} de ${data.departurePoint} à ${data.destination} est en cours de validation par l'administration.`,
         type: 'system',
       });
+
+      // Notify admin if special needs assistance is required
+      if (data.requiresWheelchairSpace || data.requiresAssistant) {
+        await createNotification({
+          userId: 'admin',
+          titleAr: 'طلب حجز يتطلب مساعدة خاصة ♿',
+          titleFr: 'Réservation nécessitant une assistance spéciale ♿',
+          messageAr: `المستخدم ${user.fullName} طلب ${data.requiresWheelchairSpace ? 'مساحة كرسي متحرك' : ''} ${data.requiresAssistant ? 'و مرافق' : ''} في الحجز #${reservationNumber}.`,
+          messageFr: `L'utilisateur ${user.fullName} a demandé ${data.requiresWheelchairSpace ? 'un espace fauteuil roulant' : ''} ${data.requiresAssistant ? 'et un accompagnateur' : ''} pour la réservation #${reservationNumber}.`,
+          type: 'system',
+          relatedEntityId: docRef.id,
+          relatedEntityType: 'booking',
+        });
+      }
+
+      // Vibration alert for booking confirmation (for deaf/hard-of-hearing users)
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+      }
 
       // If user is NOT subscribed, create pending payment and redirect to secure payments portal
       if (!isSubscriptionActive) {

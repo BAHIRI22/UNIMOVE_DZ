@@ -4,8 +4,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
-import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock, CreditCard } from 'lucide-react';
-import { useState } from 'react';
+import { Download, Eye, EyeOff, Wifi, ShieldCheck, Smartphone, Radio, Lock, CreditCard, WifiOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -13,7 +13,38 @@ export function MembershipCard() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const [showQR, setShowQR] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    setIsOffline(!navigator.onLine);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Cache card data for offline use
+  useEffect(() => {
+    if (user && typeof window !== 'undefined' && navigator.onLine) {
+      const cardData = {
+        cardNumber: user.cardNumber,
+        fullName: user.fullName,
+        institution: user.institution,
+        subscription: user.subscription,
+        validUntil: user.validUntil,
+        qrCode: user.qrCode,
+        verified: user.verified,
+        verificationStatus: (user as any).verificationStatus,
+        subscriptionStatus: user.subscriptionStatus,
+      };
+      localStorage.setItem('unimove_card_cache', JSON.stringify(cardData));
+    }
+  }, [user]);
 
   if (!user) return null;
 
@@ -88,7 +119,15 @@ export function MembershipCard() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{t('dashboard.myCard')}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{t('dashboard.myCard')}</h2>
+        {isOffline && (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-700">
+            <WifiOff className="w-3 h-3" />
+            {language === 'ar' ? 'وضع عدم الاتصال' : 'Hors ligne'}
+          </span>
+        )}
+      </div>
 
       {/* Card */}
       <motion.div

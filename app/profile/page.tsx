@@ -33,7 +33,7 @@ export default function ProfilePage() {
         firstNameAr: user.firstName || user.fullName.split(' ')[0] || '',
         lastName: user.lastName || user.fullName.split(' ').slice(1).join(' '),
         lastNameAr: user.lastName || user.fullName.split(' ').slice(1).join(' '),
-        userType: user.role === 'admin' ? 'administrative' : user.role,
+        userType: (user.role === 'admin' ? 'administrative' : user.role) as any,
         userTypeAr: user.role,
         university: user.university || user.institution,
         universityAr: user.university || user.institution,

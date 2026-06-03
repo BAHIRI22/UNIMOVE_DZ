@@ -16,7 +16,7 @@ import { EmergencyType } from '@/types/support';
 import { emergencyTypes, generateTicketNumber } from '@/mock/support-data';
 
 export default function EmergencyPage() {
-  const { language } = useAuth();
+  const { language } = useLanguage();
   const router = useRouter();
   const [type, setType] = useState<EmergencyType | ''>('');
   const [description, setDescription] = useState('');

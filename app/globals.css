@@ -464,4 +464,75 @@
     filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(118deg) brightness(118%) contrast(119%) drop-shadow(0 0 4px rgba(74, 222, 128, 0.6));
     cursor: pointer;
   }
+
+}
+
+/* High Contrast Mode */
+html.high-contrast body {
+  filter: contrast(1.35) saturate(1.15);
+}
+html.high-contrast .bg-slate-900,
+html.high-contrast .bg-slate-800 {
+  background-color: #000 !important;
+}
+html.high-contrast .text-slate-200,
+html.high-contrast .text-slate-300,
+html.high-contrast .text-white {
+  color: #fff !important;
+}
+html.high-contrast .border-white\/10,
+html.high-contrast .border-white\/15 {
+  border-color: #fff !important;
+}
+html.high-contrast a,
+html.high-contrast button,
+html.high-contrast [role="button"] {
+  outline: 2px solid transparent;
+}
+html.high-contrast a:focus-visible,
+html.high-contrast button:focus-visible,
+html.high-contrast [role="button"]:focus-visible,
+html.high-contrast input:focus-visible,
+html.high-contrast select:focus-visible,
+html.high-contrast textarea:focus-visible {
+  outline: 3px solid #facc15 !important;
+  outline-offset: 2px;
+}
+
+/* Large Fonts Mode */
+html.large-fonts body {
+  font-size: 1.15rem;
+}
+html.large-fonts h1, html.large-fonts h2, html.large-fonts h3 {
+  font-size: 1.35em;
+}
+html.large-fonts .text-xs {
+  font-size: 0.85rem !important;
+}
+html.large-fonts .text-sm {
+  font-size: 1rem !important;
+}
+html.large-fonts .text-base {
+  font-size: 1.15rem !important;
+}
+html.large-fonts .text-lg {
+  font-size: 1.3rem !important;
+}
+html.large-fonts .text-xl {
+  font-size: 1.45rem !important;
+}
+html.large-fonts .text-2xl {
+  font-size: 1.7rem !important;
+}
+html.large-fonts .text-3xl {
+  font-size: 2rem !important;
+}
+
+/* Reduce Motion */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

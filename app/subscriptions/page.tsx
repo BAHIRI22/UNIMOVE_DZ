@@ -205,7 +205,7 @@ export default function SubscriptionsPage() {
         subscriptionPlan: selectedPlan.type,
         subscriptionEndDate: endDateString,
         validUntil: endDate.toLocaleDateString('fr-FR'), // Compatibilité avec les anciennes cartes
-        subscription: selectedPlan.type, // Compatibilité avec MembershipCard
+        subscription: selectedPlan.type as any, // Compatibilité avec MembershipCard
       });
 
       // 5. Create User Notification

@@ -12,6 +12,12 @@ export interface Stop {
     lng: number;
   };
   isMajor: boolean;
+  accessibilityInfo?: {
+    hasRamp: boolean;
+    hasAccessiblePath: boolean;
+    distanceKm?: number;
+    walkingTimeMinutes?: number;
+  };
 }
 
 export interface Route {

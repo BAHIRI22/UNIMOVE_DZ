@@ -9,6 +9,7 @@ export const mockStops: Stop[] = [
     locationAr: 'ساحة 1 نوفمبر',
     coordinates: { lat: 35.1898, lng: -0.6327 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.2, walkingTimeMinutes: 3 },
   },
   {
     id: 'stop-002',
@@ -18,6 +19,7 @@ export const mockStops: Stop[] = [
     locationAr: 'الحرم الجامعي الرئيسي',
     coordinates: { lat: 35.2105, lng: -0.6158 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.1, walkingTimeMinutes: 2 },
   },
   {
     id: 'stop-003',
@@ -27,6 +29,7 @@ export const mockStops: Stop[] = [
     locationAr: 'المدينة الجامعية',
     coordinates: { lat: 35.2050, lng: -0.6200 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: false, hasAccessiblePath: true, distanceKm: 0.5, walkingTimeMinutes: 7 },
   },
   {
     id: 'stop-004',
@@ -36,6 +39,7 @@ export const mockStops: Stop[] = [
     locationAr: 'حرم الحقوق',
     coordinates: { lat: 35.2080, lng: -0.6180 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.15, walkingTimeMinutes: 2 },
   },
   {
     id: 'stop-005',
@@ -45,6 +49,7 @@ export const mockStops: Stop[] = [
     locationAr: 'محطة سيدي بلعباس',
     coordinates: { lat: 35.1950, lng: -0.6280 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: false, distanceKm: 0.3, walkingTimeMinutes: 4 },
   },
   {
     id: 'stop-006',
@@ -54,6 +59,7 @@ export const mockStops: Stop[] = [
     locationAr: 'مستشفى سيدي بلعباس',
     coordinates: { lat: 35.2000, lng: -0.6250 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.1, walkingTimeMinutes: 1 },
   },
   {
     id: 'stop-007',
@@ -63,6 +69,7 @@ export const mockStops: Stop[] = [
     locationAr: 'حرم التكنولوجيا',
     coordinates: { lat: 35.2150, lng: -0.6120 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: false, hasAccessiblePath: true, distanceKm: 0.4, walkingTimeMinutes: 5 },
   },
   {
     id: 'stop-008',
@@ -72,6 +79,7 @@ export const mockStops: Stop[] = [
     locationAr: 'حرم العلوم',
     coordinates: { lat: 35.2120, lng: -0.6140 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.2, walkingTimeMinutes: 3 },
   },
   {
     id: 'stop-009',
@@ -81,6 +89,7 @@ export const mockStops: Stop[] = [
     locationAr: 'الملاحق الشمالية',
     coordinates: { lat: 35.2200, lng: -0.6100 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: true, hasAccessiblePath: true, distanceKm: 0.25, walkingTimeMinutes: 4 },
   },
   {
     id: 'stop-010',
@@ -90,6 +99,7 @@ export const mockStops: Stop[] = [
     locationAr: 'القطب الجنوبي',
     coordinates: { lat: 35.2180, lng: -0.6080 },
     isMajor: true,
+    accessibilityInfo: { hasRamp: false, hasAccessiblePath: true, distanceKm: 0.35, walkingTimeMinutes: 5 },
   },
 ];
 

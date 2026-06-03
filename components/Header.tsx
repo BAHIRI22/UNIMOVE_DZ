@@ -2,6 +2,8 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { AccessibilityMenu } from '@/components/AccessibilityMenu';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { LogOut, Menu, X } from 'lucide-react';
@@ -112,6 +114,12 @@ export function Header() {
 
           {/* Right Side - Auth & Language */}
           <div className="flex items-center gap-1.5 md:gap-2.5 flex-shrink-0">
+            {/* Theme & Accessibility */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <ThemeToggle />
+              <AccessibilityMenu />
+            </div>
+
             {/* Language Toggle */}
             <motion.button
               whileHover={{ scale: 1.05 }}

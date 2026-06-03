@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { mockStops } from '@/mock/routes-data';
 import { Card } from '@/components/ui/card';
-import { MapPin } from 'lucide-react';
+import { MapPin, Accessibility, Ruler, Clock, Footprints } from 'lucide-react';
 
 export default function StopsPage() {
   const { language } = useLanguage();
@@ -67,16 +67,50 @@ export default function StopsPage() {
                     }`}>
                       <MapPin className="w-4 h-4 text-white" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h4 className={`font-bold ${stop.isMajor ? 'text-emerald-900' : 'text-gray-900'}`}>
                         {language === 'ar' ? stop.nameAr : stop.name}
                       </h4>
                       <p className="text-sm text-gray-600">
                         {language === 'ar' ? stop.locationAr : stop.location}
                       </p>
-                      {stop.isMajor && (
-                        <div className="mt-2 px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium inline-block">
-                          {language === 'ar' ? 'رئيسي' : 'Principal'}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {stop.isMajor && (
+                          <div className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium inline-block">
+                            {language === 'ar' ? 'رئيسي' : 'Principal'}
+                          </div>
+                        )}
+                        {stop.accessibilityInfo && (
+                          <>
+                            {stop.accessibilityInfo.hasRamp && (
+                              <div className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium inline-flex items-center gap-1">
+                                <Accessibility className="w-3 h-3" />
+                                {language === 'ar' ? 'منحدر' : 'Rampe'}
+                              </div>
+                            )}
+                            {stop.accessibilityInfo.hasAccessiblePath && (
+                              <div className="px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium inline-flex items-center gap-1">
+                                <Footprints className="w-3 h-3" />
+                                {language === 'ar' ? 'مسار سهل' : 'Chemin accessible'}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                      {stop.accessibilityInfo && (
+                        <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                          {stop.accessibilityInfo.distanceKm !== undefined && (
+                            <span className="inline-flex items-center gap-1">
+                              <Ruler className="w-3 h-3" />
+                              {stop.accessibilityInfo.distanceKm} km
+                            </span>
+                          )}
+                          {stop.accessibilityInfo.walkingTimeMinutes !== undefined && (
+                            <span className="inline-flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {stop.accessibilityInfo.walkingTimeMinutes} {language === 'ar' ? 'د' : 'min'}
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>

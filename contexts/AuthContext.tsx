@@ -88,6 +88,13 @@ export interface User {
   subscriptionStatus?: 'active' | 'inactive';
   subscriptionPlan?: string;
   subscriptionEndDate?: string;
+  // Special needs fields
+  specialNeeds?: boolean;
+  specialNeedsType?: string;
+  specialNeedsDocumentUrl?: string;
+  specialNeedsDocumentName?: string;
+  specialNeedsVerified?: boolean;
+  requiresAssistant?: boolean;
   createdAt: string;
   updatedAt?: string;
   isApproved?: boolean;
@@ -354,6 +361,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (foundDoc) {
       return normalizeStoredUser({ id: foundDoc.id, ...foundDoc.data });
+    }
+
+    // If not found in users, check drivers collection and auto-create a user record
+    for (const fmt of searchFormats) {
+      try {
+        const drvQuery = query(collection(db, 'drivers'), where('phoneNumber', '==', fmt), limit(1));
+        const drvSnap = await getDocs(drvQuery);
+        if (!drvSnap.empty) {
+          const drvData = drvSnap.docs[0].data();
+          const newUserId = `phone-${fmt.replace(/\D/g, '')}`;
+          const driverUserData = {
+            phone: fmt,
+            phoneNumber: fmt,
+            firstName: drvData.fullName?.split(' ')[0] || 'Sofiane',
+            lastName: drvData.fullName?.split(' ').slice(1).join(' ') || 'Deraji',
+            fullName: drvData.fullName || 'سفيان دراجي',
+            role: 'driver',
+            university: 'UNIMOVE-DZ',
+            institution: 'UNIMOVE-DZ',
+            verificationStatus: 'approved',
+            accountStatus: 'active',
+            verified: true,
+            status: 'approved',
+            isApproved: true,
+            cardNumber: `UNIMOVE-DRV-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${fmt}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          await setDoc(doc(db, 'users', newUserId), driverUserData, { merge: true });
+          return normalizeStoredUser({ id: newUserId, ...driverUserData });
+        }
+      } catch (e) {
+        console.error('[findUserByPhone] Driver lookup error:', e);
+      }
     }
 
     const localUser = typeof window !== 'undefined' ? localStorage.getItem(`user_${phoneNumber}`) : null;

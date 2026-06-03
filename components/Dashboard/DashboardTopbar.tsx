@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { AccessibilityMenu } from '@/components/AccessibilityMenu';
 import { Bell, Search, Settings, Menu, User, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +18,10 @@ interface SimpleNotification {
   titleAr: string;
   titleFr: string;
   read: boolean;
+}
+
+interface DashboardTopbarProps {
+  onMobileMenuClick?: () => void;
 }
 
 export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
@@ -191,6 +197,10 @@ export function DashboardTopbar({ onMobileMenuClick }: DashboardTopbarProps) {
           >
             {language === 'ar' ? 'وضع العرض' : 'Mode présentation'}
           </Link>
+
+          {/* Theme & Accessibility */}
+          <ThemeToggle />
+          <AccessibilityMenu />
 
           {/* Language toggle */}
           <button

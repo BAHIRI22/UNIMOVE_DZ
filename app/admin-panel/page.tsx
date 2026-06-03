@@ -6,6 +6,7 @@ import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, where, 
 import { useRouter } from 'next/navigation';
 import { createNotification } from '@/lib/notifications';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { processWaitlistOnBookingChange } from '@/lib/waitlist';
 import dynamic from 'next/dynamic';
 
 const AdminTripMap = dynamic(() => import('@/components/AdminTripMap'), { ssr: false });
@@ -431,6 +432,16 @@ export default function AdminPanelPage() {
             availabilityStatus: 'available',
             currentBookingId: null,
           });
+        }
+        // Auto-promote from waitlist if space freed up
+        const routeKey = (booking as any).routeKey;
+        const vehicleType = (booking as any).vehicleType;
+        if (routeKey && vehicleType) {
+          try {
+            await processWaitlistOnBookingChange(routeKey, vehicleType);
+          } catch (e) {
+            console.error('[Admin Panel] Waitlist promotion error:', e);
+          }
         }
       }
 

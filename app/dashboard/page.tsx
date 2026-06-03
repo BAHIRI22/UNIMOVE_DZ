@@ -125,7 +125,7 @@ export default function DashboardPage() {
       semester: language === 'ar' ? 'سداسي' : 'Semestriel',
       yearly: language === 'ar' ? 'سنوي' : 'Annuel',
     };
-    subLabel = plansMapping[user.subscriptionPlan] || (language === 'ar' ? 'نشط' : 'Actif');
+    subLabel = plansMapping[(user.subscriptionPlan as keyof typeof plansMapping)] || (language === 'ar' ? 'نشط' : 'Actif');
   }
 
   const stats = [
