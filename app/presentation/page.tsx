@@ -8,12 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function PresentationPage() {
   const { language } = useLanguage();
   const router = useRouter();
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
       <div className="max-w-6xl mx-auto p-8 space-y-8">
         {/* Header */}
@@ -107,5 +109,6 @@ export default function PresentationPage() {
         </Card>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

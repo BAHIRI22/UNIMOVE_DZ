@@ -563,8 +563,8 @@ export default function AdminPanelPage() {
           userId: booking.userId,
           titleAr: 'تم قبول رحلتك 🎉',
           titleFr: 'Votre trajet a été approuvé 🎉',
-          messageAr: `تم قبول رحلتك من ${booking.fromPoint} إلى ${booking.toDestination}. السائق: ${selectedDriver.fullName}, المركبة: ${selectedVehicle.vehicleNumber}, السعر النهائي: ${finalPriceVal} DZD.`,
-          messageFr: `Votre trajet de ${booking.fromPoint} vers ${booking.toDestination} a été approuvé. Chauffeur : ${selectedDriver.fullName}, Véhicule : ${selectedVehicle.vehicleNumber}, Tarif final : ${finalPriceVal} DZD.`,
+          messageAr: `تم قبول رحلتك من ${booking.fromPoint} إلى ${booking.toDestination}. السائق: ${selectedDriver.fullName}, المركبة: ${selectedVehicle.vehicleNumber}, السعر النهائي: ${finalPriceVal} DA.`,
+          messageFr: `Votre trajet de ${booking.fromPoint} vers ${booking.toDestination} a été approuvé. Chauffeur : ${selectedDriver.fullName}, Véhicule : ${selectedVehicle.vehicleNumber}, Tarif final : ${finalPriceVal} DA.`,
           type: 'system',
         });
       }
@@ -1847,7 +1847,7 @@ export default function AdminPanelPage() {
                       <td style={{ padding: 14 }}>{sub.fullName}</td>
                       <td style={{ padding: 14 }}>{sub.userPhone}</td>
                       <td style={{ padding: 14, fontWeight: 700, color: '#10b981' }}>{sub.planNameAr}</td>
-                      <td style={{ padding: 14 }}>{sub.price} DZD</td>
+                      <td style={{ padding: 14 }}>{sub.price} DA</td>
                       <td style={{ padding: 14 }}>
                         <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: statusBg, color: statusColor }}>
                           {statusLabel}
@@ -2821,7 +2821,7 @@ export default function AdminPanelPage() {
                       <td style={{ padding: 14 }}>{p.fullName || '-'}</td>
                       <td style={{ padding: 14, fontFamily: 'monospace', fontSize: 12 }}>{p.phoneNumber || '-'}</td>
                       <td style={{ padding: 14 }}>{p.relatedType === 'booking' ? 'حجز' : p.relatedType === 'subscription' ? 'اشتراك' : '-'}</td>
-                      <td style={{ padding: 14, fontWeight: 700 }}>{p.amount} {p.currency || 'DZD'}</td>
+                      <td style={{ padding: 14, fontWeight: 700 }}>{p.amount} DA</td>
                       <td style={{ padding: 14 }}>{methodLabel}</td>
                       <td style={{ padding: 14 }}>
                         <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: pBg, color: pColor }}>{pLabel}</span>

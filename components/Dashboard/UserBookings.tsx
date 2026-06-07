@@ -261,11 +261,11 @@ export function UserBookings() {
                   {/* Pricing break downs */}
                   <div className="text-xs">
                     <span className="opacity-75">{isAr ? 'السعر التقديري:' : 'Tarif estimé :'} </span>
-                    <span className="font-bold text-emerald-600">{b.estimatedPrice || b.price} DZD</span>
+                    <span className="font-bold text-emerald-600">{b.estimatedPrice || b.price} DA</span>
                     {b.finalPrice !== b.estimatedPrice && b.finalPrice && (
                       <>
                         <span className="opacity-75 mx-2">| {isAr ? 'السعر النهائي المعتمد:' : 'Tarif final :'} </span>
-                        <span className="font-extrabold text-teal-600 bg-teal-50 px-2 py-1 rounded border border-teal-200">{b.finalPrice} DZD</span>
+                        <span className="font-extrabold text-teal-600 bg-teal-50 px-2 py-1 rounded border border-teal-200">{b.finalPrice} DA</span>
                       </>
                     )}
                   </div>
@@ -296,7 +296,7 @@ export function UserBookings() {
                         {isAr ? `نقطة الانطلاق: ${b.fromPoint}` : `Départ : ${b.fromPoint}`} · {isAr ? `الوجهة: ${b.toDestination}` : `Destination : ${b.toDestination}`}
                       </p>
                       <p className="text-slate-600">
-                        {isAr ? `السعر النهائي: ${b.finalPrice || b.estimatedPrice || b.price} DZD` : `Tarif final : ${b.finalPrice || b.estimatedPrice || b.price} DZD`}
+                        {isAr ? `السعر النهائي: ${b.finalPrice || b.estimatedPrice || b.price} DA` : `Tarif final : ${b.finalPrice || b.estimatedPrice || b.price} DA`}
                       </p>
                       {b.trackingEnabled && (
                         <p className="text-sky-700 font-bold">

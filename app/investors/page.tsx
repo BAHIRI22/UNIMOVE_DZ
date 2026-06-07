@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -41,10 +42,10 @@ export default function InvestorsPage() {
   const router = useRouter();
 
   const startupKpis = [
-    { icon: Users, value: '+10K', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés', trend: '+45%' },
-    { icon: DollarSign, value: '12.5M DA', label: language === 'ar' ? 'إيرادات سنوية مقدرة' : 'Revenus annuels estimés', trend: '+32%' },
-    { icon: Car, value: '+120', label: language === 'ar' ? 'رحلة يومية محتملة' : 'Trajets quotidiens potentiels', trend: '+38%' },
-    { icon: Trophy, value: '7', label: language === 'ar' ? 'مصادر دخل' : 'Sources revenus', trend: '+20%' },
+    { icon: Users, value: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés', trend: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer' },
+    { icon: DollarSign, value: '10.88M DA', label: language === 'ar' ? 'إيرادات سنوية مقدرة (Y1)' : 'Revenus annuels estimés (Y1)', trend: 'Prévisionnel' },
+    { icon: Car, value: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer', label: language === 'ar' ? 'رحلة يومية محتملة' : 'Trajets quotidiens potentiels', trend: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer' },
+    { icon: Trophy, value: '5', label: language === 'ar' ? 'مصادر دخل' : 'Sources revenus', trend: 'Prévisionnel' },
   ];
 
   const marketProblems = [
@@ -70,20 +71,19 @@ export default function InvestorsPage() {
   ];
 
   const revenue = [
-    { label: language === 'ar' ? 'الاشتراكات' : 'Abonnements', value: 45, amount: '5.62M DA' },
-    { label: language === 'ar' ? 'الرحلات المباشرة' : 'Trajets directs', value: 30, amount: '3.75M DA' },
-    { label: language === 'ar' ? 'الإعلانات' : 'Publicité', value: 5, amount: '625K DA' },
-    { label: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: 2, amount: '250K DA' },
-    { label: language === 'ar' ? 'عمولات المستثمرين' : 'Commissions investisseurs', value: 4, amount: '500K DA' },
-    { label: language === 'ar' ? 'المطار والسياحة والأحداث' : 'Aéroport, tourisme, événements', value: 14, amount: '1.75M DA' },
+    { label: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: 83, amount: '9.00M DA' },
+    { label: language === 'ar' ? 'الاشتراكات الشهرية' : 'Abonnements mensuels', value: 11, amount: '1.25M DA' },
+    { label: language === 'ar' ? 'رحلات إضافية' : 'Voyages additionnels', value: 3, amount: '320K DA' },
+    { label: language === 'ar' ? 'إعلانات in-app (CPM)' : 'Publicité in-app (CPM)', value: 2, amount: '250K DA' },
+    { label: language === 'ar' ? 'حجوزات يومية مباشرة' : 'Réservations journalières', value: 1, amount: '63K DA' },
   ];
 
   const projections = [
-    { year: 'Y1', value: 3.2 },
-    { year: 'Y2', value: 7.8 },
-    { year: 'Y3', value: 12.5 },
-    { year: 'Y4', value: 21.4 },
-    { year: 'Y5', value: 34.0 },
+    { year: 'Y1', value: 10.883 },
+    { year: 'Y2', value: 19.465 },
+    { year: 'Y3', value: 36.245 },
+    { year: 'Y4', value: 68.870 },
+    { year: 'Y5', value: 132.565 },
   ];
 
   const roadmap = [
@@ -94,6 +94,28 @@ export default function InvestorsPage() {
     { phase: '05', title: language === 'ar' ? 'تطبيقات أصلية' : 'Mobile app native', text: language === 'ar' ? 'Android/iOS بتجربة أسرع وأكثر تكاملاً.' : 'Android/iOS avec expérience plus rapide et intégrée.' },
     { phase: '06', title: language === 'ar' ? 'ذكاء اصطناعي' : 'AI optimization', text: language === 'ar' ? 'تحسين المسارات والتنبؤ بالطلب.' : 'Optimisation des itinéraires et prévision de demande.' },
     { phase: '07', title: language === 'ar' ? 'Smart Campus' : 'Smart campus ecosystem', text: language === 'ar' ? 'منظومة تنقل وخدمات جامعية متكاملة.' : 'Écosystème mobilité et services campus intégrés.' },
+  ];
+
+  const teamEvolution = [
+    { year: 'Y1', count: 9, roles: language === 'ar' ? '1 مدير، 1 نائب مدير، 2 تقني، 2 إداري، 3 سائق' : '1 DG, 1 DGA, 2 tech, 2 admin, 3 chauffeurs' },
+    { year: 'Y2', count: 12, roles: language === 'ar' ? '1 مدير، 1 نائب مدير، 3 تقني، 2 إداري، 5 سائق' : '1 DG, 1 DGA, 3 tech, 2 admin, 5 chauffeurs' },
+    { year: 'Y3', count: 18, roles: language === 'ar' ? '1 مدير، 1 نائب مدير، 5 تقني، 4 إداري، 7 سائق' : '1 DG, 1 DGA, 5 tech, 4 admin, 7 chauffeurs' },
+    { year: 'Y4', count: 21, roles: language === 'ar' ? '1 مدير، 1 نائب مدير، 5 تقني، 4 إداري، 10 سائق' : '1 DG, 1 DGA, 5 tech, 4 admin, 10 chauffeurs' },
+    { year: 'Y5', count: 29, roles: language === 'ar' ? '1 مدير، 2 نائب مدير، 6 تقني، 6 إداري، 14 سائق' : '1 DG, 2 DGA, 6 tech, 6 admin, 14 chauffeurs' },
+  ];
+
+  const partnershipEvolution = [
+    { year: 'Y1', count: 2, type: language === 'ar' ? 'عقدي جامعة/معهد' : 'Contrats université/institut' },
+    { year: 'Y2', count: 3, type: language === 'ar' ? '3 عقود سنوية' : '3 contrats annuels' },
+    { year: 'Y3', count: 5, type: language === 'ar' ? '5 عقود سنوية' : '5 contrats annuels' },
+    { year: 'Y4', count: 7, type: language === 'ar' ? '7 عقود سنوية' : '7 contrats annuels' },
+    { year: 'Y5', count: 9, type: language === 'ar' ? '9 عقود سنوية' : '9 contrats annuels' },
+  ];
+
+  const marketOpportunity = [
+    { label: language === 'ar' ? 'TAM' : 'TAM', value: language === 'ar' ? '—' : '—', desc: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
+    { label: language === 'ar' ? 'SAM' : 'SAM', value: language === 'ar' ? '—' : '—', desc: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
+    { label: language === 'ar' ? 'SOM (Y3)' : 'SOM (Y3)', value: language === 'ar' ? '—' : '—', desc: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
   ];
 
   const techStack = [
@@ -110,6 +132,7 @@ export default function InvestorsPage() {
   const maxProjection = Math.max(...projections.map((item) => item.value));
 
   return (
+    <ProtectedRoute>
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
       <section className="relative px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.26),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.20),transparent_42%)]" />
@@ -118,7 +141,7 @@ export default function InvestorsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-black text-emerald-100 backdrop-blur-xl">
                 <Rocket className="h-4 w-4" />
-                {language === 'ar' ? 'Investor Pitch Experience' : 'Investor Pitch Experience'}
+                {language === 'ar' ? 'عرض الاستثمار' : 'Investor Pitch Experience'}
               </div>
               <Button
                 onClick={() => router.back()}
@@ -164,7 +187,7 @@ export default function InvestorsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-3xl">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Problème marché' : 'Problème marché'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'مشكلة السوق' : 'Problème du marché'}</h2>
           <p className="mt-4 text-lg leading-8 text-slate-300">
             {language === 'ar'
               ? 'النقل الجامعي يعاني من غياب التنظيم الرقمي، تأخر الطلبة، ضغط يومي، وعدم وجود منصة موحدة للحجز والتتبع.'
@@ -211,7 +234,7 @@ export default function InvestorsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Marché cible' : 'Marché cible'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'السوق المستهدف' : 'Marché cible'}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
             {language === 'ar' ? 'شرائح استخدام واضحة داخل الجامعة مع قابلية توسع إلى عدة جامعات.' : 'Segments d’usage clairs au sein de l’université avec potentiel multi-campus.'}
           </p>
@@ -238,7 +261,7 @@ export default function InvestorsPage() {
                 <BarChart3 className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-2xl font-black">{language === 'ar' ? 'Business opportunity' : 'Business opportunity'}</h2>
+                <h2 className="text-2xl font-black">{language === 'ar' ? 'فرصة العمل' : 'Opportunité business'}</h2>
                 <p className="text-sm text-slate-300">{language === 'ar' ? 'مصادر إيرادات قابلة للتوسع' : 'Sources de revenus scalables'}</p>
               </div>
             </div>
@@ -263,7 +286,7 @@ export default function InvestorsPage() {
                 <LineChart className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-2xl font-black">{language === 'ar' ? 'Projections revenus' : 'Projections revenus'}</h2>
+                <h2 className="text-2xl font-black">{language === 'ar' ? 'توقعات الإيرادات' : 'Projections de revenus'}</h2>
                 <p className="text-sm text-slate-300">{language === 'ar' ? 'Croissance estimée sur 5 ans' : 'Croissance estimée sur 5 ans'}</p>
               </div>
             </div>
@@ -284,7 +307,7 @@ export default function InvestorsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Roadmap startup' : 'Roadmap startup'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'خارطة طريق الشركة الناشئة' : 'Roadmap startup'}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
             {language === 'ar' ? 'من MVP إلى منظومة Smart Campus.' : 'Du MVP à un écosystème Smart Campus.'}
           </p>
@@ -305,7 +328,7 @@ export default function InvestorsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-3xl">
-          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Technologies & architecture' : 'Technologies & architecture'}</h2>
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'التقنيات والبنية التقنية' : 'Technologies & architecture'}</h2>
           <p className="mt-4 text-lg leading-8 text-slate-300">
             {language === 'ar' ? 'Stack moderne pour une plateforme SaaS démontrable et évolutive.' : 'Stack moderne pour une plateforme SaaS démontrable et évolutive.'}
           </p>
@@ -323,11 +346,89 @@ export default function InvestorsPage() {
         </div>
       </section>
 
+      {/* Market Opportunity */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'حجم السوق والفرصة' : 'Taille du marché & opportunité'}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
+            {language === 'ar' ? 'سوق نقل الجامعات في الجزائر ضخم وغير مستغ رقمياً.' : 'Le marché du transport universitaire en Algérie est immense et sous-digitialisé.'}
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {marketOpportunity.map((item, index) => (
+            <motion.div key={item.label} initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }}>
+              <Card className="rounded-3xl border-white/10 bg-white/[0.08] p-6 text-white shadow-xl backdrop-blur-xl text-center">
+                <div className="text-4xl font-black text-emerald-300">{item.value}</div>
+                <h3 className="mt-2 text-xl font-black">{item.label}</h3>
+                <p className="mt-2 text-sm font-semibold text-slate-300">{item.desc}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Team & Partnership Evolution */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="rounded-3xl border-white/10 bg-white/[0.08] p-7 text-white shadow-2xl backdrop-blur-xl md:p-8">
+            <div className="mb-8 flex items-center gap-3">
+              <div className="rounded-2xl bg-purple-400/15 p-3 text-purple-300">
+                <Users className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black">{language === 'ar' ? 'تطور الفريق' : 'Évolution de l\'équipe'}</h2>
+                <p className="text-sm text-slate-300">{language === 'ar' ? 'نمو هيكل التوظيف على 5 سنوات' : 'Croissance de l\'effectif sur 5 ans'}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {teamEvolution.map((item, index) => (
+                <motion.div key={item.year} initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.04 }}>
+                  <div className="mb-2 flex items-center justify-between text-sm font-black">
+                    <span>{item.year}</span>
+                    <span className="text-purple-300">{item.count} {language === 'ar' ? 'عضو' : 'membres'}</span>
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full bg-white/10">
+                    <motion.div initial={{ width: 0 }} whileInView={{ width: `${(item.count / 29) * 100}%` }} viewport={{ once: true }} transition={{ delay: 0.2 + index * 0.04 }} className="h-full rounded-full bg-gradient-to-r from-purple-300 to-pink-300" />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-400">{item.roles}</p>
+                </motion.div>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="rounded-3xl border-white/10 bg-white/[0.08] p-7 text-white shadow-2xl backdrop-blur-xl md:p-8">
+            <div className="mb-8 flex items-center gap-3">
+              <div className="rounded-2xl bg-emerald-400/15 p-3 text-emerald-300">
+                <Building2 className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black">{language === 'ar' ? 'تطور الشراكات' : 'Évolution des partenariats'}</h2>
+                <p className="text-sm text-slate-300">{language === 'ar' ? 'عدد عقود الجامعات والشركات' : 'Nombre de contrats universités et entreprises'}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {partnershipEvolution.map((item, index) => (
+                <motion.div key={item.year} initial={{ opacity: 0, x: -18 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.04 }}>
+                  <div className="mb-2 flex items-center justify-between text-sm font-black">
+                    <span>{item.year}</span>
+                    <span className="text-emerald-300">{item.count} {language === 'ar' ? 'عقد' : 'contrats'}</span>
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full bg-white/10">
+                    <motion.div initial={{ width: 0 }} whileInView={{ width: `${(item.count / 9) * 100}%` }} viewport={{ once: true }} transition={{ delay: 0.2 + index * 0.04 }} className="h-full rounded-full bg-gradient-to-r from-emerald-300 to-cyan-300" />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-400">{item.type}</p>
+                </motion.div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <Card className="rounded-3xl border-white/10 bg-gradient-to-br from-white to-emerald-50 p-8 text-slate-950 shadow-2xl md:p-12">
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
-              <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'Équipe & crédibilité académique' : 'Équipe & crédibilité académique'}</h2>
+              <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'الفريق والمصداقية الأكاديمية' : 'Équipe & crédibilité académique'}</h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
                 {language === 'ar' ? 'مشروع أكاديمي قابل للعرض كمنتج Startup.' : 'Un projet académique présentable comme produit startup.'}
               </p>
@@ -354,5 +455,6 @@ export default function InvestorsPage() {
         </Card>
       </section>
     </main>
+    </ProtectedRoute>
   );
 }

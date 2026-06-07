@@ -152,7 +152,7 @@ export default function ReceiptPage() {
               { label: isAr ? 'الاسم' : 'Nom', value: payment.fullName || '-' },
               { label: isAr ? 'الهاتف' : 'Téléphone', value: payment.phoneNumber || '-' },
               { label: isAr ? 'نوع المعاملة' : 'Type', value: payment.relatedType === 'booking' ? (isAr ? 'حجز رحلة' : 'Réservation') : payment.relatedType === 'subscription' ? (isAr ? 'اشتراك' : 'Abonnement') : '-' },
-              { label: isAr ? 'المبلغ' : 'Montant', value: `${payment.amount} ${payment.currency || 'DZD'}`, highlight: true },
+              { label: isAr ? 'المبلغ' : 'Montant', value: `${payment.amount} DA`, highlight: true },
               { label: isAr ? 'طريقة الدفع' : 'Méthode', value: isAr ? methodLabel.ar : methodLabel.fr },
               { label: isAr ? 'رقم المعاملة' : 'Réf. transaction', value: payment.transactionRef || '-', mono: true },
               { label: isAr ? 'التاريخ' : 'Date', value: dateStr },

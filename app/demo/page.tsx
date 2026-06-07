@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { ProtectedPageLink } from '@/components/ProtectedPageLink';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { PresentationMode } from '@/components/PresentationMode';
 import { Card } from '@/components/ui/card';
@@ -129,12 +130,12 @@ export default function DemoPage() {
                 : 'Firebase OTP et l’authentification ne sont pas modifiés. La présentation utilise les pages existantes avec un parcours clair.'}
             </p>
             <div className="mt-6 space-y-3">
-              <Link href="/business-model" className="flex h-12 items-center justify-center rounded-2xl bg-white/10 text-sm font-black transition hover:bg-white/15">
+              <ProtectedPageLink href="/business-model" className="flex h-12 items-center justify-center rounded-2xl bg-white/10 text-sm font-black transition hover:bg-white/15">
                 {language === 'ar' ? 'عرض نموذج الأعمال' : 'Voir business model'}
-              </Link>
-              <Link href="/financial-plan" className="flex h-12 items-center justify-center rounded-2xl bg-white/10 text-sm font-black transition hover:bg-white/15">
+              </ProtectedPageLink>
+              <ProtectedPageLink href="/financial-plan" className="flex h-12 items-center justify-center rounded-2xl bg-white/10 text-sm font-black transition hover:bg-white/15">
                 {language === 'ar' ? 'عرض الخطة المالية' : 'Voir financial plan'}
-              </Link>
+              </ProtectedPageLink>
               <Link href="/my-card" className="flex h-12 items-center justify-center rounded-2xl bg-emerald-500 text-sm font-black text-white transition hover:bg-emerald-400">
                 {language === 'ar' ? 'عرض بطاقة QR' : 'Voir QR Card'}
               </Link>

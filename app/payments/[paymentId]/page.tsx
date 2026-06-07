@@ -234,8 +234,8 @@ export default function PaymentCheckoutPage() {
         userId: user.id,
         titleAr: 'تم الدفع بنجاح ✅',
         titleFr: 'Paiement réussi ✅',
-        messageAr: `تم تأكيد دفعك بمبلغ ${payment.amount} DZD. رقم العملية: ${ref}`,
-        messageFr: `Votre paiement de ${payment.amount} DZD a été confirmé. Réf : ${ref}`,
+        messageAr: `تم تأكيد دفعك بمبلغ ${payment.amount} DA. رقم العملية: ${ref}`,
+        messageFr: `Votre paiement de ${payment.amount} DA a été confirmé. Réf : ${ref}`,
         type: 'system',
       });
     } catch (e) {
@@ -285,7 +285,7 @@ export default function PaymentCheckoutPage() {
           <h1 className="text-2xl font-black">{isAr ? 'إتمام الدفع' : 'Finaliser le paiement'}</h1>
           <p className="text-sm text-slate-400 font-bold">
             {isAr ? 'المبلغ المطلوب:' : 'Montant à payer:'}{' '}
-            <span className="text-emerald-400 text-xl">{payment.amount} {payment.currency || 'DZD'}</span>
+            <span className="text-emerald-400 text-xl">{payment.amount} DA</span>
           </p>
         </div>
 
@@ -523,7 +523,7 @@ export default function PaymentCheckoutPage() {
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-400">{isAr ? 'المبلغ' : 'Montant'}</span>
-                <span className="font-bold text-white">{payment.amount} DZD</span>
+                <span className="font-bold text-white">{payment.amount} DA</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-400">{isAr ? 'الطريقة' : 'Méthode'}</span>
@@ -561,7 +561,7 @@ export default function PaymentCheckoutPage() {
             <div className="bg-black/30 rounded-xl p-4 border border-white/10 space-y-2 text-left">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-400">{isAr ? 'المبلغ' : 'Montant'}</span>
-                <span className="font-bold text-white">{payment.amount} DZD</span>
+                <span className="font-bold text-white">{payment.amount} DA</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-400">{isAr ? 'الحالة' : 'Statut'}</span>

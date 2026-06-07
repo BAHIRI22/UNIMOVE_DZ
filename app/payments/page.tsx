@@ -174,8 +174,8 @@ export default function PaymentsPage() {
         userId: user.id,
         titleAr: 'تم الدفع بنجاح ✅',
         titleFr: 'Paiement réussi ✅',
-        messageAr: `تم تأكيد دفعك بمبلغ ${payment.amount} DZD. رقم العملية: ${txnRef}`,
-        messageFr: `Votre paiement de ${payment.amount} DZD a été confirmé. Réf : ${txnRef}`,
+        messageAr: `تم تأكيد دفعك بمبلغ ${payment.amount} DA. رقم العملية: ${txnRef}`,
+        messageFr: `Votre paiement de ${payment.amount} DA a été confirmé. Réf : ${txnRef}`,
         type: 'system',
       });
 
@@ -184,8 +184,8 @@ export default function PaymentsPage() {
         userId: 'admin',
         titleAr: 'دفع جديد مقبول 💳',
         titleFr: 'Nouveau paiement reçu 💳',
-        messageAr: `قام ${payment.fullName || 'مستخدم'} بدفع ${payment.amount} DZD (${payment.relatedType}).`,
-        messageFr: `${payment.fullName || 'Utilisateur'} a payé ${payment.amount} DZD (${payment.relatedType}).`,
+        messageAr: `قام ${payment.fullName || 'مستخدم'} بدفع ${payment.amount} DA (${payment.relatedType}).`,
+        messageFr: `${payment.fullName || 'Utilisateur'} a payé ${payment.amount} DA (${payment.relatedType}).`,
         type: 'system',
       });
     } catch (e) {
@@ -284,7 +284,7 @@ export default function PaymentsPage() {
                       <span className="text-xs opacity-50 font-mono">{p.paymentId || p.id}</span>
                     </div>
                     <p className="text-lg font-extrabold text-white">
-                      {p.amount} {p.currency || 'DZD'}
+                      {p.amount} DA
                     </p>
                     <p className="text-xs text-slate-400 font-semibold">
                       {isAr

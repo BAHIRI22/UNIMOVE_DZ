@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { motion } from 'framer-motion';
 import { 
   Building2, 
@@ -140,7 +141,7 @@ export default function BusinessModelPage() {
   ];
 
   const costStructure = [
-    { icon: Smartphone, name: language === 'ar' ? 'تطوير التطبيق' : 'Développement application', value: '25%' },
+    { icon: Smartphone, name: language === 'ar' ? 'تطوير التطبيق' : 'Développement application', value: '24%' },
     { icon: Cloud, name: language === 'ar' ? 'نص عربي صحيح' : 'Hébergement cloud', value: '15%' },
     { icon: Wifi, name: language === 'ar' ? 'Wi-Fi' : 'Wi-Fi', value: '10%' },
     { icon: Fuel, name: language === 'ar' ? 'الوقود' : 'Carburant', value: '20%' },
@@ -153,19 +154,15 @@ export default function BusinessModelPage() {
   ];
 
   const revenueStreams = [
-    { icon: Ticket, name: language === 'ar' ? 'حجوزات مباشرة' : 'Réservations directes', value: '30%' },
-    { icon: Calendar, name: language === 'ar' ? 'اشتراك يومي' : 'Abonnement journalier', value: '15%' },
-    { icon: Calendar, name: language === 'ar' ? 'اشتراك أسبوعي' : 'Abonnement hebdomadaire', value: '20%' },
-    { icon: Calendar, name: language === 'ar' ? 'اشتراك شهري' : 'Abonnement mensuel', value: '25%' },
-    { icon: TrendingUp, name: language === 'ar' ? 'إعلانات التطبيق' : 'Publicité application', value: '3%' },
-    { icon: DollarSign, name: language === 'ar' ? 'عمولات المستثمرين' : 'Commissions investisseurs', value: '2%' },
-    { icon: Star, name: language === 'ar' ? 'نقل الأحداث' : 'Transport événements', value: '3%' },
-    { icon: Plane, name: language === 'ar' ? 'نقل المطار' : 'Transport aéroport', value: '1%' },
-    { icon: Plane, name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', value: '1%' },
-    { icon: GraduationCap, name: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: '1%' },
+    { icon: GraduationCap, name: language === 'ar' ? 'شراكات الجامعات والمعاهد' : 'Partenariats universités & instituts', value: '83%' },
+    { icon: Calendar, name: language === 'ar' ? 'الاشتراكات الشهرية' : 'Abonnements mensuels', value: '11%' },
+    { icon: Star, name: language === 'ar' ? 'رحلات إضافية (سياحية/علمية)' : 'Voyages additionnels (tourisme/science)', value: '3%' },
+    { icon: TrendingUp, name: language === 'ar' ? 'إعلانات داخل التطبيق' : 'Publicité in-app (CPM)', value: '2%' },
+    { icon: Ticket, name: language === 'ar' ? 'حجوزات يومية مباشرة' : 'Réservations journalières directes', value: '1%' },
   ];
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-blue-50/20">
       {/* Hero Section */}
       <motion.div
@@ -586,5 +583,6 @@ export default function BusinessModelPage() {
         </Card>
       </motion.div>
     </div>
+    </ProtectedRoute>
   );
 }

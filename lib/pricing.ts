@@ -152,7 +152,7 @@ export function calculateDynamicPricing(params: {
   let basePrice = 80; // Default
   switch (tripCategory) {
     case 'daily_university':
-      basePrice = 80;
+      basePrice = 70;
       break;
     case 'inter_commune':
       basePrice = 150;
@@ -173,10 +173,10 @@ export function calculateDynamicPricing(params: {
     case 'conference_trip':
     case 'competition_trip':
     case 'internship_trip':
-      basePrice = 800;
+      basePrice = 4000;
       break;
     case 'tourism_trip':
-      basePrice = 1200;
+      basePrice = 4000;
       break;
     case 'special_trip':
     case 'group_trip':

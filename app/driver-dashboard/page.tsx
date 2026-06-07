@@ -631,19 +631,19 @@ export default function DriverDashboardPage() {
             </h3>
             <div className="space-y-3 font-semibold text-sm">
               <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="opacity-70">{isAr ? 'الاسم الكامل' : 'Nom Complet'}</span>
-                <span>{driverProfile?.fullName || user?.fullName}</span>
+                <span className="text-slate-300">{isAr ? 'الاسم الكامل' : 'Nom Complet'}</span>
+                <span className="text-white">{driverProfile?.fullName || user?.fullName}</span>
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="opacity-70">{isAr ? 'رقم الهاتف' : 'N° Téléphone'}</span>
-                <span>{driverProfile?.phoneNumber || user?.phone}</span>
+                <span className="text-slate-300">{isAr ? 'رقم الهاتف' : 'N° Téléphone'}</span>
+                <span className="text-white">{driverProfile?.phoneNumber || user?.phone}</span>
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="opacity-70">{isAr ? 'رقم الرخصة' : 'N° Licence'}</span>
-                <span>{driverProfile?.licenseNumber || '-'}</span>
+                <span className="text-slate-300">{isAr ? 'رقم الرخصة' : 'N° Licence'}</span>
+                <span className="text-white">{driverProfile?.licenseNumber || '-'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="opacity-70">{isAr ? 'الحالة' : 'Statut'}</span>
+                <span className="text-slate-300">{isAr ? 'الحالة' : 'Statut'}</span>
                 <span className="text-emerald-400">{driverProfile?.status === 'active' ? (isAr ? 'نشط' : 'Actif') : (isAr ? 'معلق' : 'Suspendu')}</span>
               </div>
             </div>
@@ -658,20 +658,20 @@ export default function DriverDashboardPage() {
             {assignedVehicle ? (
               <div className="space-y-3 font-semibold text-sm">
                 <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span className="opacity-70">{isAr ? 'رقم الحافلة' : 'Numéro Bus'}</span>
+                  <span className="text-slate-300">{isAr ? 'رقم الحافلة' : 'Numéro Bus'}</span>
                   <span className="text-emerald-400 font-extrabold text-base">H-{assignedVehicle.vehicleNumber}</span>
                 </div>
                 <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span className="opacity-70">{isAr ? 'رقم التسجيل' : 'Immatriculation'}</span>
-                  <span className="font-mono">{assignedVehicle.registrationNumber}</span>
+                  <span className="text-slate-300">{isAr ? 'رقم التسجيل' : 'Immatriculation'}</span>
+                  <span className="font-mono text-white">{assignedVehicle.registrationNumber}</span>
                 </div>
                 <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span className="opacity-70">{isAr ? 'النوع' : 'Type'}</span>
-                  <span className="capitalize">{assignedVehicle.type}</span>
+                  <span className="text-slate-300">{isAr ? 'النوع' : 'Type'}</span>
+                  <span className="capitalize text-white">{assignedVehicle.type}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-70">{isAr ? 'السعة الكلية' : 'Capacité Max'}</span>
-                  <span>{assignedVehicle.capacity} {isAr ? 'مقعد' : 'places'}</span>
+                  <span className="text-slate-300">{isAr ? 'السعة الكلية' : 'Capacité Max'}</span>
+                  <span className="text-white">{assignedVehicle.capacity} {isAr ? 'مقعد' : 'places'}</span>
                 </div>
               </div>
             ) : (
@@ -692,7 +692,7 @@ export default function DriverDashboardPage() {
             </h3>
             <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
               {scanHistory.length === 0 ? (
-                <p className="text-xs text-center opacity-50 py-4">
+                <p className="text-xs text-center text-slate-300 py-4">
                   {isAr ? 'لا توجد عمليات مسح سابقة.' : 'Aucune validation enregistrée.'}
                 </p>
               ) : (
@@ -700,7 +700,7 @@ export default function DriverDashboardPage() {
                   <div key={scan.id} className="p-3 bg-white/5 rounded-xl border border-white/5 flex justify-between items-center gap-2">
                     <div>
                       <p className="text-xs font-bold text-white">{scan.passengerName}</p>
-                      <p className="text-[10px] font-mono opacity-60">رقم: {scan.cardNumber}</p>
+                      <p className="text-[10px] font-mono text-slate-400">رقم: {scan.cardNumber}</p>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] font-bold text-emerald-400 block">{scan.validatedAt}</span>
@@ -733,7 +733,7 @@ export default function DriverDashboardPage() {
             {todayBookings.length === 0 ? (
               <Card className="p-10 border-2 border-emerald-500/20 bg-black/40 backdrop-blur-md rounded-2xl text-center">
                 <Bus className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-                <p className="text-base font-bold text-slate-400">
+                <p className="text-base font-bold text-slate-300">
                   {isAr ? 'لا توجد رحلات معينة لك حالياً من الإدارة.' : 'Aucun trajet ne vous est assigné aujourd\'hui.'}
                 </p>
               </Card>
@@ -764,7 +764,7 @@ export default function DriverDashboardPage() {
                                 GPS
                               </span>
                             )}
-                            <span className="text-xs opacity-60 font-mono">{b.date} {b.time}</span>
+                            <span className="text-xs text-slate-400 font-mono">{b.date} {b.time}</span>
                           </div>
                           <h3 className="text-lg font-black text-white">{b.fromPoint} → {b.toDestination}</h3>
                           <div className="flex flex-wrap gap-3 text-xs font-semibold opacity-80">
@@ -774,8 +774,8 @@ export default function DriverDashboardPage() {
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-xs opacity-60">{isAr ? 'السعر النهائي' : 'Tarif final'}</p>
-                          <p className="font-extrabold text-emerald-400 text-sm">{b.finalPrice || b.price || 0} DZD</p>
+                          <p className="text-xs text-slate-400">{isAr ? 'السعر النهائي' : 'Tarif final'}</p>
+                          <p className="font-extrabold text-emerald-400 text-sm">{b.finalPrice || b.price || 0} DA</p>
                         </div>
                       </div>
 
@@ -854,7 +854,7 @@ export default function DriverDashboardPage() {
                     <div key={tv.id} className="p-3 bg-white/5 rounded-xl border border-white/5 flex justify-between items-center gap-2">
                       <div>
                         <p className="text-xs font-bold text-white">{tv.passengerName || '-'}</p>
-                        <p className="text-[10px] font-mono opacity-60">Token: {tv.qrToken}</p>
+                        <p className="text-[10px] font-mono text-slate-400">Token: {tv.qrToken}</p>
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] font-bold text-emerald-400 block">{tv.validatedAt}</span>

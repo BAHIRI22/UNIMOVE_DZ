@@ -9,19 +9,25 @@ export function AdminOverview() {
   const { t, language } = useLanguage();
 
   const stats = [
-    { label: t('admin.activeUsers'), value: '245', icon: Users, color: 'bg-blue-100 text-blue-600' },
-    { label: t('admin.revenue'), value: '2,450,000 DA', icon: DollarSign, color: 'bg-green-100 text-green-600' },
-    { label: t('admin.reservations'), value: '1,238', icon: MapPin, color: 'bg-purple-100 text-purple-600' },
-    { label: t('admin.activeUsers'), value: '+12.5%', icon: TrendingUp, color: 'bg-orange-100 text-orange-600' },
+    { label: language === 'ar' ? 'المشتركون النشطون' : 'Abonnés actifs', value: '250', icon: Users, color: 'bg-blue-100 text-blue-600' },
+    { label: language === 'ar' ? 'الإيرادات المتوقعة Y1' : 'Revenus prévisionnels Y1', value: '10,883,000 DA', icon: DollarSign, color: 'bg-green-100 text-green-600' },
+    { label: language === 'ar' ? 'عقود الشراكة' : 'Contrats partenariat', value: '2', icon: MapPin, color: 'bg-purple-100 text-purple-600' },
+    { label: language === 'ar' ? 'نمو الإيرادات Y1→Y2' : 'Croissance revenus Y1→Y2', value: '+78.8%', icon: TrendingUp, color: 'bg-orange-100 text-orange-600' },
   ];
 
   const revenueData = [
-    { month: 'Jan', revenue: 180000 },
-    { month: 'Feb', revenue: 220000 },
-    { month: 'Mar', revenue: 245000 },
-    { month: 'Apr', revenue: 300000 },
-    { month: 'May', revenue: 350000 },
-    { month: 'Jun', revenue: 400000 },
+    { month: 'Jan', revenue: 500000 },
+    { month: 'Feb', revenue: 600000 },
+    { month: 'Mar', revenue: 700000 },
+    { month: 'Apr', revenue: 800000 },
+    { month: 'May', revenue: 900000 },
+    { month: 'Jun', revenue: 1100000 },
+    { month: 'Jul', revenue: 1200000 },
+    { month: 'Aug', revenue: 1000000 },
+    { month: 'Sep', revenue: 1300000 },
+    { month: 'Oct', revenue: 1400000 },
+    { month: 'Nov', revenue: 1200000 },
+    { month: 'Dec', revenue: 1183000 },
   ];
 
   const userGrowthData = [
@@ -30,7 +36,7 @@ export function AdminOverview() {
     { week: 'W3', users: 125 },
     { week: 'W4', users: 180 },
     { week: 'W5', users: 220 },
-    { week: 'W6', users: 245 },
+    { week: 'W6', users: 250 },
   ];
 
   return (

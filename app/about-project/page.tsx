@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -65,7 +66,7 @@ export default function AboutProjectPage() {
   ];
 
   const stats = [
-    { icon: Users, value: '10K+', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés' },
+    { icon: Users, value: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer', label: language === 'ar' ? 'مستخدم مستهدف' : 'Utilisateurs ciblés' },
     { icon: Clock, value: '35%', label: language === 'ar' ? 'تقليل التأخير' : 'Réduction retards' },
     { icon: BarChart3, value: '9', label: language === 'ar' ? 'محاور نموذج الأعمال' : 'Blocs business model' },
     { icon: Rocket, value: '5', label: language === 'ar' ? 'مراحل نمو' : 'Phases croissance' },
@@ -81,6 +82,7 @@ export default function AboutProjectPage() {
   ];
 
   return (
+    <ProtectedRoute>
     <main className="relative min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-cyan-50/40">
       {/* Watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
@@ -230,5 +232,6 @@ export default function AboutProjectPage() {
         </Card>
       </section>
     </main>
+    </ProtectedRoute>
   );
 }

@@ -1,8 +1,10 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ProtectedPageLink } from '@/components/ProtectedPageLink';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -55,8 +57,8 @@ export default function StartupPage() {
   ];
 
   const impact = [
-    { icon: Users, value: '+10K', label: language === 'ar' ? 'طالب مستهدف' : 'Étudiants ciblés' },
-    { icon: Car, value: '+120', label: language === 'ar' ? 'رحلة يومية' : 'Trajets quotidiens' },
+    { icon: Users, value: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer', label: language === 'ar' ? 'طالب مستهدف' : 'Étudiants ciblés' },
+    { icon: Car, value: language === 'ar' ? 'قابل للتأكيد' : 'À confirmer', label: language === 'ar' ? 'رحلة يومية' : 'Trajets quotidiens' },
     { icon: TrendingUp, value: '35%', label: language === 'ar' ? 'تقليل التأخير' : 'Réduction retards' },
     { icon: ShieldCheck, value: '24/7', label: language === 'ar' ? 'أمان ودعم' : 'Sécurité & support' },
   ];
@@ -84,6 +86,20 @@ export default function StartupPage() {
     },
   ];
 
+  const marketOpportunity = [
+    { label: language === 'ar' ? 'TAM (السوق الكلي)' : 'TAM (Marché total)', value: language === 'ar' ? '—' : '—', unit: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
+    { label: language === 'ar' ? 'SAM (السوق المخصص)' : 'SAM (Marché adressable)', value: language === 'ar' ? '—' : '—', unit: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
+    { label: language === 'ar' ? 'SOM (السوق القابل للاستحواذ)' : 'SOM (Marché capturable Y3)', value: language === 'ar' ? '—' : '—', unit: language === 'ar' ? 'السوق المستهدف تقديري ويحتاج إلى تأكيد وفق الإحصائيات الرسمية.' : 'Le marché cible est estimatif et doit être confirmé selon les statistiques officielles.' },
+  ];
+
+  const outlook = [
+    { year: 'Y1', revenue: '10.9M DA', users: '2.5K', partnerships: '2', team: '9' },
+    { year: 'Y2', revenue: '19.5M DA', users: '3.4K', partnerships: '3', team: '12' },
+    { year: 'Y3', revenue: '36.2M DA', users: '4.5K', partnerships: '5', team: '18' },
+    { year: 'Y4', revenue: '68.9M DA', users: '6.5K', partnerships: '7', team: '21' },
+    { year: 'Y5', revenue: '132.6M DA', users: '12K', partnerships: '9', team: '29' },
+  ];
+
   const smartFeatures = [
     { icon: MapPin, title: language === 'ar' ? 'تتبع GPS مباشر' : 'Suivi GPS en direct' },
     { icon: Wifi, title: language === 'ar' ? 'Wi-Fi داخل المركبات' : 'Wi-Fi embarqué' },
@@ -94,6 +110,7 @@ export default function StartupPage() {
   ];
 
   return (
+    <ProtectedRoute>
     <main className="min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 text-white">
       <section className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.25),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.18),transparent_40%)]" />
@@ -122,13 +139,13 @@ export default function StartupPage() {
                 : 'Une startup qui transforme la complexité quotidienne du transport universitaire en expérience digitale fiable, économique, sécurisée et scalable.'}
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="/business-model" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-6 py-4 font-black text-slate-950 shadow-2xl shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-300">
+              <ProtectedPageLink href="/business-model" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-6 py-4 font-black text-slate-950 shadow-2xl shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-300">
                 {language === 'ar' ? 'استكشف نموذج الأعمال' : 'Explorer le business model'}
                 <ArrowRight className="h-5 w-5" />
-              </a>
-              <a href="/financial-plan" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-4 font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/15">
+              </ProtectedPageLink>
+              <ProtectedPageLink href="/financial-plan" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-4 font-black text-white backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/15">
                 {language === 'ar' ? 'الخطة المالية' : 'Plan financier'}
-              </a>
+              </ProtectedPageLink>
             </div>
           </motion.div>
         </div>
@@ -204,6 +221,56 @@ export default function StartupPage() {
         </div>
       </section>
 
+      {/* Market Opportunity */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'فرصة السوق' : 'Opportunité de marché'}</h2>
+          <p className="mt-4 text-lg leading-8 text-slate-300">
+            {language === 'ar'
+              ? 'سوق نقل الجامعات في الجزائر يضم ملايين الطلاب دون حل رقمي موحد.'
+              : 'Le marché du transport universitaire en Algérie compte des millions d’étudiants sans solution digitale unifiée.'}
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {marketOpportunity.map((item, index) => (
+            <motion.div key={item.label} initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }}>
+              <Card className="rounded-3xl border-white/10 bg-white/[0.08] p-6 text-white shadow-xl backdrop-blur-xl text-center">
+                <div className="text-4xl font-black text-emerald-300">{item.value}</div>
+                <h3 className="mt-2 text-xl font-black">{item.label}</h3>
+                <p className="mt-2 text-sm font-semibold text-slate-300">{item.unit}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5-Year Outlook */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-4xl font-black md:text-5xl">{language === 'ar' ? 'التوقعات المالية لـ 5 سنوات' : 'Projections financières sur 5 ans'}</h2>
+          <p className="mt-4 text-lg leading-8 text-slate-300">
+            {language === 'ar'
+              ? 'نمو مضاعف مدفوع بالشراكات الجامعية، الاشتراكات، والخدمات الإضافية.'
+              : 'Croissance exponentielle portée par les partenariats universitaires, abonnements et services additionnels.'}
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {outlook.map((item, index) => (
+            <motion.div key={item.year} initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
+              <Card className="rounded-3xl border-white/10 bg-white/[0.08] p-5 text-white shadow-xl backdrop-blur-xl text-center">
+                <div className="text-sm font-bold text-emerald-300 mb-2">{item.year}</div>
+                <div className="text-2xl font-black">{item.revenue}</div>
+                <div className="mt-3 space-y-1 text-xs font-semibold text-slate-300">
+                  <p>{item.users} {language === 'ar' ? 'مستخدم' : 'utilisateurs'}</p>
+                  <p>{item.partnerships} {language === 'ar' ? 'شراكة' : 'partenariats'}</p>
+                  <p>{item.team} {language === 'ar' ? 'عضو فريق' : 'membres'}</p>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <Card className="rounded-3xl border-white/10 bg-gradient-to-br from-emerald-400 to-cyan-300 p-8 text-slate-950 shadow-2xl md:p-12">
           <div className="grid gap-8 md:grid-cols-2 md:items-center">
@@ -224,5 +291,6 @@ export default function StartupPage() {
         </Card>
       </section>
     </main>
+    </ProtectedRoute>
   );
 }

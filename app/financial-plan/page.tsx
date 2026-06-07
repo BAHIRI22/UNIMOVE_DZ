@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { motion } from 'framer-motion';
 import { 
   TrendingUp, 
@@ -32,53 +33,53 @@ export default function FinancialPlanPage() {
   const router = useRouter();
 
   const kpis = [
-    { 
-      name: language === 'ar' ? 'الإيرادات السنوية' : 'Revenus Annuels', 
-      value: '12,500,000 DA', 
-      change: '+25%', 
+    {
+      name: language === 'ar' ? 'الإيرادات السنوية (تقديري)' : 'Revenus Annuels (Prévisionnel)',
+      value: '10,883,000 DA',
+      change: '+25%',
       positive: true,
       icon: DollarSign,
       color: 'from-emerald-500 to-emerald-600'
     },
-    { 
-      name: language === 'ar' ? 'التدفق النقدي' : 'Cash Flow', 
-      value: '3,200,000 DA', 
-      change: '+18%', 
-      positive: true,
+    {
+      name: language === 'ar' ? 'التدفق النقدي (تقديري)' : 'Cash Flow (Prévisionnel)',
+      value: '-803,000 DA',
+      change: 'Y1 EBITDA',
+      positive: false,
       icon: Wallet,
       color: 'from-blue-500 to-blue-600'
     },
-    { 
-      name: language === 'ar' ? 'إجمالي التكاليف' : 'Coûts Totaux', 
-      value: '8,500,000 DA', 
-      change: '-12%', 
+    {
+      name: language === 'ar' ? 'إجمالي التكاليف (تقديري)' : 'Coûts Totaux (Prévisionnel)',
+      value: '11,686,000 DA',
+      change: 'Y1',
       positive: true,
       icon: BarChart3,
       color: 'from-orange-500 to-orange-600'
     },
-    { 
-      name: language === 'ar' ? 'صافي الأرباح' : 'Bénéfices Nets', 
-      value: '4,000,000 DA', 
-      change: '+32%', 
-      positive: true,
+    {
+      name: language === 'ar' ? 'صافي النتيجة (تقديري)' : 'Résultat Net (Prévisionnel)',
+      value: '-1,373,000 DA',
+      change: 'Y1',
+      positive: false,
       icon: TrendingUp,
       color: 'from-purple-500 to-purple-600'
     },
   ];
 
   const revenueProjections = [
-    { month: language === 'ar' ? 'جانفي' : 'Jan', value: 800000 },
-    { month: language === 'ar' ? 'فيفري' : 'Fév', value: 950000 },
-    { month: language === 'ar' ? 'مارس' : 'Mar', value: 1100000 },
-    { month: language === 'ar' ? 'افريل' : 'Avr', value: 1050000 },
-    { month: language === 'ar' ? 'ماي' : 'Mai', value: 1200000 },
-    { month: language === 'ar' ? 'جوان' : 'Juin', value: 1350000 },
-    { month: language === 'ar' ? 'جويلية' : 'Juil', value: 1250000 },
-    { month: language === 'ar' ? 'أوت' : 'Août', value: 1150000 },
+    { month: language === 'ar' ? 'جانفي' : 'Jan', value: 500000 },
+    { month: language === 'ar' ? 'فيفري' : 'Fév', value: 600000 },
+    { month: language === 'ar' ? 'مارس' : 'Mar', value: 700000 },
+    { month: language === 'ar' ? 'افريل' : 'Avr', value: 800000 },
+    { month: language === 'ar' ? 'ماي' : 'Mai', value: 900000 },
+    { month: language === 'ar' ? 'جوان' : 'Juin', value: 1100000 },
+    { month: language === 'ar' ? 'جويلية' : 'Juil', value: 1200000 },
+    { month: language === 'ar' ? 'أوت' : 'Août', value: 1000000 },
     { month: language === 'ar' ? 'سبتمبر' : 'Sep', value: 1300000 },
-    { month: language === 'ar' ? 'أكتوبر' : 'Oct', value: 1450000 },
-    { month: language === 'ar' ? 'نوفمبر' : 'Nov', value: 1400000 },
-    { month: language === 'ar' ? 'ديسمبر' : 'Déc', value: 1500000 },
+    { month: language === 'ar' ? 'أكتوبر' : 'Oct', value: 1400000 },
+    { month: language === 'ar' ? 'نوفمبر' : 'Nov', value: 1200000 },
+    { month: language === 'ar' ? 'ديسمبر' : 'Déc', value: 1183000 },
   ];
 
   const costBreakdown = [
@@ -95,40 +96,37 @@ export default function FinancialPlanPage() {
   ];
 
   const revenueStreams = [
-    { name: language === 'ar' ? 'حجوزات مباشرة' : 'Réservations directes', value: '30%', amount: '3.75M DA' },
-    { name: language === 'ar' ? 'الاشتراكات' : 'Abonnements', value: '45%', amount: '5.62M DA' },
-    { name: language === 'ar' ? 'إعلانات التطبيق' : 'Publicité application', value: '5%', amount: '625K DA' },
-    { name: language === 'ar' ? 'عمولات المستثمرين' : 'Commissions investisseurs', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'نقل الأحداث' : 'Transport événements', value: '6%', amount: '750K DA' },
-    { name: language === 'ar' ? 'نقل المطار' : 'Transport aéroport', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'رحلات سياحية' : 'Voyages touristiques', value: '4%', amount: '500K DA' },
-    { name: language === 'ar' ? 'شراكات الجامعات' : 'Partenariats universités', value: '2%', amount: '250K DA' },
+    { name: language === 'ar' ? 'شراكات الجامعات والمعاهد' : 'Partenariats universités & instituts', value: '83%', amount: '9.00M DA' },
+    { name: language === 'ar' ? 'الاشتراكات الشهرية' : 'Abonnements mensuels', value: '11%', amount: '1.25M DA' },
+    { name: language === 'ar' ? 'رحلات إضافية (سياحية/علمية)' : 'Voyages additionnels', value: '3%', amount: '320K DA' },
+    { name: language === 'ar' ? 'إعلانات داخل التطبيق (CPM)' : 'Publicité in-app (CPM)', value: '2%', amount: '250K DA' },
+    { name: language === 'ar' ? 'حجوزات يومية مباشرة' : 'Réservations journalières directes', value: '1%', amount: '63K DA' },
   ];
 
   const growthMetrics = [
-    { 
-      name: language === 'ar' ? 'نمو المستخدمين' : 'Croissance Utilisateurs', 
-      value: '45%', 
+    {
+      name: language === 'ar' ? 'نمو الإيرادات (Y1→Y2)' : 'Croissance revenus (Y1→Y2)',
+      value: '+78.8%',
+      icon: TrendingUp,
+      desc: language === 'ar' ? 'معدل نمو سنوي مركب' : 'TCAC prévisionnel'
+    },
+    {
+      name: language === 'ar' ? 'نمو المستخدمين' : 'Croissance utilisateurs',
+      value: '+80%',
       icon: Users,
-      desc: language === 'ar' ? 'زيادة شهرية' : 'Augmentation mensuelle'
+      desc: language === 'ar' ? 'زيادة سنوية مقدرة' : 'Augmentation annuelle estimée'
     },
-    { 
-      name: language === 'ar' ? 'نمو الرحلات' : 'Croissance Trajets', 
-      value: '38%', 
-      icon: Car,
-      desc: language === 'ar' ? 'زيادة شهرية' : 'Augmentation mensuelle'
-    },
-    { 
-      name: language === 'ar' ? 'معدل الاحتفاظ' : 'Taux de Rétention', 
-      value: '85%', 
+    {
+      name: language === 'ar' ? 'معدل الاحتفاظ' : 'Taux de Rétention',
+      value: '72%',
       icon: Shield,
-      desc: language === 'ar' ? 'معدل مرتفع' : 'Taux élevé'
+      desc: language === 'ar' ? 'معدل اشتراكات شهرY1' : 'Taux mensuel abonnements Y1'
     },
-    { 
-      name: language === 'ar' ? 'الوقت المستجيب' : 'Temps de Réponse', 
-      value: '2.5s', 
+    {
+      name: language === 'ar' ? 'التعادل المتوقع' : 'Seuil de rentabilité',
+      value: 'Y2',
       icon: Zap,
-      desc: language === 'ar' ? 'متوسط التطبيق' : 'Moyenne application'
+      desc: language === 'ar' ? 'رقم الأعمال يغطي التكاليف (Y2: +3.36M DA)' : 'Break-even prévisionnel (Y2: +3.36M DA)'
     },
   ];
 
@@ -164,6 +162,7 @@ export default function FinancialPlanPage() {
     new Intl.NumberFormat(language === 'ar' ? 'ar-DZ' : 'fr-DZ', { maximumFractionDigits: 0 }).format(v) + ' DA';
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-blue-50/20">
       {/* Hero Section */}
       <motion.div
@@ -337,5 +336,6 @@ export default function FinancialPlanPage() {
         </Card>
       </motion.div>
     </div>
+    </ProtectedRoute>
   );
 }

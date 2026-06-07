@@ -7,6 +7,8 @@ import { AccessibilityMenu } from '@/components/AccessibilityMenu';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { LogOut, Menu, X } from 'lucide-react';
+import { ProtectedPageLink } from '@/components/ProtectedPageLink';
+import { isProtectedPath } from '@/lib/passcode';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,6 +37,7 @@ export function Header() {
     { href: '/financial-plan', label: language === 'ar' ? 'المالية' : 'Finance', xlOnly: true },
     { href: '/demo', label: language === 'ar' ? 'وضع العرض' : 'Mode présentation', highlight: true },
   ];
+
 
   return (
     <header className={`sticky top-0 z-50 w-full transition-all duration-500 ${
@@ -94,20 +97,36 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-2 lg:gap-3 xl:gap-5">
             {!isAuthenticated && (
               <>
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`relative text-xs lg:text-sm font-bold transition-all duration-300 ${
-                      link.highlight 
-                        ? 'text-emerald-600 hover:text-emerald-700' 
-                        : 'text-slate-700 hover:text-emerald-600'
-                    } ${link.xlOnly ? 'hidden xl:inline-block' : 'inline-block'} group whitespace-nowrap`}
-                  >
-                    {link.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full" />
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  isProtectedPath(link.href) ? (
+                    <ProtectedPageLink
+                      key={link.href}
+                      href={link.href}
+                      className={`relative text-xs lg:text-sm font-bold transition-all duration-300 ${
+                        link.highlight 
+                          ? 'text-emerald-600 hover:text-emerald-700' 
+                          : 'text-slate-700 hover:text-emerald-600'
+                      } ${link.xlOnly ? 'hidden xl:inline-block' : 'inline-block'} group whitespace-nowrap`}
+                      label={link.label}
+                    >
+                      {link.label}
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full" />
+                    </ProtectedPageLink>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`relative text-xs lg:text-sm font-bold transition-all duration-300 ${
+                        link.highlight 
+                          ? 'text-emerald-600 hover:text-emerald-700' 
+                          : 'text-slate-700 hover:text-emerald-600'
+                      } ${link.xlOnly ? 'hidden xl:inline-block' : 'inline-block'} group whitespace-nowrap`}
+                    >
+                      {link.label}
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full" />
+                    </Link>
+                  )
+                )}
               </>
             )}
           </nav>
@@ -195,20 +214,36 @@ export function Header() {
                 <nav className="flex flex-col gap-4">
                   {!isAuthenticated && (
                     <>
-                      {navLinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`text-base font-bold transition-all duration-300 py-2 ${
-                            link.highlight 
-                              ? 'text-emerald-600 hover:text-emerald-700' 
-                              : 'text-slate-700 hover:text-emerald-600'
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
+                      {navLinks.map((link) =>
+                        isProtectedPath(link.href) ? (
+                          <ProtectedPageLink
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`text-base font-bold transition-all duration-300 py-2 ${
+                              link.highlight 
+                                ? 'text-emerald-600 hover:text-emerald-700' 
+                                : 'text-slate-700 hover:text-emerald-600'
+                            }`}
+                            label={link.label}
+                          >
+                            {link.label}
+                          </ProtectedPageLink>
+                        ) : (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`text-base font-bold transition-all duration-300 py-2 ${
+                              link.highlight 
+                                ? 'text-emerald-600 hover:text-emerald-700' 
+                                : 'text-slate-700 hover:text-emerald-600'
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        )
+                      )}
                     </>
                   )}
                   

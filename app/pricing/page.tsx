@@ -31,7 +31,7 @@ export default function PricingPage() {
   const pricingPlans = [
     {
       name: language === 'ar' ? 'تذكرة بسيطة' : 'Ticket Simple',
-      price: { min: 80, max: 150 },
+      price: { min: 70, max: 70 },
       period: language === 'ar' ? 'رحلة واحدة' : 'Trajet unique',
       popular: false,
       recommended: false,
@@ -50,7 +50,7 @@ export default function PricingPage() {
     },
     {
       name: language === 'ar' ? 'اشتراك يومي' : 'Abonnement Journalier',
-      price: { min: 250, max: 250 },
+      price: { min: 100, max: 100 },
       period: language === 'ar' ? '24 ساعة' : '24 heures',
       popular: false,
       recommended: false,
@@ -69,7 +69,7 @@ export default function PricingPage() {
     },
     {
       name: language === 'ar' ? 'اشتراك أسبوعي' : 'Abonnement Hebdomadaire',
-      price: { min: 1000, max: 1500 },
+      price: { min: 500, max: 500 },
       period: language === 'ar' ? '7 أيام' : '7 jours',
       popular: true,
       recommended: false,
@@ -88,7 +88,7 @@ export default function PricingPage() {
     },
     {
       name: language === 'ar' ? 'اشتراك شهري طالب' : 'Abonnement Mensuel Étudiant',
-      price: { min: 3500, max: 5000 },
+      price: { min: 500, max: 500 },
       period: language === 'ar' ? '30 يوم' : '30 jours',
       popular: false,
       recommended: true,
@@ -126,6 +126,37 @@ export default function PricingPage() {
     },
   ];
 
+  const offers = [
+    {
+      icon: Award,
+      title: language === 'ar' ? 'خصم الطالب الموثق' : 'Remise étudiant vérifié',
+      discount: '-15%',
+      desc: language === 'ar' ? 'على جميع الاشتراكات بعد التحقق من البطاقة الجامعية' : 'Sur tous les abonnements après vérification carte d\'étudiant',
+      color: 'from-blue-500 to-blue-600',
+    },
+    {
+      icon: Users,
+      title: language === 'ar' ? 'خصم الحجز الجماعي' : 'Remise groupe',
+      discount: '-10%',
+      desc: language === 'ar' ? 'على الرحلات الجماعية (5+ مقاعد)' : 'Sur les trajets groupés (5+ sièges)',
+      color: 'from-emerald-500 to-emerald-600',
+    },
+    {
+      icon: Calendar,
+      title: language === 'ar' ? 'خصم الحجز المبكر' : 'Remise réservation anticipée',
+      discount: '-10%',
+      desc: language === 'ar' ? 'على الرحلات المحجوزة قبل +7 أيام' : 'Sur les trajets réservés +7 jours à l\'avance',
+      color: 'from-purple-500 to-purple-600',
+    },
+    {
+      icon: Zap,
+      title: language === 'ar' ? 'خصم الاشتراك النشط' : 'Remise abonnement actif',
+      discount: '-5%',
+      desc: language === 'ar' ? 'إضافي على الحجوزات اليومية للمشتركين' : 'Additionnel sur les réservations journalières pour abonnés',
+      color: 'from-orange-500 to-orange-600',
+    },
+  ];
+
   const additionalServices = [
     {
       name: language === 'ar' ? 'نقل المطار' : 'Transport Aéroport',
@@ -136,7 +167,7 @@ export default function PricingPage() {
     },
     {
       name: language === 'ar' ? 'رحلات سياحية' : 'Voyages Touristiques',
-      price: { min: 1500, max: 6000 },
+      price: { min: 4000, max: 4000 },
       icon: MapPin,
       desc: language === 'ar' ? 'استكشاف معالم الجزائر' : 'Découverte des sites touristiques',
       color: 'from-pink-500 to-pink-600',
@@ -275,19 +306,58 @@ export default function PricingPage() {
         </div>
       </div>
 
+      {/* Offers & Discounts */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+            {language === 'ar' ? 'عروض وخصومات' : 'Offres et Remises'}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {language === 'ar'
+              ? 'خصومات واقعية تُطبق تلقائياً عند استيفاء الشروط'
+              : 'Remises réaliques appliquées automatiquement lorsque les conditions sont remplies'}
+          </p>
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {offers.map((offer, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 + index * 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <Card className="p-6 md:p-8 bg-white/80 backdrop-blur-sm border-2 border-slate-200 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full text-center">
+                <div className={`inline-flex p-4 bg-gradient-to-br ${offer.color} rounded-2xl mb-6`}>
+                  <offer.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-black text-gray-900 mb-2">{offer.title}</h3>
+                <div className="text-3xl font-black text-emerald-600 mb-3">{offer.discount}</div>
+                <p className="text-sm text-gray-600">{offer.desc}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
       {/* Additional Services */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 0.9 }}
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
             {language === 'ar' ? 'خدمات إضافية' : 'Services Additionnels'}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {language === 'ar' 
+            {language === 'ar'
               ? 'خدمات خاصة لتجربة فريدة'
               : 'Services spéciaux pour une expérience unique'}
           </p>

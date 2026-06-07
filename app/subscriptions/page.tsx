@@ -59,7 +59,7 @@ const PLANS: Plan[] = [
     type: 'monthly',
     nameAr: 'اشتراك شهري',
     nameFr: 'Abonnement Mensuel',
-    price: 1500,
+    price: 500,
     durationDays: 30,
     benefitsAr: ['رحلات غير محدودة لمدة 30 يوم', 'اتصال WiFi مجاني وسريع', 'صعود أولوية', 'حجز مقعد مجاني', 'دعم فني مخصص'],
     benefitsFr: ['Trajets illimités pendant 30 jours', 'Accès WiFi gratuit', 'Embarquement prioritaire', 'Réservation de siège gratuite', 'Support dédié'],
@@ -231,7 +231,7 @@ export default function SubscriptionsPage() {
         titleAr: 'اشتراك جديد 💳',
         titleFr: 'Nouvel abonnement 💳',
         messageAr: `قام المستخدم ${user.fullName} بتفعيل اشتراك جديد (${selectedPlan.nameAr} - ${getPlanPrice(selectedPlan)} دج).`,
-        messageFr: `L'utilisateur ${user.fullName} a activé un nouvel abonnement (${selectedPlan.nameFr} - ${getPlanPrice(selectedPlan)} DZD).`,
+        messageFr: `L'utilisateur ${user.fullName} a activé un nouvel abonnement (${selectedPlan.nameFr} - ${getPlanPrice(selectedPlan)} DA).`,
         type: 'system',
         relatedEntityId: user.id,
         relatedEntityType: 'user',
@@ -468,7 +468,7 @@ export default function SubscriptionsPage() {
                     ) : (
                       <span className="text-emerald-600">{selectedPlan.price}</span>
                     )}
-                    <span className="text-xl">DZD</span>
+                    <span className="text-xl">DA</span>
                   </div>
                   {isSpecialNeeds && (
                     <p className="text-sm font-bold text-blue-600">
