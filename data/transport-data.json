@@ -6,17 +6,10 @@
     { "id": "transport_aeroport", "nameFr": "Transport vers aéroport", "nameAr": "النقل نحو المطارات" },
     { "id": "transport_port", "nameFr": "Transport vers port", "nameAr": "النقل نحو الموانئ" },
     { "id": "transport_gare_ferroviaire", "nameFr": "Transport vers gare ferroviaire", "nameAr": "النقل نحو محطات القطار" },
-    { "id": "transport_colloque", "nameFr": "Transport vers colloque", "nameAr": "النقل نحو الملتقيات" },
-    { "id": "transport_conference", "nameFr": "Transport vers conférence", "nameAr": "النقل نحو المؤتمرات" },
-    { "id": "transport_competition", "nameFr": "Transport vers compétition", "nameAr": "النقل نحو المسابقات" },
-    { "id": "transport_scientifique", "nameFr": "Transport scientifique", "nameAr": "النقل العلمي" },
-    { "id": "transport_sportif", "nameFr": "Transport sportif", "nameAr": "النقل الرياضي" },
-    { "id": "transport_culturel", "nameFr": "Transport culturel", "nameAr": "النقل الثقافي" },
     { "id": "transport_touristique", "nameFr": "Transport touristique", "nameAr": "الرحلات السياحية" },
     { "id": "transport_doctorants", "nameFr": "Transport doctorants", "nameAr": "نقل طلبة الدكتوراه" },
     { "id": "transport_professeurs", "nameFr": "Transport professeurs", "nameAr": "نقل الأساتذة" },
     { "id": "transport_personnel", "nameFr": "Transport personnel", "nameAr": "نقل الموظفين" },
-    { "id": "transport_recherche", "nameFr": "Transport recherche", "nameAr": "نقل البحث العلمي" },
     { "id": "transport_personnalise", "nameFr": "Transport personnalisé", "nameAr": "رحلة مخصصة" }
   ],
   "transportNatures": [
