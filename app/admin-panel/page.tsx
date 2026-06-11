@@ -1155,13 +1155,13 @@ export default function AdminPanelPage() {
   };
 
   const handleDeleteRoute = async (id: string) => {
-    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا المسار؟' : 'Confirmer la suppression du trajet ?')) return;
+    if (!confirm(language === 'ar' ? 'هل تريد حذف هذا الخط نهائياً؟' : 'Voulez-vous supprimer ce trajet définitivement ?')) return;
     try {
       await deleteDoc(doc(db, 'routes', id));
-      alert(language === 'ar' ? 'تم حذف المسار بنجاح' : 'Trajet supprimé avec succès');
+      alert(language === 'ar' ? 'تم حذف الخط بنجاح' : 'Trajet supprimé avec succès');
     } catch (e) {
       console.error('Error deleting route:', e);
-      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+      alert(language === 'ar' ? 'فشل حذف الخط' : 'Échec de la suppression du trajet');
     }
   };
 
@@ -2471,15 +2471,15 @@ export default function AdminPanelPage() {
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 16, padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 20 }}>
               <div>
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>اسم الخط/المسار</label>
-                <input value={routeName} onChange={e => setRouteName(e.target.value)} type="text" placeholder="خط جامعة باب الزوار - الجزائر الوسطى" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
+                <input value={routeName} onChange={e => setRouteName(e.target.value)} type="text" placeholder="خط سيدي بلعباس - جامعة الجيلالي اليابس" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>نقطة الانطلاق (Departure)</label>
-                <input value={routeDeparture} onChange={e => setRouteDeparture(e.target.value)} type="text" placeholder="باب الزوار (USTHB)" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
+                <input value={routeDeparture} onChange={e => setRouteDeparture(e.target.value)} type="text" placeholder="وسط مدينة سيدي بلعباس" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>الوجهة (Destination)</label>
-                <input value={routeDestination} onChange={e => setRouteDestination(e.target.value)} type="text" placeholder="ساحة الشهداء" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
+                <input value={routeDestination} onChange={e => setRouteDestination(e.target.value)} type="text" placeholder="جامعة الجيلالي اليابس سيدي بلعباس" style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }} />
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: 14, marginBottom: 6, fontWeight: 700 }}>وقت الانطلاق</label>
