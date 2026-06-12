@@ -67,6 +67,7 @@ export const NAVIGATION_ITEMS = {
     { id: 'reservation', label: { ar: 'حجز رحلة', fr: 'Réserver' }, icon: 'Calendar', path: '/reservation' },
     { id: 'my-trips', label: { ar: 'رحلاتي', fr: 'Mes trajets' }, icon: 'MapPin', path: '/my-trips' },
     { id: 'my-card', label: { ar: 'بطاقتي', fr: 'Ma carte' }, icon: 'CreditCard', path: '/my-card' },
+    { id: 'complaints', label: { ar: 'الشكاوى والاقتراحات', fr: 'Réclamations et Suggestions' }, icon: 'MessageCircle', path: '/complaints' },
     { id: 'notifications', label: { ar: 'الإشعارات', fr: 'Notifications' }, icon: 'Bell', path: '/notifications' },
     { id: 'profile', label: { ar: 'الملف الشخصي', fr: 'Profil' }, icon: 'User', path: '/profile' },
   ],

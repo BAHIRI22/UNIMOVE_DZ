@@ -14,17 +14,26 @@ import { Complaint } from '@/types/support';
 export default function ComplaintsPage() {
   const { language } = useLanguage();
   const router = useRouter();
+  const { user } = useAuth();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     // Load complaints from localStorage
     const storedComplaints = JSON.parse(localStorage.getItem('complaints') || '[]');
-    setComplaints(storedComplaints);
-  }, []);
+    // Filter to show only current user's complaints
+    const userComplaints = storedComplaints.filter((c: any) => c.userId === user?.id);
+    setComplaints(userComplaints);
+  }, [user?.id]);
 
   const handleComplaintSubmit = (complaint: Complaint) => {
-    setComplaints([...complaints, complaint]);
+    // Add userId to the complaint
+    const complaintWithUser = {
+      ...complaint,
+      userId: user?.id || 'unknown',
+      userName: user?.fullName || 'Unknown User',
+    };
+    setComplaints([...complaints, complaintWithUser]);
     setShowForm(false);
   };
 
@@ -48,7 +57,7 @@ export default function ComplaintsPage() {
       ar: {
         new: 'جديد',
         in_progress: 'قيد المعالجة',
-        resolved: 'تم الحل',
+        resolved: 'تمت المعالجة',
         rejected: 'مرفوض',
       },
       fr: {
@@ -77,12 +86,12 @@ export default function ComplaintsPage() {
           </Button>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              {language === 'ar' ? 'الشكاوى' : 'Réclamations'}
+              {language === 'ar' ? 'الشكاوى والاقتراحات' : 'Réclamations et Suggestions'}
             </h1>
             <p className="text-gray-600">
               {language === 'ar'
-                ? 'إدارة ومتابعة شكواك'
-                : 'Gérer et suivre vos réclamations'}
+                ? 'إدارة ومتابعة شكواك واقتراحاتك'
+                : 'Gérer et suivre vos réclamations et suggestions'}
             </p>
           </div>
         </div>
@@ -91,6 +100,8 @@ export default function ComplaintsPage() {
           <ComplaintForm
             onSubmit={handleComplaintSubmit}
             onCancel={() => setShowForm(false)}
+            userId={user?.id}
+            userName={user?.fullName}
           />
         ) : (
           <>

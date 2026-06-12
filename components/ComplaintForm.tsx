@@ -15,9 +15,11 @@ import { complaintCategories, generateTicketNumber } from '@/mock/support-data';
 interface ComplaintFormProps {
   onSubmit: (complaint: any) => void;
   onCancel?: () => void;
+  userId?: string;
+  userName?: string;
 }
 
-export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
+export function ComplaintForm({ onSubmit, onCancel, userId, userName }: ComplaintFormProps) {
   const { language } = useLanguage();
   const [category, setCategory] = useState<ComplaintCategory | ''>('');
   const [subject, setSubject] = useState('');
@@ -37,6 +39,8 @@ export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
       description,
       status: 'new',
       priority: 'medium',
+      userId: userId || 'unknown',
+      userName: userName || 'Unknown User',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

@@ -21,7 +21,8 @@ import {
   X,
   ChevronRight,
   Settings,
-  DollarSign
+  DollarSign,
+  MessageCircle
 } from 'lucide-react';
 import { NAVIGATION_ITEMS, ATTRIBUTIONS } from '@/constants';
 import { motion } from 'framer-motion';
@@ -53,6 +54,7 @@ export function DashboardSidebar({ role }: DashboardSidebarProps) {
     CalendarCheck,
     Settings,
     DollarSign,
+    MessageCircle,
   };
 
   const handleLogout = async () => {
