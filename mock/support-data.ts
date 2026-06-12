@@ -1,11 +1,13 @@
 import { Complaint, LostItem, EmergencyRequest } from '@/types/support';
 
 export const complaintCategories = [
-  { value: 'delay', label: 'Delay', labelAr: 'تأخير' },
-  { value: 'cancellation', label: 'Cancellation', labelAr: 'إلغاء' },
-  { value: 'payment', label: 'Payment Issue', labelAr: 'مشكلة دفع' },
+  { value: 'complaint', label: 'Complaint', labelAr: 'شكوى' },
+  { value: 'suggestion', label: 'Suggestion', labelAr: 'اقتراح' },
+  { value: 'delay', label: 'Delay Report', labelAr: 'تبليغ عن تأخر' },
+  { value: 'vehicle_issue', label: 'Vehicle Issue', labelAr: 'تبليغ عن مشكلة في الحافلة' },
   { value: 'driver', label: 'Driver Issue', labelAr: 'مشكلة سائق' },
-  { value: 'vehicle', label: 'Vehicle Issue', labelAr: 'مشكلة مركبة' },
+  { value: 'payment', label: 'Payment Issue', labelAr: 'مشكلة دفع' },
+  { value: 'cancellation', label: 'Cancellation', labelAr: 'إلغاء' },
   { value: 'security', label: 'Security Issue', labelAr: 'مشكلة أمنية' },
   { value: 'lost_item', label: 'Lost Item', labelAr: 'مفقود' },
   { value: 'other', label: 'Other', labelAr: 'أخرى' },

@@ -88,12 +88,21 @@ export default function AdminPanelPage() {
   });
 
   // Fleet management & Routes states
-  const [activeTab, setActiveTab] = useState<'overview' | 'drivers' | 'vehicles' | 'routes' | 'tracking' | 'payments'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'drivers' | 'vehicles' | 'routes' | 'tracking' | 'payments' | 'ratings' | 'complaints' | 'offers'>('overview');
   const [drivers, setDrivers] = useState<any[]>([]);
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
   const [tripLocations, setTripLocations] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [tripRatings, setTripRatings] = useState<any[]>([]);
+  const [complaints, setComplaints] = useState<any[]>([]);
+  const [studentDayOffer, setStudentDayOffer] = useState({
+    enabled: false,
+    discountPercentage: 50,
+    freeTransport: false,
+    startDate: '2026-05-19',
+    endDate: '2026-05-25',
+  });
 
   // Expandable form toggles
   const [showDriverForm, setShowDriverForm] = useState(false);
@@ -396,6 +405,44 @@ export default function AdminPanelPage() {
     } catch (e) {
       console.error('[Admin Panel] subscriptions subscribe error:', e);
     }
+  }, [isAdmin]);
+
+  // Subscribe to tripRatings collection
+  useEffect(() => {
+    if (!isAdmin) return;
+    try {
+      const q = query(collection(db, 'tripRatings'), orderBy('createdAt', 'desc'));
+      const unsub = onSnapshot(
+        q,
+        (snap) => {
+          const items: any[] = [];
+          snap.forEach((doc) => {
+            items.push({ id: doc.id, ...doc.data() });
+          });
+          setTripRatings(items);
+        },
+        (err) => console.error('[Admin Panel] tripRatings error:', err)
+      );
+      return () => unsub();
+    } catch (e) {
+      console.error('[Admin Panel] tripRatings subscribe error:', e);
+    }
+  }, [isAdmin]);
+
+  // Subscribe to complaints from localStorage (for demo purposes)
+  useEffect(() => {
+    if (!isAdmin) return;
+    const loadComplaints = () => {
+      try {
+        const storedComplaints = JSON.parse(localStorage.getItem('complaints') || '[]');
+        setComplaints(storedComplaints);
+      } catch (e) {
+        console.error('[Admin Panel] complaints load error:', e);
+      }
+    };
+    loadComplaints();
+    const interval = setInterval(loadComplaints, 5000);
+    return () => clearInterval(interval);
   }, [isAdmin]);
 
   const handleBookingAction = async (bookingId: string, newStatus: 'approved' | 'assigned' | 'started' | 'completed' | 'cancelled' | 'rejected') => {
@@ -1539,6 +1586,54 @@ export default function AdminPanelPage() {
           }}
         >
           المدفوعات
+        </button>
+        <button
+          onClick={() => setActiveTab('ratings')}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === 'ratings' ? '#10b981' : 'rgba(255,255,255,0.05)',
+            color: 'white',
+            border: 'none',
+            borderRadius: 10,
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: 15,
+            transition: 'all 0.3s'
+          }}
+        >
+          التقييمات
+        </button>
+        <button
+          onClick={() => setActiveTab('complaints')}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === 'complaints' ? '#10b981' : 'rgba(255,255,255,0.05)',
+            color: 'white',
+            border: 'none',
+            borderRadius: 10,
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: 15,
+            transition: 'all 0.3s'
+          }}
+        >
+          الشكاوى
+        </button>
+        <button
+          onClick={() => setActiveTab('offers')}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === 'offers' ? '#10b981' : 'rgba(255,255,255,0.05)',
+            color: 'white',
+            border: 'none',
+            borderRadius: 10,
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: 15,
+            transition: 'all 0.3s'
+          }}
+        >
+          العروض
         </button>
       </div>
 
@@ -2863,6 +2958,316 @@ export default function AdminPanelPage() {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'ratings' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 900 }}>إحصائيات التقييمات</h2>
+
+          {/* Rating Statistics */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 20 }}>
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>إجمالي التقييمات</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>{tripRatings.length}</p>
+            </div>
+            <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>متوسط تقييم السائقين</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>
+                {tripRatings.length > 0
+                  ? (tripRatings.reduce((sum, r) => sum + (r.driverRating || 0), 0) / tripRatings.length).toFixed(1)
+                  : '-'}
+              </p>
+            </div>
+            <div style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>متوسط النظافة</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>
+                {tripRatings.length > 0
+                  ? (tripRatings.reduce((sum, r) => sum + (r.cleanlinessRating || 0), 0) / tripRatings.length).toFixed(1)
+                  : '-'}
+              </p>
+            </div>
+            <div style={{ background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>متوسط الالتزام بالمواعيد</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>
+                {tripRatings.length > 0
+                  ? (tripRatings.reduce((sum, r) => sum + (r.punctualityRating || 0), 0) / tripRatings.length).toFixed(1)
+                  : '-'}
+              </p>
+            </div>
+          </div>
+
+          {/* Top Rated Drivers */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.3)', borderRadius: 16, padding: 20 }}>
+            <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>أعلى السائقين تقييماً</h3>
+            {tripRatings.length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+                {Object.entries(
+                  tripRatings.reduce((acc: any, r: any) => {
+                    if (!r.driverId) return acc;
+                    if (!acc[r.driverId]) {
+                      acc[r.driverId] = {
+                        name: r.driverName || 'غير معروف',
+                        ratings: [],
+                      };
+                    }
+                    acc[r.driverId].ratings.push(r);
+                    return acc;
+                  }, {})
+                )
+                  .map(([driverId, data]: any) => ({
+                    driverId,
+                    name: data.name,
+                    avgRating: data.ratings.reduce((sum: number, r: any) => sum + r.driverRating, 0) / data.ratings.length,
+                    totalRatings: data.ratings.length,
+                  }))
+                  .sort((a: any, b: any) => b.avgRating - a.avgRating)
+                  .slice(0, 5)
+                  .map((driver: any) => (
+                    <div key={driver.driverId} style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: 12, padding: 16, border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                        <p style={{ fontWeight: 700, fontSize: 16 }}>{driver.name}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: 24, fontWeight: 900, color: '#fbbf24' }}>{driver.avgRating.toFixed(1)}</span>
+                          <span style={{ fontSize: 12, opacity: 0.7 }}>({driver.totalRatings} تقييم)</span>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 2 }}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span key={star} style={{ color: star <= Math.round(driver.avgRating) ? '#fbbf24' : '#4b5563' }}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <p style={{ opacity: 0.6 }}>لا توجد تقييمات بعد</p>
+            )}
+          </div>
+
+          {/* All Ratings Table */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.3)', borderRadius: 16, overflow: 'auto' }}>
+            <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16, padding: 20 }}>جميع التقييمات</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 950 }}>
+              <thead>
+                <tr style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>السائق</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>تقييم السائق</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>النظافة</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>المواعيد</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>التعليق</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>التاريخ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tripRatings.length === 0 && (
+                  <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', opacity: 0.6 }}>لا توجد تقييمات بعد</td></tr>
+                )}
+                {tripRatings.map((rating) => (
+                  <tr key={rating.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: 14, fontWeight: 700 }}>{rating.driverName || '-'}</td>
+                    <td style={{ padding: 14 }}>{rating.driverRating || 0} ★</td>
+                    <td style={{ padding: 14 }}>{rating.cleanlinessRating || 0} ★</td>
+                    <td style={{ padding: 14 }}>{rating.punctualityRating || 0} ★</td>
+                    <td style={{ padding: 14, fontSize: 14, opacity: 0.8 }}>{rating.comment || '-'}</td>
+                    <td style={{ padding: 14, fontSize: 12, opacity: 0.6 }}>
+                      {rating.createdAt ? new Date(rating.createdAt.seconds * 1000).toLocaleDateString('ar-DZ') : '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'complaints' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 900 }}>إدارة الشكاوى والاقتراحات</h2>
+
+          {/* Complaints Statistics */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 20 }}>
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>إجمالي الشكاوى</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>{complaints.length}</p>
+            </div>
+            <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>جديد</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>{complaints.filter((c) => c.status === 'new').length}</p>
+            </div>
+            <div style={{ background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>قيد المعالجة</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>{complaints.filter((c) => c.status === 'in_progress').length}</p>
+            </div>
+            <div style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: 16, padding: 20 }}>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 10 }}>تمت المعالجة</p>
+              <p style={{ fontSize: 36, fontWeight: 900 }}>{complaints.filter((c) => c.status === 'resolved').length}</p>
+            </div>
+          </div>
+
+          {/* Complaints Table */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.3)', borderRadius: 16, overflow: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 950 }}>
+              <thead>
+                <tr style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>رقم التذكرة</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الفئة</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الموضوع</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>الحالة</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>التاريخ</th>
+                  <th style={{ padding: 14, textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {complaints.length === 0 && (
+                  <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', opacity: 0.6 }}>لا توجد شكاوى بعد</td></tr>
+                )}
+                {complaints.map((complaint) => (
+                  <tr key={complaint.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: 14, fontFamily: 'monospace' }}>{complaint.ticketNumber}</td>
+                    <td style={{ padding: 14 }}>{complaint.category}</td>
+                    <td style={{ padding: 14, fontWeight: 700 }}>{complaint.subject}</td>
+                    <td style={{ padding: 14 }}>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: 20,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: complaint.status === 'new' ? 'rgba(59, 130, 246, 0.2)' :
+                                   complaint.status === 'in_progress' ? 'rgba(249, 115, 22, 0.2)' :
+                                   complaint.status === 'resolved' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        color: complaint.status === 'new' ? '#3b82f6' :
+                               complaint.status === 'in_progress' ? '#f97316' :
+                               complaint.status === 'resolved' ? '#10b981' : '#ef4444'
+                      }}>
+                        {complaint.status === 'new' ? 'جديد' :
+                         complaint.status === 'in_progress' ? 'قيد المعالجة' :
+                         complaint.status === 'resolved' ? 'تمت المعالجة' : complaint.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: 14, fontSize: 12, opacity: 0.6 }}>
+                      {new Date(complaint.createdAt).toLocaleDateString('ar-DZ')}
+                    </td>
+                    <td style={{ padding: 14 }}>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {complaint.status === 'new' && (
+                          <button
+                            onClick={() => {
+                              const updated = complaints.map(c => c.id === complaint.id ? { ...c, status: 'in_progress' } : c);
+                              setComplaints(updated);
+                              localStorage.setItem('complaints', JSON.stringify(updated));
+                            }}
+                            style={{ padding: '6px 12px', background: 'rgba(249, 115, 22, 0.2)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
+                          >
+                            بدء المعالجة
+                          </button>
+                        )}
+                        {complaint.status === 'in_progress' && (
+                          <button
+                            onClick={() => {
+                              const updated = complaints.map(c => c.id === complaint.id ? { ...c, status: 'resolved' } : c);
+                              setComplaints(updated);
+                              localStorage.setItem('complaints', JSON.stringify(updated));
+                            }}
+                            style={{ padding: '6px 12px', background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}
+                          >
+                            تم الحل
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'offers' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 900 }}>إدارة العروض</h2>
+
+          {/* Student Day Offer */}
+          <div style={{ background: 'rgba(0, 0, 0, 0.3)', borderRadius: 16, padding: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div>
+                <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>اليوم الوطني للطالب - 19 ماي</h3>
+                <p style={{ opacity: 0.7 }}>عرض خاص بمناسبة اليوم الوطني للطالب</p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 14, opacity: 0.7 }}>{studentDayOffer.enabled ? 'مفعّل' : 'معطّل'}</span>
+                <button
+                  onClick={() => setStudentDayOffer({ ...studentDayOffer, enabled: !studentDayOffer.enabled })}
+                  style={{
+                    padding: '8px 16px',
+                    background: studentDayOffer.enabled ? '#10b981' : '#6b7280',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: 14
+                  }}
+                >
+                  {studentDayOffer.enabled ? 'إيقاف' : 'تفعيل'}
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 16, marginBottom: 20 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 8, fontWeight: 700 }}>نسبة التخفيض (%)</label>
+                <input
+                  type="number"
+                  value={studentDayOffer.discountPercentage}
+                  onChange={(e) => setStudentDayOffer({ ...studentDayOffer, discountPercentage: parseInt(e.target.value) || 0 })}
+                  style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}
+                  min="0"
+                  max="100"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 8, fontWeight: 700 }}>نقل مجاني</label>
+                <select
+                  value={studentDayOffer.freeTransport ? 'true' : 'false'}
+                  onChange={(e) => setStudentDayOffer({ ...studentDayOffer, freeTransport: e.target.value === 'true' })}
+                  style={{ width: '100%', padding: 12, background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}
+                >
+                  <option value="false">لا</option>
+                  <option value="true">نعم</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 8, fontWeight: 700 }}>تاريخ البدء</label>
+                <input
+                  type="date"
+                  value={studentDayOffer.startDate}
+                  onChange={(e) => setStudentDayOffer({ ...studentDayOffer, startDate: e.target.value })}
+                  style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 8, fontWeight: 700 }}>تاريخ الانتهاء</label>
+                <input
+                  type="date"
+                  value={studentDayOffer.endDate}
+                  onChange={(e) => setStudentDayOffer({ ...studentDayOffer, endDate: e.target.value })}
+                  style={{ width: '100%', padding: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: 'white' }}
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                localStorage.setItem('studentDayOffer', JSON.stringify(studentDayOffer));
+                alert('تم حفظ إعدادات العرض بنجاح');
+              }}
+              style={{ padding: '12px 24px', background: '#10b981', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 700 }}
+            >
+              حفظ الإعدادات
+            </button>
           </div>
         </div>
       )}

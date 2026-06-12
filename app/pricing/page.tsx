@@ -23,6 +23,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import StudentDayBanner from '@/components/StudentDayBanner';
 
 export default function PricingPage() {
   const { language } = useLanguage();
@@ -176,6 +177,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-blue-50/20">
+      <StudentDayBanner />
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

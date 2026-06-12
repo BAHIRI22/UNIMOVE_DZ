@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import StudentDayBanner from '@/components/StudentDayBanner';
 
 export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -197,6 +198,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout role="user">
+      <StudentDayBanner />
       <div className="relative">
         {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06] z-0">

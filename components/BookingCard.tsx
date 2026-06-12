@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,9 @@ import {
   XCircle,
   AlertCircle,
   QrCode,
+  Star,
 } from 'lucide-react';
+import TripRatingModal from './TripRatingModal';
 
 export type BookingStatus =
   | 'pending'
@@ -39,6 +42,9 @@ export interface Booking {
   status: BookingStatus;
   paymentStatus: string;
   createdAt?: any;
+  assignedDriverId?: string;
+  assignedDriverName?: string;
+  rated?: boolean;
 }
 
 interface BookingCardProps {
@@ -49,6 +55,7 @@ interface BookingCardProps {
 export function BookingCard({ booking, showQR = false }: BookingCardProps) {
   const { language } = useLanguage();
   const isAr = language === 'ar';
+  const [showRatingModal, setShowRatingModal] = useState(false);
 
   const getStatusColor = (status: BookingStatus) => {
     switch (status) {
@@ -225,13 +232,33 @@ export function BookingCard({ booking, showQR = false }: BookingCardProps) {
               {getPaymentStatusLabel(booking.paymentStatus)}
             </p>
           </div>
-          {isActive && (
-            <Button variant="outline" size="sm">
-              {isAr ? 'عرض QR' : 'Voir QR'}
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {isActive && (
+              <Button variant="outline" size="sm">
+                {isAr ? 'عرض QR' : 'Voir QR'}
+              </Button>
+            )}
+            {booking.status === 'completed' && !booking.rated && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowRatingModal(true)}
+                className="flex items-center gap-2"
+              >
+                <Star className="w-4 h-4" />
+                {isAr ? 'قيّم الرحلة' : 'Noter le trajet'}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
+      <TripRatingModal
+        isOpen={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        bookingId={booking.id}
+        driverId={booking.assignedDriverId}
+        driverName={booking.assignedDriverName}
+      />
     </Card>
   );
 }

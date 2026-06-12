@@ -7,10 +7,12 @@ import { FeaturesSection } from '@/components/FeaturesSection';
 import { AboutProjectSection } from '@/components/AboutProjectSection';
 import { VisionSection } from '@/components/VisionSection';
 import { Footer } from '@/components/Footer';
+import StudentDayBanner from '@/components/StudentDayBanner';
 
 export default function Home() {
   return (
     <main className="w-full">
+      <StudentDayBanner />
       <Header />
       <HeroSection />
       <ProblemSolutionSection />

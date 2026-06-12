@@ -97,7 +97,40 @@ function RegisterContent() {
     checkExisting();
   }, [phoneFromQuery, router]);
 
-  const handlePhoneAuthSuccess = (user: any) => {
+  const handlePhoneAuthSuccess = async (user: any) => {
+    const phoneNumber = user?.phoneNumber || phoneFromQuery;
+    if (!phoneNumber) {
+      setFirebaseUser(user);
+      return;
+    }
+
+    // Check if phone number already exists in users collection
+    const phoneQuery = query(collection(db, 'users'), where('phoneNumber', '==', phoneNumber));
+    const phoneSnap = await getDocs(phoneQuery);
+    if (!phoneSnap.empty) {
+      // Phone already registered, redirect to login
+      router.replace(`/login?phone=${encodeURIComponent(phoneNumber)}`);
+      return;
+    }
+
+    // Also check with 'phone' field
+    const altQuery = query(collection(db, 'users'), where('phone', '==', phoneNumber));
+    const altSnap = await getDocs(altQuery);
+    if (!altSnap.empty) {
+      // Phone already registered, redirect to login
+      router.replace(`/login?phone=${encodeURIComponent(phoneNumber)}`);
+      return;
+    }
+
+    // Check drivers collection as well
+    const drvQuery = query(collection(db, 'drivers'), where('phoneNumber', '==', phoneNumber));
+    const drvSnap = await getDocs(drvQuery);
+    if (!drvSnap.empty) {
+      // Phone already registered as driver, redirect to login
+      router.replace(`/login?phone=${encodeURIComponent(phoneNumber)}`);
+      return;
+    }
+
     setFirebaseUser(user);
   };
 
