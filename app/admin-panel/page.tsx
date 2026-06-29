@@ -1808,7 +1808,18 @@ export default function AdminPanelPage() {
                 <input
                   type="checkbox"
                   checked={showDeleted}
-                  onChange={(e) => setShowDeleted(e.target.checked)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      const password = typeof window !== 'undefined' ? window.prompt('أدخل كلمة المرور لعرض المحذوفين / Entrez le mot de passe pour voir les supprimés:') : '';
+                      if (password === 'UNIDZ') {
+                        setShowDeleted(true);
+                      } else {
+                        alert(language === 'ar' ? 'كلمة المرور غير صحيحة' : 'Mot de passe incorrect');
+                      }
+                    } else {
+                      setShowDeleted(false);
+                    }
+                  }}
                   style={{ width: 18, height: 18, cursor: 'pointer' }}
                 />
                 عرض المحذوفين
