@@ -6,7 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { AccessibilityMenu } from '@/components/AccessibilityMenu';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
 import { ProtectedPageLink } from '@/components/ProtectedPageLink';
 import { isProtectedPath } from '@/lib/passcode';
 import Image from 'next/image';
@@ -18,6 +18,7 @@ export function Header() {
   const { isAuthenticated, logout, user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,14 +30,17 @@ export function Header() {
 
   const navLinks = [
     { href: '/', label: language === 'ar' ? 'الرئيسية' : 'Accueil' },
-    { href: '/about-project', label: language === 'ar' ? 'المشروع' : 'Projet' },
-    { href: '/business-model', label: language === 'ar' ? 'نموذج الأعمال' : 'Business', xlOnly: true },
-    { href: '/pricing', label: language === 'ar' ? 'الأسعار' : 'Tarifs' },
-    { href: '/startup', label: language === 'ar' ? 'Startup' : 'Startup', xlOnly: true },
-    { href: '/investors', label: language === 'ar' ? 'المستثمرون' : 'Investisseurs', xlOnly: true },
-    { href: '/financial-plan', label: language === 'ar' ? 'المالية' : 'Finance', xlOnly: true },
-    { href: '/demo', label: language === 'ar' ? 'وضع العرض' : 'Mode présentation', highlight: true },
   ];
+
+  const projectLinks = [
+    { href: '/about-project', label: language === 'ar' ? 'المشروع' : 'Projet' },
+    { href: '/business-model', label: language === 'ar' ? 'نموذج الأعمال' : 'Business' },
+    { href: '/pricing', label: language === 'ar' ? 'الأسعار' : 'Tarifs' },
+    { href: '/startup', label: language === 'ar' ? 'Startup' : 'Startup' },
+    { href: '/investors', label: language === 'ar' ? 'المستثمرون' : 'Investisseurs' },
+    { href: '/financial-plan', label: language === 'ar' ? 'المالية' : 'Finance' },
+    { href: '/demo', label: language === 'ar' ? 'وضع العرض' : 'Mode présentation', highlight: true },
+  ] as Array<{ href: string; label: string; highlight?: boolean }>;
 
 
   return (
@@ -102,11 +106,7 @@ export function Header() {
                     <ProtectedPageLink
                       key={link.href}
                       href={link.href}
-                      className={`relative text-xs lg:text-sm font-bold transition-all duration-300 ${
-                        link.highlight 
-                          ? 'text-emerald-600 hover:text-emerald-700' 
-                          : 'text-slate-700 hover:text-emerald-600'
-                      } ${link.xlOnly ? 'hidden xl:inline-block' : 'inline-block'} group whitespace-nowrap`}
+                      className="relative text-xs lg:text-sm font-bold transition-all duration-300 text-slate-700 hover:text-emerald-600 group whitespace-nowrap"
                       label={link.label}
                     >
                       {link.label}
@@ -116,17 +116,69 @@ export function Header() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`relative text-xs lg:text-sm font-bold transition-all duration-300 ${
-                        link.highlight 
-                          ? 'text-emerald-600 hover:text-emerald-700' 
-                          : 'text-slate-700 hover:text-emerald-600'
-                      } ${link.xlOnly ? 'hidden xl:inline-block' : 'inline-block'} group whitespace-nowrap`}
+                      className="relative text-xs lg:text-sm font-bold transition-all duration-300 text-slate-700 hover:text-emerald-600 group whitespace-nowrap"
                     >
                       {link.label}
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full" />
                     </Link>
                   )
                 )}
+
+                {/* Project Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}
+                    className="relative text-xs lg:text-sm font-bold transition-all duration-300 text-slate-700 hover:text-emerald-600 group whitespace-nowrap flex items-center gap-1"
+                  >
+                    {language === 'ar' ? 'عن المشروع' : 'À propos du projet'}
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${projectDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {projectDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50"
+                      >
+                        <div className="py-2">
+                          {projectLinks.map((link) =>
+                            isProtectedPath(link.href) ? (
+                              <ProtectedPageLink
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setProjectDropdownOpen(false)}
+                                className={`block px-4 py-3 text-sm font-bold transition-all duration-200 ${
+                                  link.highlight 
+                                    ? 'text-emerald-600 hover:bg-emerald-50' 
+                                    : 'text-slate-700 hover:bg-slate-50'
+                                }`}
+                                label={link.label}
+                              >
+                                {link.label}
+                              </ProtectedPageLink>
+                            ) : (
+                              <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setProjectDropdownOpen(false)}
+                                className={`block px-4 py-3 text-sm font-bold transition-all duration-200 ${
+                                  link.highlight 
+                                    ? 'text-emerald-600 hover:bg-emerald-50' 
+                                    : 'text-slate-700 hover:bg-slate-50'
+                                }`}
+                              >
+                                {link.label}
+                              </Link>
+                            )
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </>
             )}
           </nav>
@@ -220,11 +272,7 @@ export function Header() {
                             key={link.href}
                             href={link.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`text-base font-bold transition-all duration-300 py-2 ${
-                              link.highlight 
-                                ? 'text-emerald-600 hover:text-emerald-700' 
-                                : 'text-slate-700 hover:text-emerald-600'
-                            }`}
+                            className="text-base font-bold transition-all duration-300 py-2 text-slate-700 hover:text-emerald-600"
                             label={link.label}
                           >
                             {link.label}
@@ -234,16 +282,51 @@ export function Header() {
                             key={link.href}
                             href={link.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`text-base font-bold transition-all duration-300 py-2 ${
-                              link.highlight 
-                                ? 'text-emerald-600 hover:text-emerald-700' 
-                                : 'text-slate-700 hover:text-emerald-600'
-                            }`}
+                            className="text-base font-bold transition-all duration-300 py-2 text-slate-700 hover:text-emerald-600"
                           >
                             {link.label}
                           </Link>
                         )
                       )}
+
+                      {/* Project Links in Mobile Menu */}
+                      <div className="pt-4 border-t border-slate-200">
+                        <p className="text-sm font-bold text-slate-500 mb-3">
+                          {language === 'ar' ? 'عن المشروع' : 'À propos du projet'}
+                        </p>
+                        <div className="flex flex-col gap-2">
+                          {projectLinks.map((link) =>
+                            isProtectedPath(link.href) ? (
+                              <ProtectedPageLink
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`text-base font-bold transition-all duration-300 py-2 ${
+                                  link.highlight 
+                                    ? 'text-emerald-600 hover:text-emerald-700' 
+                                    : 'text-slate-700 hover:text-emerald-600'
+                                }`}
+                                label={link.label}
+                              >
+                                {link.label}
+                              </ProtectedPageLink>
+                            ) : (
+                              <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`text-base font-bold transition-all duration-300 py-2 ${
+                                  link.highlight 
+                                    ? 'text-emerald-600 hover:text-emerald-700' 
+                                    : 'text-slate-700 hover:text-emerald-600'
+                                }`}
+                              >
+                                {link.label}
+                              </Link>
+                            )
+                          )}
+                        </div>
+                      </div>
                     </>
                   )}
                   

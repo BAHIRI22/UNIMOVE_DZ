@@ -1536,6 +1536,20 @@ export default function AdminPanelPage() {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button
+            onClick={() => setLanguage(language === 'ar' ? 'fr' : 'ar')}
+            style={{
+              padding: '12px 24px',
+              background: 'rgba(59, 130, 246, 0.2)',
+              color: '#3b82f6',
+              border: '1px solid rgba(59, 130, 246, 0.5)',
+              borderRadius: 8,
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            {language === 'ar' ? 'FR' : 'AR'}
+          </button>
+          <button
             onClick={() => router.push('/admin/data-management')}
             style={{
               padding: '12px 24px',
