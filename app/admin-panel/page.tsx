@@ -1223,6 +1223,39 @@ export default function AdminPanelPage() {
     }
   };
 
+  const handleDeleteSubscription = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الاشتراك؟' : 'Confirmer la suppression de l\'abonnement ?')) return;
+    try {
+      await deleteDoc(doc(db, 'subscriptions', id));
+      alert(language === 'ar' ? 'تم حذف الاشتراك بنجاح' : 'Abonnement supprimé avec succès');
+    } catch (e) {
+      console.error('Error deleting subscription:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDeleteBooking = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الحجز؟' : 'Confirmer la suppression de la réservation ?')) return;
+    try {
+      await deleteDoc(doc(db, 'bookings', id));
+      alert(language === 'ar' ? 'تم حذف الحجز بنجاح' : 'Réservation supprimée avec succès');
+    } catch (e) {
+      console.error('Error deleting booking:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
+  const handleDeleteNotification = async (id: string) => {
+    if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الإشعار؟' : 'Confirmer la suppression de la notification ?')) return;
+    try {
+      await deleteDoc(doc(db, 'notifications', id));
+      alert(language === 'ar' ? 'تم حذف الإشعار بنجاح' : 'Notification supprimée avec succès');
+    } catch (e) {
+      console.error('Error deleting notification:', e);
+      alert(language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression');
+    }
+  };
+
   const handleApprove = async (userId: string) => {
     try {
       const userRef = doc(db, 'users', userId);
@@ -1375,6 +1408,64 @@ export default function AdminPanelPage() {
     setTimeout(() => setLoading(false), 500);
   };
 
+  const handleReinitialize = () => {
+    if (!confirm(language === 'ar' ? 'هل تريد إعادة ضبط لوحة التحكم؟ سيتم إعادة تعيين جميع الفلاتر والبحث.' : 'Voulez-vous réinitialiser le panneau d\'administration ? Tous les filtres et recherches seront réinitialisés.')) return;
+    
+    // Reset all state variables to default values
+    setActiveTab('overview');
+    setSearchQuery('');
+    setShowDeleted(false);
+    setShowRouteForm(false);
+    setShowVehicleForm(false);
+    
+    // Reset form states
+    setDriverId(null);
+    setDriverName('');
+    setDriverPhone('');
+    setDriverEmail('');
+    setDriverLicense('');
+    setDriverStatus('active');
+    setDriverAssignedVehicle('');
+    
+    setVehicleId(null);
+    setVehicleNumber('');
+    setVehicleReg('');
+    setVehicleBrand('');
+    setVehicleModel('');
+    setVehicleType('bus');
+    setVehicleCapacity('45');
+    setVehicleStatus('active');
+    setVehicleAssignedDriver('');
+    
+    setRouteId(null);
+    setRouteName('');
+    setRouteDeparture('');
+    setRouteDestination('');
+    setRouteDepTime('');
+    setRouteArrTime('');
+    setRouteVehicle('');
+    setRouteDriver('');
+    setRouteSeats('45');
+    setRoutePrice('100');
+    setRouteStatus('active');
+    
+    setEditingBookingId(null);
+    setEditBookingVehicle('');
+    setEditBookingDriver('');
+    setEditBookingFinalPrice('');
+    
+    // Reset offer settings to defaults
+    setStudentDayOffer({
+      enabled: false,
+      discountPercentage: 50,
+      freeTransport: false,
+      startDate: '2026-05-19',
+      endDate: '2026-05-25',
+    });
+    
+    alert(language === 'ar' ? 'تم إعادة ضبط لوحة التحكم بنجاح' : 'Panneau d\'administration réinitialisé avec succès');
+  };
+
   if (!isAdmin) {
     return (
       <div style={{ minHeight: '100vh', background: '#031813', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
@@ -1471,6 +1562,20 @@ export default function AdminPanelPage() {
             }}
           >
             تحديث البيانات
+          </button>
+          <button
+            onClick={handleReinitialize}
+            style={{
+              padding: '12px 24px',
+              background: 'rgba(168, 85, 247, 0.2)',
+              color: '#a855f7',
+              border: '1px solid rgba(168, 85, 247, 0.5)',
+              borderRadius: 8,
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            REINITIALISER
           </button>
           <button
             onClick={handleLogout}
@@ -1889,9 +1994,17 @@ export default function AdminPanelPage() {
                         <p style={{ margin: '6px 0 0 0', opacity: 0.6, fontSize: 13 }}>الهاتف: {n.userPhone}</p>
                       )}
                     </div>
-                    <span style={{ fontSize: 12, opacity: 0.5, whiteSpace: 'nowrap' }}>
-                      {n.createdAt?.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('ar-DZ', { hour: '2-digit', minute: '2-digit' }) : ''}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ fontSize: 12, opacity: 0.5, whiteSpace: 'nowrap' }}>
+                        {n.createdAt?.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('ar-DZ', { hour: '2-digit', minute: '2-digit' }) : ''}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteNotification(n.id)}
+                        style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
+                      >
+                        حذف
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1981,6 +2094,12 @@ export default function AdminPanelPage() {
                               </button>
                             </>
                           )}
+                          <button
+                            onClick={() => handleDeleteSubscription(sub.id)}
+                            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
+                          >
+                            حذف
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -2846,6 +2965,9 @@ export default function AdminPanelPage() {
                               تغيير تعيين
                             </button>
                           )}
+                          <button onClick={() => handleDeleteBooking(booking.id)} style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}>
+                            حذف
+                          </button>
                         </div>
                       </td>
                     </tr>

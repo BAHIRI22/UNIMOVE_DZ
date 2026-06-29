@@ -16,8 +16,10 @@ import {
   AlertCircle,
   QrCode,
   Star,
+  Navigation,
 } from 'lucide-react';
 import TripRatingModal from './TripRatingModal';
+import { useRouter } from 'next/navigation';
 
 export type BookingStatus =
   | 'pending'
@@ -56,6 +58,7 @@ export function BookingCard({ booking, showQR = false }: BookingCardProps) {
   const { language } = useLanguage();
   const isAr = language === 'ar';
   const [showRatingModal, setShowRatingModal] = useState(false);
+  const router = useRouter();
 
   const getStatusColor = (status: BookingStatus) => {
     switch (status) {
@@ -234,9 +237,20 @@ export function BookingCard({ booking, showQR = false }: BookingCardProps) {
           </div>
           <div className="flex gap-2">
             {isActive && (
-              <Button variant="outline" size="sm">
-                {isAr ? 'عرض QR' : 'Voir QR'}
-              </Button>
+              <>
+                <Button variant="outline" size="sm">
+                  {isAr ? 'عرض QR' : 'Voir QR'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push(`/trip-tracking/${booking.id}`)}
+                  className="flex items-center gap-2"
+                >
+                  <Navigation className="w-4 h-4" />
+                  {isAr ? 'تتبع الرحلة' : 'Suivre le trajet'}
+                </Button>
+              </>
             )}
             {booking.status === 'completed' && !booking.rated && (
               <Button
