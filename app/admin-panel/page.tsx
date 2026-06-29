@@ -1530,13 +1530,18 @@ export default function AdminPanelPage() {
             </div>
           </div>
           <div>
-            <h1 className="admin-title" style={{ fontSize: 48, fontWeight: 900, marginBottom: 10 }}>لوحة الإدارة</h1>
+            <h1 className="admin-title" style={{ fontSize: 48, fontWeight: 900, marginBottom: 10 }}>
+              {language === 'ar' ? 'لوحة الإدارة' : 'Panneau d\'administration'}
+            </h1>
             <p style={{ fontSize: 24, opacity: 0.7 }}>Admin Panel</p>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button
-            onClick={() => setLanguage(language === 'ar' ? 'fr' : 'ar')}
+            onClick={() => {
+              const newLang = language === 'ar' ? 'fr' : 'ar';
+              setLanguage(newLang);
+            }}
             style={{
               padding: '12px 24px',
               background: 'rgba(59, 130, 246, 0.2)',
