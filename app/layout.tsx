@@ -6,6 +6,7 @@ import { AccessibilityProvider } from '@/contexts/AccessibilityContext'
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
 import { NotificationScheduler } from '@/components/NotificationScheduler'
 import { Toaster } from 'sonner'
+import { AppAccessGate } from '@/components/AppAccessGate'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -65,7 +66,7 @@ export default function RootLayout({
 
               {/* Content wrapper */}
               <div className="relative z-10">
-                {children}
+                <AppAccessGate>{children}</AppAccessGate>
               </div>
 
               <NotificationScheduler />
