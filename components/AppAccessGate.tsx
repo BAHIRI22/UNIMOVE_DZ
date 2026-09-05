@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { LockKeyhole, ArrowRight } from 'lucide-react';
 
-const ACCESS_PASSWORD = 'MERAH2026';
-const ACCESS_KEY = 'unimove_app_access';
+const ACCESS_PASSWORD = 'MERAH123';
+const ACCESS_KEY = 'unimove_app_access_v2';
 
 export function AppAccessGate({ children }: { children: React.ReactNode }) {
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -14,7 +14,11 @@ export function AppAccessGate({ children }: { children: React.ReactNode }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setIsUnlocked(sessionStorage.getItem(ACCESS_KEY) === 'granted');
+    try {
+      setIsUnlocked(sessionStorage.getItem(ACCESS_KEY) === 'granted');
+    } catch {
+      setIsUnlocked(false);
+    }
     inputRef.current?.focus();
   }, []);
 
@@ -22,7 +26,11 @@ export function AppAccessGate({ children }: { children: React.ReactNode }) {
     event.preventDefault();
 
     if (password === ACCESS_PASSWORD) {
-      sessionStorage.setItem(ACCESS_KEY, 'granted');
+      try {
+        sessionStorage.setItem(ACCESS_KEY, 'granted');
+      } catch {
+        // The access gate still works when browser storage is unavailable.
+      }
       setIsUnlocked(true);
       setHasError(false);
       return;
